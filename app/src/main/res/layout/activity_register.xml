@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".RegisterActivity">
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/registerActivity_passwordWrapper"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="48dp"
-        android:layout_marginTop="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
-        app:layout_constraintVertical_bias="0.29">
+        app:layout_constraintTop_toBottomOf="@+id/registerActivity_emailWrapper">
 
         <EditText
             android:id="@+id/registerActivity_password"
@@ -31,19 +31,17 @@
             tools:ignore="SpeakableTextPresentCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/registerActivity_passwordRipetiWrapper"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerActivity_passwordWrapper"
-        app:layout_constraintVertical_bias="0.106">
+        app:layout_constraintTop_toBottomOf="@+id/registerActivity_passwordWrapper">
 
         <EditText
             android:id="@+id/registerActivity_passwordRipeti"
@@ -65,18 +63,19 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" >
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/imageView9"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="408dp"
+            android:layout_height="285dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.432"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.432"
             app:srcCompat="@mipmap/anonym_banner_foreground" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -85,14 +84,12 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
         android:layout_marginTop="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
-        app:layout_constraintVertical_bias="0.103">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
 
         <EditText
             android:id="@+id/registerActivity_email"
@@ -101,20 +98,20 @@
             android:background="@color/light_grey"
             android:hint="Inserisci indirizzo email"
             android:inputType="textEmailAddress"
-            android:textColor="@color/black" tools:ignore="SpeakableTextPresentCheck" />
+            android:textColor="@color/black"
+            tools:ignore="SpeakableTextPresentCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/registerActivity_Registrati"
         android:layout_width="226dp"
         android:layout_height="48dp"
-        android:layout_marginTop="72dp"
         android:text="REGISTRATI"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerActivity_passwordWrapper"
-        app:layout_constraintVertical_bias="0.344" />
+        app:layout_constraintTop_toBottomOf="@+id/registerActivity_passwordRipetiWrapper"
+        app:layout_constraintVertical_bias="0.204" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
