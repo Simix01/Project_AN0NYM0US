@@ -25,6 +25,7 @@
             android:layout_height="match_parent"
             android:background="@color/light_grey"
             android:hint="Inserisci password"
+            android:textColorHint="@color/black"
             android:inputType="textPassword"
             android:textColor="@color/black"
             tools:ignore="SpeakableTextPresentCheck" />
@@ -40,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/loginActivity_Login"
         app:layout_constraintVertical_bias="0.287">
 
         <TextView
@@ -76,15 +77,15 @@
 
         <ImageView
             android:id="@+id/imageView9"
-            android:layout_width="408dp"
-            android:layout_height="286dp"
+            android:layout_width="414dp"
+            android:layout_height="291dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_bias="0.333"
             app:srcCompat="@mipmap/anonym_banner_foreground" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,13 +109,14 @@
             android:layout_height="match_parent"
             android:background="@color/light_grey"
             android:hint="Inserisci indirizzo email"
+            android:textColorHint="@color/black"
             android:inputType="textEmailAddress"
             android:textColor="@color/black"
             tools:ignore="SpeakableTextPresentCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/loginActivity_Login"
         android:layout_width="226dp"
         android:layout_height="48dp"
         android:layout_marginTop="52dp"
