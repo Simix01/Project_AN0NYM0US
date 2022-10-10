@@ -16,6 +16,8 @@ class LoginActivity : AppCompatActivity() {
         registrati.setOnClickListener(){
             val intent = Intent(this,RegisterActivity::class.java);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
+
         }
     }
 }
