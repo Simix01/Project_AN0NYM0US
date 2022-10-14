@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class LoginActivity : AppCompatActivity() {
 
@@ -54,18 +55,26 @@ class LoginActivity : AppCompatActivity() {
 
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(emailLogin, pwLogin).addOnCompleteListener { task ->
                         if(task.isSuccessful){
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "Sei loggato correttamente",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val firebaseUser: FirebaseUser = task.result!!.user!!
+                            if(firebaseUser.isEmailVerified){
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Sei loggato correttamente",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-                            val intent = Intent(this@LoginActivity, HomepageActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.putExtra("user_id", FirebaseAuth.getInstance().currentUser!!.uid)
-                            intent.putExtra("email_id", emailLogin)
-                            startActivity(intent)
-                            finish()
+                                val intent = Intent(this@LoginActivity, HomepageActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.putExtra("user_id", FirebaseAuth.getInstance().currentUser!!.uid)
+                                intent.putExtra("email_id", emailLogin)
+                                startActivity(intent)
+                                finish()
+                            }
+                            else{
+                                Toast.makeText(this, "La mail inserita non è ancora stata verificata", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
                         } else{
                             Toast.makeText(
                                 this@LoginActivity,
