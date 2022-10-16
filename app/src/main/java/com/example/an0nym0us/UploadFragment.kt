@@ -148,7 +148,6 @@ class UploadFragment : Fragment() {
 
 
 
-
             // var bitmap:Bitmap=BitmapFactory.decodeFile(photoFile.absolutePath)
 
             mImg!!.setImageBitmap(bitmap)
