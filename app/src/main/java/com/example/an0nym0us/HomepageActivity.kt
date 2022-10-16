@@ -18,10 +18,12 @@ class HomepageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_homepage)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-    }
+        val bottomNavigationView=findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val navController=findNavController(R.id.fragment)
+
+        bottomNavigationView.setupWithNavController(navController)
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+
     }
 }
