@@ -1,5 +1,6 @@
 package com.example.an0nym0us
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +24,13 @@ class LoginActivity : AppCompatActivity() {
         val btn_login : Button = findViewById(R.id.loginActivity_Login)
         val email : EditText = findViewById(R.id.loginActivity_email)
         val password : EditText = findViewById(R.id.loginActivity_password)
+        val token = getSharedPreferences("email", Context.MODE_PRIVATE)
+
+        if(token.getString("email"," ")!=" "){
+            val intent = Intent(this, HomepageActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         registrati.setOnClickListener(){
             val intent = Intent(this,RegisterActivity::class.java);
@@ -56,19 +64,29 @@ class LoginActivity : AppCompatActivity() {
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(emailLogin, pwLogin).addOnCompleteListener { task ->
                         if(task.isSuccessful){
                             val firebaseUser: FirebaseUser = task.result!!.user!!
-                            if(firebaseUser.isEmailVerified){
+                            if(firebaseUser.isEmailVerified) {
                                 Toast.makeText(
                                     this@LoginActivity,
                                     "Sei loggato correttamente",
                                     Toast.LENGTH_SHORT
                                 ).show()
 
-                                val intent = Intent(this@LoginActivity, HomepageActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.putExtra("user_id", FirebaseAuth.getInstance().currentUser!!.uid)
+                                val editor = token.edit()
+                                editor.putString("email",emailLogin)
+                                editor.commit()
+
+                                val intent =
+                                    Intent(this@LoginActivity, HomepageActivity::class.java)
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.putExtra(
+                                    "user_id",
+                                    FirebaseAuth.getInstance().currentUser!!.uid
+                                )
                                 intent.putExtra("email_id", emailLogin)
                                 startActivity(intent)
                                 finish()
+
                             }
                             else{
                                 Toast.makeText(this, "La mail inserita non è ancora stata verificata", Toast.LENGTH_SHORT)
