@@ -9,17 +9,22 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="202dp"
-        android:layout_height="194dp"
-        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imageUpload"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             tools:src="@tools:sample/avatars" />
     </androidx.cardview.widget.CardView>
 
