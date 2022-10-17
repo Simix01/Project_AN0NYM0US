@@ -1,59 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegisterActivity">
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerActivity_passwordWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerActivity_emailWrapper">
-
-        <EditText
-            android:id="@+id/registerActivity_password"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/light_grey"
-            android:hint="Inserisci password"
-            android:textColorHint="@color/black"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            tools:ignore="SpeakableTextPresentCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerActivity_passwordRipetiWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerActivity_passwordWrapper">
-
-        <EditText
-            android:id="@+id/registerActivity_passwordRipeti"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/light_grey"
-            android:hint="Ripeti password"
-            android:textColorHint="@color/black"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            tools:ignore="SpeakableTextPresentCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout2"
@@ -80,40 +33,76 @@
             app:srcCompat="@mipmap/anonym_banner_foreground" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/registerActivity_emailWrapper"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="48dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintVertical_bias="0.318">
 
-        <EditText
-            android:id="@+id/registerActivity_email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerActivity_emailWrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/light_grey"
-            android:hint="Inserisci indirizzo email"
-            android:textColorHint="@color/black"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/black"
-            tools:ignore="SpeakableTextPresentCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingHorizontal="25dp">
 
-    <Button
-        android:id="@+id/registerActivity_Registrati"
-        android:layout_width="226dp"
-        android:layout_height="48dp"
-        android:text="REGISTRATI"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerActivity_passwordRipetiWrapper"
-        app:layout_constraintVertical_bias="0.204" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerActivity_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Inserisci email"
+                android:background="@color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerActivity_passwordWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingHorizontal="25dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerActivity_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Inserisci password"
+                android:inputType="textPassword"
+                android:background="@color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerActivity_passwordRipetiWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingHorizontal="25dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerActivity_passwordRipeti"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ripeti password"
+                android:inputType="textPassword"
+                android:background="@color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/registerActivity_Registrati"
+            android:layout_width="226dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="REGISTRATI" />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
