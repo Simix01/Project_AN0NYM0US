@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UploadFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="200dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="275dp"
+        android:layout_height="275dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="30dp">
 
         <ImageView
             android:id="@+id/imageUpload"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
+            android:adjustViewBounds="true"
+            android:background="@color/light_grey"
+            android:scaleType="fitCenter"
             tools:src="@tools:sample/avatars" />
+
     </androidx.cardview.widget.CardView>
 
     <Button
@@ -33,12 +33,17 @@
         android:layout_width="67dp"
         android:layout_height="64dp"
         android:background="@drawable/file_explorer"
-        android:padding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.104" />
+        android:padding="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center"/>
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiAutoCompleteTextView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="Seleziona categoria" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -42,7 +42,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
-        app:layout_constraintVertical_bias="0.318">
+        app:layout_constraintVertical_bias="0.155">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/registerActivity_emailWrapper"
@@ -56,8 +56,8 @@
                 android:id="@+id/registerActivity_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Inserisci email"
-                android:background="@color/white"/>
+                android:background="@color/white"
+                android:hint="Inserisci email" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,9 +72,9 @@
                 android:id="@+id/registerActivity_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:hint="Inserisci password"
-                android:inputType="textPassword"
-                android:background="@color/white"/>
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -89,18 +89,18 @@
                 android:id="@+id/registerActivity_passwordRipeti"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:hint="Ripeti password"
-                android:inputType="textPassword"
-                android:background="@color/white"/>
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/registerActivity_Registrati"
             android:layout_width="226dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
+            android:layout_weight="1"
             android:text="REGISTRATI" />
     </LinearLayout>
 

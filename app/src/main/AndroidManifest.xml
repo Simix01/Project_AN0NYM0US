@@ -17,10 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AN0NYM0US"
         tools:targetApi="31">
-        
+
         <provider
-            android:authorities="com.example.an0nym0us"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.an0nym0us.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

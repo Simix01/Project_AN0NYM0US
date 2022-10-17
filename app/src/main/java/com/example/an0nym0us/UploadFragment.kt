@@ -35,6 +35,9 @@ class UploadFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val storageDir= getActivity()?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        photoFile=File.createTempFile(FILE_NAME,".jpg",storageDir)
+
     }
 
     override fun onCreateView(
@@ -51,6 +54,8 @@ class UploadFragment : Fragment() {
         mImg= view?.findViewById(R.id.imageUpload)
 
         mBtn!!.setOnClickListener {
+
+
             if (checkSelfPermission(
                     requireContext(),
                     android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -66,7 +71,7 @@ class UploadFragment : Fragment() {
                 ) != (PackageManager.PERMISSION_GRANTED)
             ) {
                 requestPermissions(
-                    arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),2
+                    arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 2
                 )
             } else if (checkSelfPermission(
                     requireContext(),
@@ -78,17 +83,20 @@ class UploadFragment : Fragment() {
                     3
                 )
             } else {
-                val builder=AlertDialog.Builder(context)
+                val builder = AlertDialog.Builder(context)
                 builder.setItems(optionMenu) { dialogInterface, i ->
                     if (optionMenu[i].equals("Take Photo")) {
                         var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-                       /* val storageDir= getActivity()?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                        photoFile=File.createTempFile(FILE_NAME,".jpg",storageDir)
-                        val fileProvider= FileProvider.getUriForFile(requireContext(),"com.example.an0nym0us.fileprovider",photoFile)
 
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT,fileProvider)
-*/
+                        val fileProvider = FileProvider.getUriForFile(
+                            requireActivity(),
+                            "com.example.an0nym0us.fileprovider",
+                            photoFile
+                        )
+
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+
                         startActivityForResult(intent, 3)
                     } else if (optionMenu[i].equals("Choose from gallery")) {
                         var intent =
@@ -117,6 +125,9 @@ class UploadFragment : Fragment() {
                 builder.setItems(optionMenu) { dialogInterface, i ->
                     if (optionMenu[i].equals("Take Photo")) {
                         var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                        val fileProvider= FileProvider.getUriForFile(requireActivity(),"com.example.an0nym0us.fileprovider",photoFile)
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT,fileProvider)
                         startActivityForResult(intent, 3)
                     } else if (optionMenu[i].equals("Choose from gallery")) {
                         var intent =
@@ -131,6 +142,10 @@ class UploadFragment : Fragment() {
         }
     }
 
+
+
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==1&&resultCode==RESULT_OK){
@@ -142,14 +157,14 @@ class UploadFragment : Fragment() {
             }
         }
         else if(requestCode==3&&resultCode== RESULT_OK){
-            var bitmap:Bitmap=data?.getExtras()?.get("data") as Bitmap
+            // var bitmap:Bitmap=data?.getExtras()?.get("data") as Bitmap
 
 
 
 
 
 
-            // var bitmap:Bitmap=BitmapFactory.decodeFile(photoFile.absolutePath)
+            var bitmap:Bitmap=BitmapFactory.decodeFile(photoFile.absolutePath)
 
             mImg!!.setImageBitmap(bitmap)
         }
