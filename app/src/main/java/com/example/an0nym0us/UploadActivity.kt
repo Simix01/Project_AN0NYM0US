@@ -2,18 +2,23 @@ package com.example.an0nym0us
 
 import android.Manifest
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,7 +30,7 @@ private const val FILE_NAME = "photo.jpg"
 class UploadActivity : AppCompatActivity() {
 
     var optionMenu = arrayOf<String>("Take Photo", "Choose from gallery", "Exit")
-    var mBtn: Button? = null
+    var mBtn: ImageButton? = null
     var mImg: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +39,7 @@ class UploadActivity : AppCompatActivity() {
 
         inizializzaBottomMenu()
         cameraGalleryFunction()
+        creaScriviList()
     }
 
     fun inizializzaBottomMenu(){
@@ -162,5 +168,54 @@ class UploadActivity : AppCompatActivity() {
 
             mImg!!.setImageBitmap(bitmap)
         }
+    }
+
+    fun creaScriviList(){
+
+        var dialog: Dialog? = null
+        var textview:TextView = findViewById(R.id.categoriaText)
+        var arrayList = ArrayList<String>()
+
+        arrayList!!.add("Meme")
+        arrayList!!.add("Gaming")
+        arrayList!!.add("Tech")
+        arrayList!!.add("Scienza")
+        arrayList!!.add("Sport")
+        arrayList!!.add("Attualità")
+        arrayList!!.add("Politica")
+        arrayList!!.add("Cucina")
+        arrayList!!.add("Cinema")
+        //aggiungere altre
+
+        textview.setOnClickListener(View.OnClickListener {
+            dialog = Dialog(this@UploadActivity)
+            dialog!!.setContentView(R.layout.dialog_searchable_spinner)
+            dialog!!.window!!.setLayout(650, 800)
+            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.show()
+
+            val editText = dialog!!.findViewById<EditText>(R.id.edit_text)
+            val listView = dialog!!.findViewById<ListView>(R.id.list_view)
+            val adapter =
+                ArrayAdapter(this@UploadActivity, android.R.layout.simple_list_item_1, arrayList!!)
+
+            listView.adapter = adapter
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int){
+
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    adapter.filter.filter(s)
+                }
+
+                override fun afterTextChanged(s: Editable) {}
+            })
+
+            listView.onItemClickListener =
+                AdapterView.OnItemClickListener { parent, view, position, id ->
+                    textview.setText(adapter.getItem(position))
+                    dialog!!.dismiss()}
+        })
     }
 }
