@@ -4,10 +4,12 @@ data class Post (
     var user:String,
     var category:String,
     var date:String,
-    var image:String
+    var image:String,
+    var likes:String,
+    var dislikes:String
         ) {
     override fun toString(): String {
-        return "Post(user='$user',category='$category',date='$date',image='$image')"
+        return "Post(user='$user',category='$category',date='$date',image='$image',likes='$likes',dislikes='$dislikes')"
     }
 }
 

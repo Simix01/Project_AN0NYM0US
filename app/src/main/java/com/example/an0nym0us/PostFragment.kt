@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_post.*
 
 
 private const val ARG_PARAM1 = "param1"
@@ -29,7 +30,20 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_post, container, false)
+
+        val bundle = arguments
+        val userName = bundle!!.getString("userName")
+        val likes = bundle!!.getString("likes")
+        val dislikes = bundle!!.getString("dislikes")
+        val category = bundle!!.getString("category")
+
+        userCode.setText(userName)
+        categoriaText.setText(category)
+        upvoteCounter.setText(likes)
+        downvoteCounter.setText(dislikes)
+
+        return view
     }
 
     companion object {
