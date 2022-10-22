@@ -3,18 +3,34 @@ package com.example.an0nym0us
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomepageActivity : AppCompatActivity() {
+    private lateinit var postAdapter:PostRecyclerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
 
+        initRecyclerView()
         inizializzaBottomMenu()
     }
 
-    fun inizializzaBottomMenu(){
+    private fun initRecyclerView() {
+
+        val dataSource=DataSource.createDataSet()
+        var recycler:RecyclerView=findViewById<RecyclerView>(R.id.recycler_view)
+
+        recycler.layoutManager=LinearLayoutManager(this)
+        postAdapter=PostRecyclerAdapter(this, dataSource)
+        recycler.adapter=postAdapter
+
+    }
+
+    private fun inizializzaBottomMenu(){
         var bottomNavigationMenuView : BottomNavigationView = findViewById(R.id.bottom_home)
         bottomNavigationMenuView.setSelectedItemId(R.id.homepage)
 
