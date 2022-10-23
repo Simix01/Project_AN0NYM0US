@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.GridView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ProfileActivity : AppCompatActivity() {
@@ -11,6 +12,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
 
         inizializzaBottomMenu()
+        inizializzaGridView()
 
     }
 
@@ -51,5 +53,33 @@ class ProfileActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    fun inizializzaGridView(){
+        lateinit var postGRV: GridView
+        lateinit var postList: List<GridViewModal>
+
+        postGRV = findViewById(R.id.grid_post)
+        postList = ArrayList<GridViewModal>()
+
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+        postList = postList + GridViewModal(R.drawable.giga)
+
+
+        val postAdapter = GridAdapter(postList = postList, this@ProfileActivity)
+
+        postGRV.adapter = postAdapter
+
     }
 }

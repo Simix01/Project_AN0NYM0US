@@ -1,6 +1,7 @@
 package com.example.an0nym0us
 
 import android.Manifest
+import android.R.attr.bitmap
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -11,7 +12,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -19,10 +19,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
+
 
 private lateinit var photoFile: File
 private const val FILE_NAME = "photo.jpg"

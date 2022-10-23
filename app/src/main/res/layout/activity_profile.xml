@@ -9,8 +9,8 @@
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="675dp"
+        android:layout_width="408dp"
+        android:layout_height="830dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_profile"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="right">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/impostazioni"
+                android:layout_marginTop="10dp">
+
+            </ImageButton>
 
         </LinearLayout>
 
@@ -97,12 +106,24 @@
 
         </LinearLayout>
 
-        <GridView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:numColumns="3">
-        </GridView>
+            android:layout_gravity="center_horizontal">
+
+            <GridView
+                android:id="@+id/grid_post"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:numColumns="3"
+                android:paddingBottom="5dp"
+                android:scrollbarThumbVertical="@android:color/transparent">
+
+            </GridView>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
