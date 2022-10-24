@@ -1,25 +1,20 @@
 package com.example.an0nym0us
 
-import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.grid_item.view.*
-import kotlinx.android.synthetic.main.layout_post_list_item.*
-import kotlinx.android.synthetic.main.layout_post_list_item.view.*
 
-class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class PostRecyclerAdapterGrid: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSource: List<Post> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PostViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_post_list_item,parent,false)
+            LayoutInflater.from(parent.context).inflate(R.layout.grid_item,parent,false)
         )
     }
 
@@ -40,12 +35,12 @@ class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class PostViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val postImage=itemView.post_image
-        val postUser=itemView.post_user
+        val postImage=itemView.grid_image
+        /*val postUser=itemView.post_user
         val postCategory=itemView.post_category
         val postDate=itemView.post_data
         val postLike=itemView.post_like
-        val postDislike=itemView.post_dislike
+        val postDislike=itemView.post_dislike*/
         /*val postComment=itemView.post_comment
         val postShare=itemView.post_share*/
 
@@ -56,11 +51,11 @@ class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image).into(postImage)
 
-           postUser.setText(post.user)
-            postCategory.setText(post.category)
-            postDate.setText(post.date)
-            postLike.setText(post.likes)
-            postDislike.setText(post.dislikes)
+            /* postUser.setText(post.user)
+             postCategory.setText(post.category)
+             postDate.setText(post.date)
+             postLike.setText(post.likes)
+             postDislike.setText(post.dislikes)*/
         }
     }
 }

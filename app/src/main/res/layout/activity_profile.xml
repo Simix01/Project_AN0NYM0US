@@ -9,8 +9,8 @@
 
 
     <LinearLayout
-        android:layout_width="408dp"
-        android:layout_height="830dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_profile"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,14 +22,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="right">
+            android:gravity="right"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/impostazioni"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:src="@drawable/impostazioni">
 
             </ImageButton>
 
@@ -109,22 +109,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="58dp">
 
-            <GridView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/grid_post"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:numColumns="3"
-                android:paddingBottom="5dp"
                 android:scrollbarThumbVertical="@android:color/transparent">
 
-            </GridView>
+            </androidx.recyclerview.widget.RecyclerView>
 
         </LinearLayout>
-
-
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
