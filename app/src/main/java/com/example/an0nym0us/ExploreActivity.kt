@@ -28,7 +28,7 @@ class ExploreActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        StaggeredGrid_Explore.layoutManager = StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL)
+        StaggeredGrid_Explore.layoutManager = StaggeredGridLayoutManager(3,LinearLayoutManager.VERTICAL)
         postAdapter = PostRecyclerAdapterGrid()
         StaggeredGrid_Explore.adapter = postAdapter
     }
