@@ -31,7 +31,7 @@ private const val FILE_NAME = "photo.jpg"
 
 class UploadActivity : AppCompatActivity() {
 
-    var optionMenu = arrayOf<String>("Take Photo", "Choose from gallery", "Exit")
+    var optionMenu = arrayOf<String>("Fai una foto", "Scegli dalla galleria", "Annulla")
     var mBtn: ImageButton? = null
     var mImg: ImageView? = null
 
@@ -125,7 +125,7 @@ class UploadActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(context)
 
         builder.setItems(optionMenu) { dialogInterface, i ->
-            if (optionMenu[i].equals("Take Photo")) {
+            if (optionMenu[i].equals("Fai una foto")) {
                 var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
                 val fileProvider = FileProvider.getUriForFile(
@@ -133,11 +133,11 @@ class UploadActivity : AppCompatActivity() {
                 )
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
                 startActivityForResult(intent, 3)
-            } else if (optionMenu[i].equals("Choose from gallery")) {
+            } else if (optionMenu[i].equals("Scegli dalla galleria")) {
                 var intent =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 startActivityForResult(intent, 1)
-            } else if (optionMenu[i].equals("Exit")) {
+            } else if (optionMenu[i].equals("Annulla")) {
                 dialogInterface.dismiss()
             }
         }
@@ -187,7 +187,8 @@ class UploadActivity : AppCompatActivity() {
         arrayList!!.add("Politica")
         arrayList!!.add("Cucina")
         arrayList!!.add("Cinema")
-        //aggiungere altre
+        arrayList!!.add("Hobby")
+        arrayList!!.add("Personale")
 
         textview.setOnClickListener(View.OnClickListener {
             dialog = Dialog(this@UploadActivity)

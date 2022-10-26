@@ -19,6 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_navigation" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,6 +32,110 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarThumbHorizontal="@android:color/transparent">
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleLine="true"
+                app:singleSelection="true"
+                android:paddingHorizontal="5dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMeme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Meme"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipGaming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Gaming"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTech"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Tech"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipScienza"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Scienza"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Sport"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAttualita"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Attualità"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPolitica"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Politica"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCucina"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Cucina"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCinema"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Cinema"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipHobby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Hobby"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPersonale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Personale"
+                    style="@style/Widget.MaterialComponents.Chip.Choice">
+                </com.google.android.material.chip.Chip>
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/StaggeredGrid_Explore"
