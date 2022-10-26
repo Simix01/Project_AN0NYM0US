@@ -71,29 +71,4 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun inizializzaGridView() {
-        lateinit var postGRV: GridView
-        lateinit var postList: List<GridViewModal>
-
-        postGRV = findViewById(R.id.grid_post)
-        postList = ArrayList<GridViewModal>()
-
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-        postList = postList + GridViewModal(R.drawable.giga)
-
-
-        //postGRV.adapter = postAdapter
-
-    }
 }

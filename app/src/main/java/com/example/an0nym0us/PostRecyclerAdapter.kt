@@ -1,20 +1,15 @@
 package com.example.an0nym0us
 
-import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.grid_item.view.*
-import kotlinx.android.synthetic.main.layout_post_list_item.*
 import kotlinx.android.synthetic.main.layout_post_list_item.view.*
 
 class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onImageClick : ((Post) -> Unit)? = null
     private var dataSource: List<Post> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -26,7 +21,11 @@ class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
             is PostViewHolder -> {
+                val post = dataSource[position]
                 holder.bind(dataSource[position])
+                holder.postImage.setOnClickListener{
+                    onImageClick?.invoke(post)
+                }
             }
         }
     }

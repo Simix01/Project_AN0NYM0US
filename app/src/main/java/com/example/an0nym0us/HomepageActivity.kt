@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -22,24 +23,21 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
         addDataSet()
-        //imageViewtoFragment()
+        imageViewtoFragment()
     }
 
     private fun imageViewtoFragment() {
-
 
         val mFragmentManager = supportFragmentManager
         val mFragmentTransaction = mFragmentManager.beginTransaction()
         val mFragment = PostFragment()
 
-        post_image.setOnClickListener {
+        postAdapter.onImageClick={
+            recycler_view.visibility= View.INVISIBLE
             val mBundle = Bundle()
-            mBundle.putString("userName", post_user.text.toString())
-            mBundle.putString("likes", post_like.text.toString())
-            mBundle.putString("dislikes", post_dislike.text.toString())
-            mBundle.putString("category", post_category.text.toString())
+            mBundle.putParcelable("post",it)
             mFragment.arguments = mBundle
-            mFragmentTransaction.add(R.id.frameLayout, mFragment).commit()
+            mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
         }
     }
 
