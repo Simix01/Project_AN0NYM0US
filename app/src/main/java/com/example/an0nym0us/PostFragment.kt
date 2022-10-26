@@ -1,10 +1,15 @@
 package com.example.an0nym0us
 
+
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_post.*
 
 
@@ -33,15 +38,30 @@ class PostFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_post, container, false)
 
         val bundle = arguments
-        val userName = bundle!!.getString("userName")
-        val likes = bundle!!.getString("likes")
-        val dislikes = bundle!!.getString("dislikes")
-        val category = bundle!!.getString("category")
+        val post: Post? = bundle?.getParcelable("post")
 
-        userCode.setText(userName)
-        categoriaText.setText(category)
-        upvoteCounter.setText(likes)
-        downvoteCounter.setText(dislikes)
+        var uri:Uri=Uri.parse(post?.image )
+
+        var user=view.findViewById<TextView>(R.id.userCode)
+        var category=view.findViewById<TextView>(R.id.categoriaText)
+        var likes=view.findViewById<TextView>(R.id.upvoteCounter)
+        var dislikes=view.findViewById<TextView>(R.id.downvoteCounter)
+        var image=view.findViewById<ImageView>(R.id.postImageFragment)
+
+
+        val requestOptions=com.bumptech.glide.request.RequestOptions()
+            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.ic_launcher_background)
+
+        if(post!=null) {
+            user.text=post.user
+            category.text=post.category
+            likes.text=post.likes
+            dislikes.text=post.dislikes
+
+            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image).into(image)
+
+        }
 
         return view
     }
