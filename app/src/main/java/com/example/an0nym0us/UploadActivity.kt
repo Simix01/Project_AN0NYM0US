@@ -23,7 +23,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.storage.FirebaseStorage
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 private lateinit var photoFile: File
@@ -34,6 +38,7 @@ class UploadActivity : AppCompatActivity() {
     var optionMenu = arrayOf<String>("Fai una foto", "Scegli dalla galleria", "Annulla")
     var mBtn: ImageButton? = null
     var mImg: ImageView? = null
+    var globalUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,13 @@ class UploadActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         cameraGalleryFunction()
         creaScriviList()
+
+        val btn_upload: ImageButton = findViewById(R.id.buttonCaricaPost)
+
+        btn_upload.setOnClickListener{
+            uploadPost()
+        }
+
     }
 
     fun inizializzaBottomMenu(){
@@ -136,6 +148,10 @@ class UploadActivity : AppCompatActivity() {
             } else if (optionMenu[i].equals("Scegli dalla galleria")) {
                 var intent =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                val fileProvider = FileProvider.getUriForFile(
+                    this, "com.example.an0nym0us.fileprovider", photoFile
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
                 startActivityForResult(intent, 1)
             } else if (optionMenu[i].equals("Annulla")) {
                 dialogInterface.dismiss()
@@ -161,12 +177,15 @@ class UploadActivity : AppCompatActivity() {
             if (data != null) {
                 var uri: Uri = data.getData()!!
                 var inputStream = getContentResolver()?.openInputStream(uri)
+                globalUri = Uri.fromFile(photoFile)
                 var bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
                 mImg!!.setImageBitmap(bitmap)
+
             }
         } else if (requestCode == 3 && resultCode == RESULT_OK) {
 
             var bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+            globalUri = Uri.fromFile(photoFile)
 
             mImg!!.setImageBitmap(bitmap)
         }
@@ -220,5 +239,28 @@ class UploadActivity : AppCompatActivity() {
                     textview.setText(adapter.getItem(position))
                     dialog!!.dismiss()}
         })
+    }
+
+    fun uploadPost(){
+
+        if(globalUri != null){
+            val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
+            val now = Date()
+            val fileName = formatter.format(now)
+            val storageRef = FirebaseStorage.getInstance().reference.child("prova/$fileName")
+
+            storageRef.putFile(globalUri!!).
+            addOnSuccessListener {
+                Toast.makeText(this@UploadActivity, "Post caricato con successo", Toast.LENGTH_SHORT)
+                    .show()
+            }
+                .addOnFailureListener{
+                    Toast.makeText(this@UploadActivity, "Errore caricamento post", Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
+        else
+            Toast.makeText(this@UploadActivity, "Devi scegliere il post da caricare", Toast.LENGTH_SHORT)
+                .show()
     }
 }
