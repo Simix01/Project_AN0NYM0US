@@ -7,25 +7,41 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_post_list_item.view.*
 
-class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onImageClick : ((Post) -> Unit)? = null
+    var onImageClick: ((Post) -> Unit)? = null
     private var dataSource: List<Post> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PostViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_post_list_item,parent,false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.layout_post_list_item, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder){
+        when (holder) {
             is PostViewHolder -> {
                 val post = dataSource[position]
+
                 holder.bind(dataSource[position])
-                holder.postImage.setOnClickListener{
+                holder.postImage.setOnClickListener {
                     onImageClick?.invoke(post)
                 }
+                holder.likeButton.setOnClickListener(object : View.OnClickListener {
+
+                    override fun onClick(p0: View?) {
+                        post.likes++
+                        holder.postLike.setText(post.likes.toString())
+                    }
+                })
+                holder.dislikeButton.setOnClickListener(object : View.OnClickListener {
+
+                    override fun onClick(p0: View?) {
+                        post.dislikes++
+                        holder.postDislike.setText(post.dislikes.toString())
+                    }
+                })
             }
         }
     }
@@ -34,32 +50,35 @@ class PostRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return dataSource.size
     }
 
-    fun submitList(postList:List<Post>){
-        dataSource=postList
+    fun submitList(postList: List<Post>) {
+        dataSource = postList
     }
 
-    class PostViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val postImage=itemView.post_image
-        val postUser=itemView.post_user
-        val postCategory=itemView.post_category
-        val postDate=itemView.post_data
-        val postLike=itemView.post_like
-        val postDislike=itemView.post_dislike
+    class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val postImage = itemView.post_image
+        val postUser = itemView.post_user
+        val postCategory = itemView.post_category
+        val postDate = itemView.post_data
+        var postLike = itemView.post_like
+        var postDislike = itemView.post_dislike
+        val likeButton = itemView.btnLike
+        val dislikeButton = itemView.btnDislike
         /*val postComment=itemView.post_comment
         val postShare=itemView.post_share*/
 
-        fun bind(post: Post){
-            val requestOptions=com.bumptech.glide.request.RequestOptions()
+        fun bind(post: Post) {
+            val requestOptions = com.bumptech.glide.request.RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
 
-            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image).into(postImage)
+            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image)
+                .into(postImage)
 
-           postUser.setText(post.user)
+            postUser.setText(post.user)
             postCategory.setText(post.category)
             postDate.setText(post.date)
-            postLike.setText(post.likes)
-            postDislike.setText(post.dislikes)
+            postLike.setText(post.likes.toString())
+            postDislike.setText(post.dislikes.toString())
         }
     }
 }

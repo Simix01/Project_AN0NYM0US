@@ -29,8 +29,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.absoluteValue
+
 
 
 private lateinit var photoFile: File

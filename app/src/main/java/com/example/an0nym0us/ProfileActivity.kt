@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.GridView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,22 @@ class ProfileActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
         addDataSet()
+        imageViewtoFragment()
+    }
+
+    private fun imageViewtoFragment() {
+
+        val mFragmentManager = supportFragmentManager
+        val mFragmentTransaction = mFragmentManager.beginTransaction()
+        val mFragment = PostFragment()
+
+        postAdapter.onImageClick={
+            linear_layout_profile.visibility= View.INVISIBLE
+            val mBundle = Bundle()
+            mBundle.putParcelable("post",it)
+            mFragment.arguments = mBundle
+            mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment).commit()
+        }
     }
 
     private fun addDataSet() {

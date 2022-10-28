@@ -8,6 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".ExploreActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_containerExplore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/bottom_explore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_explore"
         android:layout_width="match_parent"
@@ -21,6 +31,7 @@
         app:menu="@menu/menu_navigation" />
 
     <LinearLayout
+        android:id="@+id/linear_layout_explore"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.grid_item.view.*
 
 class PostRecyclerAdapterGrid: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onImageClick : ((Post) -> Unit)? = null
     private var dataSource: List<Post> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -21,7 +22,13 @@ class PostRecyclerAdapterGrid: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
             is PostViewHolder -> {
+                val post = dataSource[position]
                 holder.bind(dataSource[position])
+                holder.postImage.setOnClickListener{
+                    onImageClick?.invoke(post)
+                }
+
+
             }
         }
     }
@@ -36,26 +43,12 @@ class PostRecyclerAdapterGrid: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class PostViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val postImage=itemView.grid_image
-        /*val postUser=itemView.post_user
-        val postCategory=itemView.post_category
-        val postDate=itemView.post_data
-        val postLike=itemView.post_like
-        val postDislike=itemView.post_dislike*/
-        /*val postComment=itemView.post_comment
-        val postShare=itemView.post_share*/
-
         fun bind(post: Post){
             val requestOptions=com.bumptech.glide.request.RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
 
             Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image).into(postImage)
-
-            /* postUser.setText(post.user)
-             postCategory.setText(post.category)
-             postDate.setText(post.date)
-             postLike.setText(post.likes)
-             postDislike.setText(post.dislikes)*/
         }
     }
 }

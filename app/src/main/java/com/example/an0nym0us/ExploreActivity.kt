@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -23,6 +24,22 @@ class ExploreActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
         addDataSet()
+        imageViewtoFragment()
+    }
+
+    private fun imageViewtoFragment() {
+
+        val mFragmentManager = supportFragmentManager
+        val mFragmentTransaction = mFragmentManager.beginTransaction()
+        val mFragment = PostFragment()
+
+        postAdapter.onImageClick={
+            linear_layout_explore.visibility= View.INVISIBLE
+            val mBundle = Bundle()
+            mBundle.putParcelable("post",it)
+            mFragment.arguments = mBundle
+            mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment).commit()
+        }
     }
 
     private fun addDataSet() {
