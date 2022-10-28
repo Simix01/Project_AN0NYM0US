@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -22,10 +23,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 
 private lateinit var photoFile: File
@@ -37,6 +41,8 @@ class UploadActivity : AppCompatActivity() {
     var mBtn: ImageButton? = null
     var mImg: ImageView? = null
     var globalUri: Uri? = null
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val uId = cUser.hashCode().absoluteValue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -245,9 +251,14 @@ class UploadActivity : AppCompatActivity() {
             val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
             val now = Date()
             val fileName = formatter.format(now)
-            val storageRef = FirebaseStorage.getInstance().reference.child("prova/$fileName")
+            val storageRef = FirebaseStorage.getInstance().reference.child("prova/$fileName.png")
 
-            storageRef.putFile(globalUri!!).
+            val bitmap = (mImg?.getDrawable() as BitmapDrawable).getBitmap()
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+            val image = stream.toByteArray()
+
+            storageRef.putBytes(image).
             addOnSuccessListener {
                 Toast.makeText(this@UploadActivity, "Post caricato con successo", Toast.LENGTH_SHORT)
                     .show()
