@@ -7,15 +7,15 @@ data class Post(val user:String,
                 val category:String,
                 val date:String,
                 val image:String,
-                val likes:String,
-                val dislikes:String ) : Parcelable {
+                var likes:Int,
+                var dislikes:Int ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!
+        parcel.readInt(),
+        parcel.readInt()
     ) {
     }
 
@@ -24,8 +24,8 @@ data class Post(val user:String,
         parcel.writeString(category)
         parcel.writeString(date)
         parcel.writeString(image)
-        parcel.writeString(likes)
-        parcel.writeString(dislikes)
+        parcel.writeInt(likes)
+        parcel.writeInt(dislikes)
     }
 
     override fun describeContents(): Int {

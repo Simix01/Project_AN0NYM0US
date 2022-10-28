@@ -40,8 +40,6 @@ class PostFragment : Fragment() {
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
 
-        var uri:Uri=Uri.parse(post?.image )
-
         var user=view.findViewById<TextView>(R.id.userCode)
         var category=view.findViewById<TextView>(R.id.categoriaText)
         var likes=view.findViewById<TextView>(R.id.upvoteCounter)
@@ -56,8 +54,8 @@ class PostFragment : Fragment() {
         if(post!=null) {
             user.text=post.user
             category.text=post.category
-            likes.text=post.likes
-            dislikes.text=post.dislikes
+            likes.text= post.likes.toString()
+            dislikes.text= post.dislikes.toString()
 
             Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image).into(image)
 

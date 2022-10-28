@@ -1,7 +1,6 @@
 package com.example.an0nym0us
 
 import android.Manifest
-import android.R.attr.bitmap
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -27,7 +26,6 @@ import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 private lateinit var photoFile: File
