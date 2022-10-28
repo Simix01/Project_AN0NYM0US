@@ -4,8 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import kotlin.math.absoluteValue
 
 class NotificationsActivity : AppCompatActivity() {
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val uId = cUser.hashCode().absoluteValue
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)

@@ -7,10 +7,14 @@ import android.widget.GridView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlin.math.absoluteValue
 
 class ProfileActivity : AppCompatActivity() {
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val uId = cUser.hashCode().absoluteValue
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

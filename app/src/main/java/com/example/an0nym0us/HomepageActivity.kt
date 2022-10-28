@@ -9,17 +9,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.layout_post_list_item.*
+import kotlin.math.absoluteValue
 
 
 class HomepageActivity : AppCompatActivity() {
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val uId = cUser.hashCode().absoluteValue
     private lateinit var postAdapter: PostRecyclerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
-
-
         inizializzaBottomMenu()
         initRecyclerView()
         addDataSet()

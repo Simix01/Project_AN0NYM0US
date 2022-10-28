@@ -23,12 +23,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.absoluteValue
 
 
 private lateinit var photoFile: File
@@ -40,6 +42,8 @@ class UploadActivity : AppCompatActivity() {
     var mBtn: ImageButton? = null
     var mImg: ImageView? = null
     var globalUri: Uri? = null
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val uId = cUser.hashCode().absoluteValue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
