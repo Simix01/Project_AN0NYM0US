@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -45,6 +47,8 @@ class PostFragment : Fragment() {
         var likes=view.findViewById<TextView>(R.id.upvoteCounter)
         var dislikes=view.findViewById<TextView>(R.id.downvoteCounter)
         var image=view.findViewById<ImageView>(R.id.postImageFragment)
+        var likeBtn=view.findViewById<ImageButton>(R.id.likeBtnFrag)
+        var dislikeBtn=view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
 
 
         val requestOptions=com.bumptech.glide.request.RequestOptions()
@@ -60,6 +64,19 @@ class PostFragment : Fragment() {
             Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image).into(image)
 
         }
+
+        likeBtn.setOnClickListener{
+            if (post != null) {
+                likes.text=(post.likes+1).toString()
+            }
+        }
+
+        dislikeBtn.setOnClickListener{
+            if (post != null) {
+                dislikes.text=(post.dislikes+1).toString()
+            }
+        }
+
 
         return view
     }
