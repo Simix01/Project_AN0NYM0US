@@ -9,7 +9,8 @@ import kotlin.math.absoluteValue
 
 class NotificationsActivity : AppCompatActivity() {
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
-    val uId = cUser.hashCode().absoluteValue
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.GridView
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -15,13 +16,17 @@ import kotlin.math.absoluteValue
 
 class ProfileActivity : AppCompatActivity() {
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
-    val uId = cUser.hashCode().absoluteValue
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
         inizializzaBottomMenu()
+
+        val userId: TextView = findViewById(R.id.userCodeProfile)
+        userId.text = uId
         initRecyclerView()
         addDataSet()
         imageViewtoFragment()

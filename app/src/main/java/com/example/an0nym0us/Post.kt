@@ -2,13 +2,15 @@ package com.example.an0nym0us
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.tasks.Task
 
-data class Post(val user:String,
-                val category:String,
-                val date:String,
-                val image:String,
-                var likes:Int,
-                var dislikes:Int ) : Parcelable {
+data class Post(
+    val user:String,
+    val category:String,
+    val date:String,
+    val image: String,
+    var likes:Int,
+    var dislikes:Int ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,

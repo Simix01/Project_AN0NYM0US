@@ -20,7 +20,8 @@ import kotlin.math.absoluteValue
 
 class HomepageActivity : AppCompatActivity() {
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
-    val uId = cUser.hashCode().absoluteValue
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

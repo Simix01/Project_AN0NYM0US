@@ -23,8 +23,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -42,7 +46,11 @@ class UploadActivity : AppCompatActivity() {
     var mImg: ImageView? = null
     var globalUri: Uri? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
-    val uId = cUser.hashCode().absoluteValue
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
+    lateinit var database: DatabaseReference
+    lateinit var categoriaText: String
+    lateinit var storageRef: StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +61,18 @@ class UploadActivity : AppCompatActivity() {
         creaScriviList()
 
         val btn_upload: ImageButton = findViewById(R.id.buttonCaricaPost)
+        val categoriaField: MaterialTextView = findViewById(R.id.categoriaText)
 
         btn_upload.setOnClickListener{
-            uploadPost()
+            categoriaText = categoriaField.text as String
+            if(categoriaText != "" && globalUri != null){
+                uploadImageOnFBStorage()
+                uploadPostOnFBDatabase()
+            }
+            else
+                Toast.makeText(this@UploadActivity, "Seleziona immagine e categoria del post",
+                    Toast.LENGTH_SHORT).show()
         }
-
     }
 
     fun inizializzaBottomMenu(){
@@ -245,31 +260,46 @@ class UploadActivity : AppCompatActivity() {
         })
     }
 
-    fun uploadPost(){
+    fun uploadImageOnFBStorage(){
 
-        if(globalUri != null){
-            val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
-            val now = Date()
-            val fileName = formatter.format(now)
-            val storageRef = FirebaseStorage.getInstance().reference.child("prova/$fileName.png")
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
+        val now = Date()
+        val fileName = formatter.format(now)
+        storageRef = FirebaseStorage.getInstance().reference.child("post/$uId/$fileName.png")
 
-            val bitmap = (mImg?.getDrawable() as BitmapDrawable).getBitmap()
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-            val image = stream.toByteArray()
+        val bitmap = (mImg?.getDrawable() as BitmapDrawable).getBitmap()
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        val image = stream.toByteArray()
 
-            storageRef.putBytes(image).
-            addOnSuccessListener {
-                Toast.makeText(this@UploadActivity, "Post caricato con successo", Toast.LENGTH_SHORT)
+        storageRef.putBytes(image).
+        addOnSuccessListener {
+            Toast.makeText(this@UploadActivity, "Post caricato con successo", Toast.LENGTH_SHORT)
+                .show()
+        }
+            .addOnFailureListener{
+                Toast.makeText(this@UploadActivity, "Errore caricamento post", Toast.LENGTH_SHORT)
                     .show()
             }
-                .addOnFailureListener{
-                    Toast.makeText(this@UploadActivity, "Errore caricamento post", Toast.LENGTH_SHORT)
-                        .show()
-                }
+    }
+
+    fun uploadPostOnFBDatabase(){
+
+        val uploadUser = uId
+        val uploadCategory = categoriaText
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val now = Date()
+        val uploadDate = formatter.format(now)
+        val uploadRef = storageRef.downloadUrl.toString()
+        val uploadLike = 0
+        val uploadDislike = 0
+
+        database = FirebaseDatabase.getInstance().getReference("Utenti")
+        val post = Post(uploadUser,uploadCategory,uploadDate,uploadRef,uploadLike,uploadDislike)
+        database.child(uploadUser).setValue(post).addOnSuccessListener {
+            Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener{
+            Toast.makeText(this@UploadActivity, it.message, Toast.LENGTH_SHORT).show()
         }
-        else
-            Toast.makeText(this@UploadActivity, "Devi scegliere il post da caricare", Toast.LENGTH_SHORT)
-                .show()
     }
 }
