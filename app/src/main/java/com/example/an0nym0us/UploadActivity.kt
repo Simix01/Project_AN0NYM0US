@@ -48,7 +48,6 @@ class UploadActivity : AppCompatActivity() {
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
-    lateinit var database: DatabaseReference
     lateinit var categoriaText: String
     lateinit var storageRef: StorageReference
 
@@ -294,7 +293,9 @@ class UploadActivity : AppCompatActivity() {
         val uploadLike = 0
         val uploadDislike = 0
 
-        database = FirebaseDatabase.getInstance().getReference("Utenti")
+        var database = FirebaseDatabase
+            .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("Utenti")
         val post = Post(uploadUser,uploadCategory,uploadDate,uploadRef,uploadLike,uploadDislike)
         database.child(uploadUser).setValue(post).addOnSuccessListener {
             Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
