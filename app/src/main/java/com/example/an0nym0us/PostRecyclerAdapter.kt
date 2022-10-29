@@ -23,7 +23,8 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is PostViewHolder -> {
                 val post = dataSource[position]
-
+                var likeBtnClicked:Boolean=false
+                var dislikeBtnClicked:Boolean=false
                 holder.bind(dataSource[position])
                 holder.postImage.setOnClickListener {
                     onImageClick?.invoke(post)
@@ -31,15 +32,21 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.likeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
-                        post.likes++
-                        holder.postLike.setText(post.likes.toString())
+                        if(!likeBtnClicked){
+                            post.likes++
+                            holder.postLike.setText(post.likes.toString())
+                            likeBtnClicked=true
+                        }
                     }
                 })
                 holder.dislikeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
-                        post.dislikes++
-                        holder.postDislike.setText(post.dislikes.toString())
+                        if(!dislikeBtnClicked){
+                            post.dislikes++
+                            holder.postDislike.setText(post.dislikes.toString())
+                            dislikeBtnClicked=true
+                        }
                     }
                 })
             }
