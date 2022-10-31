@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -50,6 +51,7 @@ class UploadActivity : AppCompatActivity() {
     val uId = "anonym$valoreHash"
     lateinit var categoriaText: String
     lateinit var storageRef: StorageReference
+    lateinit var fileName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -263,7 +265,7 @@ class UploadActivity : AppCompatActivity() {
 
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
         val now = Date()
-        val fileName = formatter.format(now)
+        fileName = formatter.format(now)
         storageRef = FirebaseStorage.getInstance().reference.child("post/$uId/$fileName.png")
 
         val bitmap = (mImg?.getDrawable() as BitmapDrawable).getBitmap()
@@ -287,17 +289,19 @@ class UploadActivity : AppCompatActivity() {
         val uploadUser = uId
         val uploadCategory = categoriaText
         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val formatterPost = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
         val now = Date()
         val uploadDate = formatter.format(now)
-        val uploadRef = storageRef.downloadUrl.toString()
+        val uploadOnDB = formatterPost.format(now)
+        val uploadRef = storageRef.child("post/$uId/$fileName").downloadUrl.toString()
         val uploadLike = 0
         val uploadDislike = 0
 
         var database = FirebaseDatabase
             .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("Utenti")
+            .getReference("Utenti/$uploadUser/postCaricati")
         val post = Post(uploadUser,uploadCategory,uploadDate,uploadRef,uploadLike,uploadDislike)
-        database.child(uploadUser).setValue(post).addOnSuccessListener {
+        database.child(uploadOnDB).setValue(post).addOnSuccessListener {
             Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener{
             Toast.makeText(this@UploadActivity, it.message, Toast.LENGTH_SHORT).show()
