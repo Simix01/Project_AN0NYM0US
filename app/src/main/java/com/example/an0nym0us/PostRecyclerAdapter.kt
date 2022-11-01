@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_post_list_item.view.*
 
-class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onImageClick: ((Post) -> Unit)? = null
-    private var dataSource: List<Post> = ArrayList()
+    var onImageClick: ((Post2) -> Unit)? = null
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PostViewHolder(
@@ -22,10 +22,10 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is PostViewHolder -> {
-                val post = dataSource[position]
+                val post = postList[position]
                 var likeBtnClicked:Boolean=false
                 var dislikeBtnClicked:Boolean=false
-                holder.bind(dataSource[position])
+                holder.bind(postList[position])
                 holder.postImage.setOnClickListener {
                     onImageClick?.invoke(post)
                 }
@@ -54,11 +54,7 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return dataSource.size
-    }
-
-    fun submitList(postList: List<Post>) {
-        dataSource = postList
+        return postList.size
     }
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -70,10 +66,8 @@ class PostRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         var postDislike = itemView.post_dislike
         val likeButton = itemView.btnLike
         val dislikeButton = itemView.btnDislike
-        /*val postComment=itemView.post_comment
-        val postShare=itemView.post_share*/
 
-        fun bind(post: Post) {
+        fun bind(post: Post2) {
             val requestOptions = com.bumptech.glide.request.RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
