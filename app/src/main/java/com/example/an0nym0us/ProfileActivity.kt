@@ -1,16 +1,15 @@
 package com.example.an0nym0us
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_homepage.*
+import kotlinx.android.synthetic.main.activity_explore.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlin.math.absoluteValue
 
@@ -20,8 +19,9 @@ class ProfileActivity : AppCompatActivity() {
     val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     private lateinit var dbRef: DatabaseReference
-    private lateinit var list: ArrayList<Post2>
-    private lateinit var postRecyclerView: RecyclerView
+    private lateinit var listFull: ArrayList<Post2>
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -32,7 +32,6 @@ class ProfileActivity : AppCompatActivity() {
         userId.text = uId
 
         initRecyclerView()
-        getPostData()
     }
 
     private fun getPostData() {
@@ -44,6 +43,7 @@ class ProfileActivity : AppCompatActivity() {
                 if(snapshot.exists()) {
                     for(userSnapshot in snapshot.children) {
                         for(postSnapshot in userSnapshot.children) {
+
                             var postApp= postSnapshot.getValue() as HashMap<*,*>
                             var user = postApp["user"].toString()
                             var category = postApp["category"].toString()
@@ -52,27 +52,30 @@ class ProfileActivity : AppCompatActivity() {
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
                             var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
-                            list.add(post)
+                            if(user.equals(uId))
+                                listFull.add(0,post)
                         }
                     }
-                    postAdapter = PostRecyclerAdapterGrid(list)
+
+                    postAdapter = PostRecyclerAdapterGrid(listFull)
 
                     val mFragmentManager = supportFragmentManager
                     val mFragmentTransaction = mFragmentManager.beginTransaction()
                     val mFragment = PostFragment()
 
-                    postAdapter.onImageClick={
-                        recycler_view.visibility= View.INVISIBLE
+                    postAdapter!!.onImageClick={
+                        StaggeredGrid_Explore.visibility= View.INVISIBLE
                         val mBundle = Bundle()
 
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
 
                         mBundle.putParcelable("post",post)
                         mFragment.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+                        mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment).commit()
                     }
 
-                    postRecyclerView.adapter = postAdapter
+                    grid_post.adapter = postAdapter
+                    postAdapter!!.notifyDataSetChanged()
                 }
             }
 
@@ -83,11 +86,11 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
+
     private fun initRecyclerView() {
         grid_post.layoutManager = GridLayoutManager(this, 3)
-        postAdapter = PostRecyclerAdapterGrid(list)
-        list = arrayListOf<Post2>()
-        grid_post.adapter = postAdapter
+        listFull = arrayListOf<Post2>()
+        getPostData()
     }
 
     fun inizializzaBottomMenu() {

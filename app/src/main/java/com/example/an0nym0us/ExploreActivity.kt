@@ -53,7 +53,7 @@ class ExploreActivity : AppCompatActivity() {
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
                             var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
-                            listFull.add(post)
+                            listFull.add(0,post)
                         }
                     }
 

@@ -55,7 +55,7 @@ class HomepageActivity : AppCompatActivity() {
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
                             var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
-                            list.add(post)
+                            list.add(0,post)
                         }
                     }
                     postAdapter = PostRecyclerAdapter(list)
