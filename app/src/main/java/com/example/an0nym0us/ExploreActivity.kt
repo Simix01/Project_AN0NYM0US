@@ -143,6 +143,8 @@ class ExploreActivity : AppCompatActivity() {
             for(post in listAppend){
                 if(post.category == category)
                     listFiltered.add(post)
+                if(category == "Tutto")
+                    listFiltered.add(post)
             }
 
             listFull.clear()
