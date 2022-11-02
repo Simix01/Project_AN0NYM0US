@@ -54,11 +54,20 @@
             android:scrollbarThumbHorizontal="@android:color/transparent">
 
             <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="5dp"
                 app:singleLine="true"
-                app:singleSelection="true">
+                app:singleSelection="true"
+                app:checkedChip="@+id/chipAll"
+                app:selectionRequired="true">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAll"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Tutto"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipMeme"

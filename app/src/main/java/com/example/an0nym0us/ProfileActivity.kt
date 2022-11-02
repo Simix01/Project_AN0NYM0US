@@ -4,12 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.GridView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlin.math.absoluteValue
@@ -19,6 +19,9 @@ class ProfileActivity : AppCompatActivity() {
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapterGrid
+    private lateinit var dbRef: DatabaseReference
+    private lateinit var list: ArrayList<Post2>
+    private lateinit var postRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -27,34 +30,63 @@ class ProfileActivity : AppCompatActivity() {
 
         val userId: TextView = findViewById(R.id.userCodeProfile)
         userId.text = uId
+
         initRecyclerView()
-        addDataSet()
-        imageViewtoFragment()
+        getPostData()
     }
 
-    private fun imageViewtoFragment() {
+    private fun getPostData() {
+        dbRef= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("Utenti")
 
-        val mFragmentManager = supportFragmentManager
-        val mFragmentTransaction = mFragmentManager.beginTransaction()
-        val mFragment = PostFragment()
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()) {
+                    for(userSnapshot in snapshot.children) {
+                        for(postSnapshot in userSnapshot.children) {
+                            var postApp= postSnapshot.getValue() as HashMap<*,*>
+                            var user = postApp["user"].toString()
+                            var category = postApp["category"].toString()
+                            var date = postApp["date"].toString()
+                            var image = postApp["image"].toString()
+                            var likes = postApp["likes"].toString()
+                            var dislikes = postApp["dislikes"].toString()
+                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
+                            list.add(post)
+                        }
+                    }
+                    postAdapter = PostRecyclerAdapterGrid(list)
 
-        postAdapter.onImageClick={
-            linear_layout_profile.visibility= View.INVISIBLE
-            val mBundle = Bundle()
-            mBundle.putParcelable("post",it)
-            mFragment.arguments = mBundle
-            mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment).commit()
-        }
-    }
+                    val mFragmentManager = supportFragmentManager
+                    val mFragmentTransaction = mFragmentManager.beginTransaction()
+                    val mFragment = PostFragment()
 
-    private fun addDataSet() {
-        val data = DataSource.createDataSet()
-        postAdapter.submitList(data)
+                    postAdapter.onImageClick={
+                        recycler_view.visibility= View.INVISIBLE
+                        val mBundle = Bundle()
+
+                        val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
+
+                        mBundle.putParcelable("post",post)
+                        mFragment.arguments = mBundle
+                        mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+                    }
+
+                    postRecyclerView.adapter = postAdapter
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     private fun initRecyclerView() {
         grid_post.layoutManager = GridLayoutManager(this, 3)
-        postAdapter = PostRecyclerAdapterGrid()
+        postAdapter = PostRecyclerAdapterGrid(list)
+        list = arrayListOf<Post2>()
         grid_post.adapter = postAdapter
     }
 

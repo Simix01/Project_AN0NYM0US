@@ -299,7 +299,7 @@ class UploadActivity : AppCompatActivity() {
 
                 var database = FirebaseDatabase
                     .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("Utenti/$uploadUser/postCaricati")
+                    .getReference("Utenti/$uploadUser")
                 val post = Post(uploadUser,uploadCategory,uploadDate,uploadRef!!,uploadLike,uploadDislike)
                 database.child(uploadOnDB).setValue(post).addOnSuccessListener {
                     Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
