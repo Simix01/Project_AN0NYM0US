@@ -25,9 +25,6 @@ class PostFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
-    private var dbRef: DatabaseReference = FirebaseDatabase
-        .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-        .getReference("Utenti")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
