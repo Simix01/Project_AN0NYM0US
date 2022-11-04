@@ -268,10 +268,8 @@ class UploadActivity : AppCompatActivity() {
 
         val uploadUser = uId
         val uploadCategory = categoriaText
-        val formatter1 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val formatterPost = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
         val now1 = Date()
-        val uploadDate = formatter1.format(now1)
         val uploadOnDB = formatterPost.format(now1)
         val uploadLike = 0
         val uploadDislike = 0
@@ -300,7 +298,7 @@ class UploadActivity : AppCompatActivity() {
                 var database = FirebaseDatabase
                     .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                     .getReference("Utenti/$uploadUser")
-                val post = Post(uploadUser,uploadCategory,uploadDate,uploadRef!!,uploadLike,uploadDislike)
+                val post = Post(uploadUser,uploadCategory,uploadOnDB,uploadRef!!,uploadLike,uploadDislike)
                 database.child(uploadOnDB).setValue(post).addOnSuccessListener {
                     Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener{

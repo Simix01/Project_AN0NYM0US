@@ -44,20 +44,24 @@ class HomepageActivity : AppCompatActivity() {
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()) {
-                    for(userSnapshot in snapshot.children) {
-                        for(postSnapshot in userSnapshot.children) {
-                            var postApp= postSnapshot.getValue() as HashMap<*,*>
-                            var user = postApp["user"].toString()
-                            var category = postApp["category"].toString()
-                            var date = postApp["date"].toString()
-                            var image = postApp["image"].toString()
-                            var likes = postApp["likes"].toString()
-                            var dislikes = postApp["dislikes"].toString()
-                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
-                            list.add(0,post)
+                if(list.isEmpty())
+                {
+                    if(snapshot.exists()) {
+                        for (userSnapshot in snapshot.children) {
+                            for (postSnapshot in userSnapshot.children) {
+                                var postApp = postSnapshot.getValue() as HashMap<*, *>
+                                var user = postApp["user"].toString()
+                                var category = postApp["category"].toString()
+                                var date = postApp["date"].toString()
+                                var image = postApp["image"].toString()
+                                var likes = postApp["likes"].toString()
+                                var dislikes = postApp["dislikes"].toString()
+                                var post =
+                                    Post2(date, image, dislikes.toInt(), category, user, likes.toInt())
+                                list.add(0, post)
+                            }
                         }
-                    }
+                }
                     postAdapter = PostRecyclerAdapter(list)
 
                     val mFragmentManager = supportFragmentManager
