@@ -12,6 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_post.*
 
 
@@ -23,10 +25,15 @@ class PostFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+    private var dbRef: DatabaseReference = FirebaseDatabase
+        .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+        .getReference("Utenti")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
@@ -68,6 +75,7 @@ class PostFragment : Fragment() {
         likeBtn.setOnClickListener{
             if (post != null) {
                 likes.text=(post.likes+1).toString()
+
             }
         }
 

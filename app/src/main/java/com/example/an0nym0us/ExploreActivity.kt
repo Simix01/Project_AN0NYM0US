@@ -54,6 +54,7 @@ class ExploreActivity : AppCompatActivity() {
                             var dislikes = postApp["dislikes"].toString()
                             var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
                             listFull.add(0,post)
+
                         }
                     }
 
@@ -67,6 +68,7 @@ class ExploreActivity : AppCompatActivity() {
 
                     postAdapter!!.onImageClick={
                         StaggeredGrid_Explore.visibility= View.INVISIBLE
+                        chipGroup.visibility = View.INVISIBLE
                         val mBundle = Bundle()
 
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)

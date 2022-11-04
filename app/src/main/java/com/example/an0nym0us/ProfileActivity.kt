@@ -64,14 +64,16 @@ class ProfileActivity : AppCompatActivity() {
                     val mFragment = PostFragment()
 
                     postAdapter!!.onImageClick={
-                        StaggeredGrid_Explore.visibility= View.INVISIBLE
+                        grid_post.visibility= View.INVISIBLE
+                        linear_layout_profile.visibility = View.INVISIBLE
+
                         val mBundle = Bundle()
 
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
 
                         mBundle.putParcelable("post",post)
                         mFragment.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment).commit()
+                        mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment).commit()
                     }
 
                     grid_post.adapter = postAdapter
