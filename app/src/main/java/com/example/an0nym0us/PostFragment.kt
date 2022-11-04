@@ -25,10 +25,6 @@ class PostFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
-    private var dbRef: DatabaseReference = FirebaseDatabase
-        .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-        .getReference("Utenti")
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +45,10 @@ class PostFragment : Fragment() {
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
 
+        var likeBtnClicked:Boolean=false
+        var btnClickedOnce:Boolean=false
+        var dislikeBtnClicked:Boolean=false
+
         var user=view.findViewById<TextView>(R.id.userCode)
         var category=view.findViewById<TextView>(R.id.categoriaText)
         var likes=view.findViewById<TextView>(R.id.upvoteCounter)
@@ -56,7 +56,6 @@ class PostFragment : Fragment() {
         var image=view.findViewById<ImageView>(R.id.postImageFragment)
         var likeBtn=view.findViewById<ImageButton>(R.id.likeBtnFrag)
         var dislikeBtn=view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
-
 
         val requestOptions=com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.ic_launcher_background)
@@ -74,18 +73,29 @@ class PostFragment : Fragment() {
 
         likeBtn.setOnClickListener{
             if (post != null) {
-                likes.text=(post.likes+1).toString()
-
+                var dbRef = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(post.user).child(post.date).child("likes")
+                if(!likeBtnClicked&&!btnClickedOnce) {
+                    likes.text = (post.likes + 1).toString()
+                    dbRef.setValue(post.likes + 1)
+                    likeBtnClicked=true
+                    btnClickedOnce=true
+                }
             }
         }
 
         dislikeBtn.setOnClickListener{
             if (post != null) {
-                dislikes.text=(post.dislikes+1).toString()
+            var dbRef = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Utenti").child(post.user).child(post.date).child("dislikes")
+                if(!dislikeBtnClicked&&!btnClickedOnce) {
+                    dislikes.text = (post.dislikes + 1).toString()
+                    dbRef.setValue(post.dislikes + 1)
+                    dislikeBtnClicked=true
+                    btnClickedOnce=true
+                }
             }
         }
-
-
         return view
     }
 
