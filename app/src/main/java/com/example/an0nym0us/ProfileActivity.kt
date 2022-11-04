@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -52,8 +53,9 @@ class ProfileActivity : AppCompatActivity() {
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
                             var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
-                            if(user.equals(uId))
-                                listFull.add(0,post)
+                            if(user.equals(uId)) {
+                                listFull.add(0, post)
+                            }
                         }
                     }
 
