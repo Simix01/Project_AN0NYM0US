@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     private lateinit var dbRef: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
+    private var approvazioni: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,7 @@ class ProfileActivity : AppCompatActivity() {
                     for(userSnapshot in snapshot.children) {
                         for(postSnapshot in userSnapshot.children) {
 
+                            approvazioni = 0
                             var postApp= postSnapshot.getValue() as HashMap<*,*>
                             var user = postApp["user"].toString()
                             var category = postApp["category"].toString()
@@ -52,11 +55,21 @@ class ProfileActivity : AppCompatActivity() {
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
                             var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
-                            if(user.equals(uId))
-                                listFull.add(0,post)
+                            if(user.equals(uId)) {
+                                listFull.add(0, post)
+
+                                approvazioni = approvazioni + likes.toInt()
+
+                                if(approvazioni-dislikes.toInt() <= 0)
+                                    approvazioni = 0
+                                else
+                                    approvazioni = approvazioni - dislikes.toInt()
+
+                            }
                         }
                     }
 
+                    progress_bar.progress = approvazioni
                     postAdapter = PostRecyclerAdapterGrid(listFull)
 
                     val mFragmentManager = supportFragmentManager
