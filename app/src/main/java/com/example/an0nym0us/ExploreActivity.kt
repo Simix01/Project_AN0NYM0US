@@ -28,7 +28,7 @@ class ExploreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explore)
-
+        overridePendingTransition(0, 0)
         inizializzaBottomMenu()
         initRecyclerView()
     }
@@ -75,6 +75,7 @@ class ExploreActivity : AppCompatActivity() {
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
 
                         mBundle.putParcelable("post",post)
+                        mBundle.putString("nameActivity", "ExploreActivity")
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment).commit()
                     }
