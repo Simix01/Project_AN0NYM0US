@@ -3,14 +3,12 @@ package com.example.an0nym0us
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_explore.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlin.math.absoluteValue
 
@@ -52,7 +50,12 @@ class ProfileActivity : AppCompatActivity() {
                             var image = postApp["image"].toString()
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
-                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
+                            var comments = postApp["comments"] as ArrayList<Commento>?
+                            var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
+                            var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
+                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt()
+                                ,comments,arrayLikes,arrayDislikes)
+
                             if(user.equals(uId)) {
                                 listFull.add(0, post)
                             }
@@ -75,6 +78,7 @@ class ProfileActivity : AppCompatActivity() {
 
                         mBundle.putParcelable("post",post)
                         mBundle.putString("nameActivity", "ProfileActivity")
+                        mBundle.putString("userid", uId)
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment).commit()
                     }

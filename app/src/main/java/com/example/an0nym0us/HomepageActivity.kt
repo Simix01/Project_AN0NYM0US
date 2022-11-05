@@ -1,10 +1,8 @@
 package com.example.an0nym0us
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -62,8 +60,12 @@ class HomepageActivity : AppCompatActivity() {
                                 var image = postApp["image"].toString()
                                 var likes = postApp["likes"].toString()
                                 var dislikes = postApp["dislikes"].toString()
+                                var comments = postApp["comments"] as kotlin.collections.ArrayList<Commento>?
+                                var arrayLikes = postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
+                                var arrayDislikes = postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
                                 var post =
-                                    Post2(date, image, dislikes.toInt(), category, user, likes.toInt())
+                                    Post2(date, image, dislikes.toInt(), category, user, likes.toInt()
+                                        ,comments,arrayLikes,arrayDislikes)
                                 list.add(0, post)
                             }
                         }
@@ -85,6 +87,7 @@ class HomepageActivity : AppCompatActivity() {
 
                         mBundle.putParcelable("post",post)
                         mBundle.putString("nameActivity", "HomepageActivity")
+                        mBundle.putString("userid", uId)
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
                     }

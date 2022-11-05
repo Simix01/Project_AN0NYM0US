@@ -1,17 +1,23 @@
 package com.example.an0nym0us
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.layout_post_list_item.view.*
+import kotlin.math.absoluteValue
 
 class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onImageClick: ((Post2) -> Unit)? = null
-
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PostViewHolder(
@@ -42,6 +48,31 @@ class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerVie
                                     .getReference("Utenti").child(it).child(it1).child("likes")
                             }
                         }
+
+                        var dbRefArray = post.user?.let {
+                            post.date?.let { it1 ->
+                                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                                    .getReference("Utenti").child(it).child(it1).child("arrayLikes")
+                            }
+                        }
+
+                        if (dbRefArray != null) {
+
+                            var listaLikes = dbRefArray.get().addOnCompleteListener {
+                                if(it.isSuccessful){
+                                    var likesList = it.result.value as ArrayList<String>
+                                    if(likesList.get(0) == "ok"){
+                                        likesList.removeAt(0)
+                                        likesList.add(uId)
+                                    }
+                                    else
+                                        likesList.add(uId)
+
+                                    dbRefArray.setValue(likesList)
+                                }
+                            }
+                        }
+
                         if(!likeBtnClicked&&!btnClickedOnce){
                             post.likes++
                             holder.postLike.setText(post.likes.toString())
@@ -60,6 +91,31 @@ class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerVie
                                     .getReference("Utenti").child(it).child(it1).child("dislikes")
                             }
                         }
+
+                        var dbRefArray = post.user?.let {
+                            post.date?.let { it1 ->
+                                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                                    .getReference("Utenti").child(it).child(it1).child("arrayDislikes")
+                            }
+                        }
+
+                        if (dbRefArray != null) {
+
+                            var listaDislikes = dbRefArray.get().addOnCompleteListener {
+                                if(it.isSuccessful){
+                                    var dislikesList = it.result.value as ArrayList<String>
+                                    if(dislikesList.get(0) == "ok"){
+                                        dislikesList.removeAt(0)
+                                        dislikesList.add(uId)
+                                    }
+                                    else
+                                        dislikesList.add(uId)
+
+                                    dbRefArray.setValue(dislikesList)
+                                }
+                            }
+                        }
+
                         if(!dislikeBtnClicked&&!btnClickedOnce){
                             post.dislikes++
                             holder.postDislike.setText(post.dislikes.toString())

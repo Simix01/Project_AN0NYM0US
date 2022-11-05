@@ -4,16 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_explore.*
-import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlin.math.absoluteValue
 
 class ExploreActivity : AppCompatActivity() {
@@ -52,7 +49,11 @@ class ExploreActivity : AppCompatActivity() {
                             var image = postApp["image"].toString()
                             var likes = postApp["likes"].toString()
                             var dislikes = postApp["dislikes"].toString()
-                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt())
+                            var comments = postApp["comments"] as ArrayList<Commento>?
+                            var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
+                            var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
+                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt()
+                                ,comments,arrayLikes,arrayDislikes)
                             listFull.add(0,post)
 
                         }
@@ -76,6 +77,7 @@ class ExploreActivity : AppCompatActivity() {
 
                         mBundle.putParcelable("post",post)
                         mBundle.putString("nameActivity", "ExploreActivity")
+                        mBundle.putString("userid", uId)
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment).commit()
                     }

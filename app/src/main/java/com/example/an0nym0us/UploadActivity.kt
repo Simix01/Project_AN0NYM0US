@@ -17,7 +17,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -26,13 +25,10 @@ import androidx.core.content.FileProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -294,11 +290,16 @@ class UploadActivity : AppCompatActivity() {
                 Toast.makeText(this@UploadActivity, it.toString(), Toast.LENGTH_SHORT)
                     .show()
                 uploadRef=it.toString()
-
                 var database = FirebaseDatabase
                     .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                     .getReference("Utenti/$uploadUser")
-                val post = Post(uploadUser,uploadCategory,uploadOnDB,uploadRef!!,uploadLike,uploadDislike)
+                var comments = arrayListOf<Commento>()
+                var arrayLikes = arrayListOf<String>()
+                arrayLikes.add("ok")
+                var arrayDislikes = arrayListOf<String>()
+                arrayDislikes.add("ok")
+                val post = Post2(uploadOnDB,uploadRef!!,uploadDislike,uploadCategory,uploadUser,uploadLike
+                    ,comments, arrayLikes, arrayDislikes)
                 database.child(uploadOnDB).setValue(post).addOnSuccessListener {
                     Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener{
