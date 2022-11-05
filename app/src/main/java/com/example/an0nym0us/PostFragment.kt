@@ -31,13 +31,15 @@ class PostFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    var nameActivity:String = "com.example.an0nym0us."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
-                val intent = Intent(context, "nameActivity")
+                var javaClass=Class.forName(nameActivity)
+                val intent = Intent(context, javaClass)
                 startActivity(intent)
             }
 
@@ -59,7 +61,7 @@ class PostFragment : Fragment() {
 
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
-
+        nameActivity+= bundle?.getString("nameActivity").toString()
         var likeBtnClicked:Boolean=false
         var btnClickedOnce:Boolean=false
         var dislikeBtnClicked:Boolean=false

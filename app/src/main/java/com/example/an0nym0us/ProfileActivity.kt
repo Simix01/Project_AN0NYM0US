@@ -26,7 +26,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-
+        overridePendingTransition(0, 0)
         inizializzaBottomMenu()
 
         val userId: TextView = findViewById(R.id.userCodeProfile)
@@ -74,6 +74,7 @@ class ProfileActivity : AppCompatActivity() {
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
 
                         mBundle.putParcelable("post",post)
+                        mBundle.putString("nameActivity", "ProfileActivity")
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment).commit()
                     }
