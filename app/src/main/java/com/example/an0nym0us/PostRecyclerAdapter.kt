@@ -12,7 +12,8 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.layout_post_list_item.view.*
 import kotlin.math.absoluteValue
 
-class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onImageClick: ((Post2) -> Unit)? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
@@ -32,98 +33,122 @@ class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerVie
                 val post = postList[position]
 
 
-                var btnClickedOnce:Boolean=false
-                var likeBtnClicked:Boolean=false
-                var dislikeBtnClicked:Boolean=false
+                var btnClickedOnce: Boolean = false
+                var likeBtnClicked: Boolean = false
+                var dislikeBtnClicked: Boolean = false
+                var likesList: ArrayList<String>? = null
+                var dislikesList: ArrayList<String>? = null
+
                 holder.bind(postList[position])
                 holder.postImage.setOnClickListener {
                     onImageClick?.invoke(post)
                 }
+
+                var dbRefArrayLikes = post.user?.let {
+                    post.date?.let { it1 ->
+                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("Utenti").child(it).child(it1).child("arrayLikes")
+                    }
+                }
+                dbRefArrayLikes?.get()?.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        likesList = it.result.value as ArrayList<String>
+                    }
+                }
+
+                var dbRefArrayDislikes = post.user?.let {
+                    post.date?.let { it1 ->
+                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("Utenti").child(it).child(it1).child("arrayDislikes")
+                    }
+                }
+                dbRefArrayDislikes?.get()?.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        dislikesList = it.result.value as ArrayList<String>
+                    }
+                }
+
+                var dbRefLikes = post.user?.let {
+                    post.date?.let { it1 ->
+                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("Utenti").child(it).child(it1).child("likes")
+                    }
+                }
+
+                var dbRefDislikes = post.user?.let {
+                    post.date?.let { it1 ->
+                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("Utenti").child(it).child(it1).child("dislikes")
+                    }
+                }
+
                 holder.likeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
-                        var dbRef = post.user?.let {
-                            post.date?.let { it1 ->
-                                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                                    .getReference("Utenti").child(it).child(it1).child("likes")
-                            }
+
+
+                        if (dislikesList?.contains(uId) == true) {
+                            dislikesList!!.remove(uId)
+                            post.dislikes = dislikesList!!.size
+                            if (dislikesList!!.size == 0)
+                                dislikesList!!.add("ok")
                         }
-
-                        var dbRefArray = post.user?.let {
-                            post.date?.let { it1 ->
-                                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                                    .getReference("Utenti").child(it).child(it1).child("arrayLikes")
-                            }
+                        if (likesList?.contains(uId) == false) {
+                            if (likesList?.get(0) == "ok") {
+                                likesList?.removeAt(0)
+                                likesList?.add(uId)
+                            } else
+                                likesList?.add(uId)
                         }
-
-                        if (dbRefArray != null) {
-
-                            var listaLikes = dbRefArray.get().addOnCompleteListener {
-                                if(it.isSuccessful){
-                                    var likesList = it.result.value as ArrayList<String>
-                                    if(likesList.get(0) == "ok"){
-                                        likesList.removeAt(0)
-                                        likesList.add(uId)
-                                    }
-                                    else
-                                        likesList.add(uId)
-
-                                    dbRefArray.setValue(likesList)
-                                }
-                            }
-                        }
-
-                        if(!likeBtnClicked&&!btnClickedOnce){
-                            post.likes++
-                            holder.postLike.setText(post.likes.toString())
-                            likeBtnClicked=true
-                            btnClickedOnce=true
-                            dbRef?.setValue(post.likes++)
-                        }
+                        dbRefArrayLikes!!.setValue(likesList)
+                        dbRefArrayDislikes!!.setValue(dislikesList)
+                        if (likesList!!.get(0) == "ok")
+                            post.likes = likesList!!.size - 1
+                        else
+                            post.likes = likesList!!.size
+                        holder.postLike.setText(post.likes.toString())
+                        holder.postDislike.setText(post.dislikes.toString())
+                        likeBtnClicked = true
+                        btnClickedOnce = true
+                        dbRefLikes?.setValue(post.likes)
+                        dbRefDislikes?.setValue(post.dislikes)
                     }
+
+
                 })
                 holder.dislikeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
-                        var dbRef = post.user?.let {
-                            post.date?.let { it1 ->
-                                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                                    .getReference("Utenti").child(it).child(it1).child("dislikes")
-                            }
+
+
+                        if (likesList?.contains(uId) == true) {
+                            likesList!!.remove(uId)
+                            post.likes = likesList!!.size
+                            if (likesList!!.size == 0)
+                                likesList!!.add("ok")
                         }
-
-                        var dbRefArray = post.user?.let {
-                            post.date?.let { it1 ->
-                                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                                    .getReference("Utenti").child(it).child(it1).child("arrayDislikes")
-                            }
+                        if (dislikesList?.contains(uId) == false) {
+                            if (dislikesList?.get(0) == "ok") {
+                                dislikesList?.removeAt(0)
+                                dislikesList?.add(uId)
+                            } else
+                                dislikesList?.add(uId)
                         }
+                        dbRefArrayDislikes!!.setValue(dislikesList)
+                        dbRefArrayLikes!!.setValue(likesList)
+                        if (dislikesList!!.get(0) == "ok")
+                            post.dislikes = dislikesList!!.size - 1
+                        else
+                            post.dislikes = dislikesList!!.size
+                        holder.postDislike.setText(post.dislikes.toString())
+                        holder.postLike.setText(post.likes.toString())
+                        dislikeBtnClicked = true
+                        btnClickedOnce = true
+                        dbRefLikes?.setValue(post.likes)
+                        dbRefDislikes?.setValue(post.dislikes)
 
-                        if (dbRefArray != null) {
-
-                            var listaDislikes = dbRefArray.get().addOnCompleteListener {
-                                if(it.isSuccessful){
-                                    var dislikesList = it.result.value as ArrayList<String>
-                                    if(dislikesList.get(0) == "ok"){
-                                        dislikesList.removeAt(0)
-                                        dislikesList.add(uId)
-                                    }
-                                    else
-                                        dislikesList.add(uId)
-
-                                    dbRefArray.setValue(dislikesList)
-                                }
-                            }
-                        }
-
-                        if(!dislikeBtnClicked&&!btnClickedOnce){
-                            post.dislikes++
-                            holder.postDislike.setText(post.dislikes.toString())
-                            dislikeBtnClicked=true
-                            btnClickedOnce=true
-                            dbRef?.setValue(post.dislikes++)
-                        }
                     }
+
                 })
             }
         }
