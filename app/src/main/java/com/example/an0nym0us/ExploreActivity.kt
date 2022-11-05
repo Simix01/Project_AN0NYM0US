@@ -68,6 +68,7 @@ class ExploreActivity : AppCompatActivity() {
 
                     postAdapter!!.onImageClick={
                         StaggeredGrid_Explore.visibility= View.INVISIBLE
+                        searchView.visibility = View.INVISIBLE
                         chipGroup.visibility = View.INVISIBLE
                         val mBundle = Bundle()
 

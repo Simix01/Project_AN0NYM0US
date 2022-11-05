@@ -185,7 +185,6 @@
             android:id="@+id/dataPost"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="22 ottobre 2022"
             android:gravity="center_vertical"
             android:layout_marginLeft="10dp">
         </TextView>

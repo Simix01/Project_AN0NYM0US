@@ -1,8 +1,10 @@
 package com.example.an0nym0us
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +12,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_homepage.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.absoluteValue
 
 
@@ -25,6 +30,7 @@ class HomepageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
+        overridePendingTransition(0, 0)
         inizializzaBottomMenu()
         initRecyclerView()
 
@@ -63,18 +69,22 @@ class HomepageActivity : AppCompatActivity() {
                         }
                 }
                     postAdapter = PostRecyclerAdapter(list)
+                    updateHome()
 
                     val mFragmentManager = supportFragmentManager
                     val mFragmentTransaction = mFragmentManager.beginTransaction()
+                    mFragmentTransaction.addToBackStack(null)
                     val mFragment = PostFragment()
 
                     postAdapter.onImageClick={
                         recycler_view.visibility= View.INVISIBLE
+                        swipe_refresh.visibility= View.INVISIBLE
                         val mBundle = Bundle()
 
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
 
                         mBundle.putParcelable("post",post)
+                        mBundle.putString("nameActivity", "HomepageActivity")
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
                     }
@@ -128,4 +138,13 @@ class HomepageActivity : AppCompatActivity() {
             true
         }
     }
+
+    fun updateHome(){
+        swipe_refresh.setOnRefreshListener {
+            swipe_refresh.isRefreshing = false
+            Collections.shuffle(list, Random(System.currentTimeMillis()))
+            postAdapter.notifyDataSetChanged()
+        }
+    }
+
 }

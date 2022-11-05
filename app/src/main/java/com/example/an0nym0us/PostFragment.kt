@@ -1,6 +1,9 @@
 package com.example.an0nym0us
 
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +13,8 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DatabaseReference
@@ -29,6 +34,14 @@ class PostFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                val intent = Intent(context, "nameActivity")
+                startActivity(intent)
+            }
+
+        })
         arguments?.let {
 
             param1 = it.getString(ARG_PARAM1)
@@ -36,6 +49,7 @@ class PostFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,6 +71,7 @@ class PostFragment : Fragment() {
         var image=view.findViewById<ImageView>(R.id.postImageFragment)
         var likeBtn=view.findViewById<ImageButton>(R.id.likeBtnFrag)
         var dislikeBtn=view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
+        var date = view.findViewById<TextView>(R.id.dataPost)
 
         val requestOptions=com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.ic_launcher_background)
@@ -67,6 +82,14 @@ class PostFragment : Fragment() {
             category.text=post.category
             likes.text= post.likes.toString()
             dislikes.text= post.dislikes.toString()
+
+            var postName = post.date
+            var dataPost: String? = null
+            if (postName != null) {
+                var array = postName.split("_")
+                dataPost = array[0] + "/" + array[1] + "/" + array[2]
+            }
+            date.text = dataPost
 
             Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image).into(image)
 

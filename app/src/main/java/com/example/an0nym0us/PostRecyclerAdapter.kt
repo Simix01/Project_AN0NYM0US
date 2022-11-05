@@ -86,6 +86,7 @@ class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerVie
         var postDislike = itemView.post_dislike
         val likeButton = itemView.btnLike
         val dislikeButton = itemView.btnDislike
+        lateinit var dataPost: String
 
         fun bind(post: Post2) {
             val requestOptions = com.bumptech.glide.request.RequestOptions()
@@ -97,7 +98,14 @@ class PostRecyclerAdapter(private val postList : ArrayList<Post2>) : RecyclerVie
 
             postUser.setText(post.user)
             postCategory.setText(post.category)
-            postDate.setText(post.date)
+
+            var postName = post.date
+            if (postName != null) {
+                var array = postName.split("_")
+                dataPost = array[0] + "/" + array[1] + "/" + array[2]
+            }
+            postDate.setText(dataPost)
+
             postLike.setText(post.likes.toString())
             postDislike.setText(post.dislikes.toString())
         }
