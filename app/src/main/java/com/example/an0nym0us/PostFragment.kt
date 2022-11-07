@@ -65,6 +65,8 @@ class PostFragment : Fragment() {
         var likeBtnClicked:Boolean=false
         var btnClickedOnce:Boolean=false
         var dislikeBtnClicked:Boolean=false
+        var likesList: ArrayList<String>? = null
+        var dislikesList: ArrayList<String>? = null
         var uId = bundle?.getString("userid").toString()
 
         var user=view.findViewById<TextView>(R.id.userCode)
@@ -98,80 +100,99 @@ class PostFragment : Fragment() {
 
         }
 
-        likeBtn.setOnClickListener{
-            if (post != null) {
-                var dbRef = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("Utenti").child(post.user).child(post.date).child("likes")
-
-                var dbRefArray = post.user?.let {
-                    post.date?.let { it1 ->
-                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                            .getReference("Utenti").child(it).child(it1).child("arrayLikes")
-                    }
-                }
-
-                if (dbRefArray != null) {
-
-                    var listaLikes = dbRefArray.get().addOnCompleteListener {
-                        if(it.isSuccessful){
-                            var LikesList = it.result.value as ArrayList<String>
-                            if(LikesList.get(0) == "ok"){
-                                LikesList.removeAt(0)
-                                LikesList.add(uId)
-                            }
-                            else
-                                LikesList.add(uId)
-
-                            dbRefArray.setValue(LikesList)
-                        }
-                    }
-                }
-
-                if(!likeBtnClicked&&!btnClickedOnce) {
-                    likes.text = (post.likes + 1).toString()
-                    dbRef.setValue(post.likes + 1)
-                    likeBtnClicked=true
-                    btnClickedOnce=true
-                }
+        var dbRefArrayLikes = post?.user?.let {
+            post.date?.let { it1 ->
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(it).child(it1).child("arrayLikes")
+            }
+        }
+        dbRefArrayLikes?.get()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                likesList = it.result.value as ArrayList<String>
             }
         }
 
-        dislikeBtn.setOnClickListener{
-            if (post != null) {
-            var dbRef = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("Utenti").child(post.user).child(post.date).child("dislikes")
-
-                var dbRefArray = post.user?.let {
-                    post.date?.let { it1 ->
-                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                            .getReference("Utenti").child(it).child(it1).child("arrayDislikes")
-                    }
-                }
-
-                if (dbRefArray != null) {
-
-                    var listaDislikes = dbRefArray.get().addOnCompleteListener {
-                        if(it.isSuccessful){
-                            var dislikesList = it.result.value as ArrayList<String>
-                            if(dislikesList.get(0) == "ok"){
-                                dislikesList.removeAt(0)
-                                dislikesList.add(uId)
-                            }
-                            else
-                                dislikesList.add(uId)
-
-                            dbRefArray.setValue(dislikesList)
-                        }
-                    }
-                }
-
-                if(!dislikeBtnClicked&&!btnClickedOnce) {
-                    dislikes.text = (post.dislikes + 1).toString()
-                    dbRef.setValue(post.dislikes + 1)
-                    dislikeBtnClicked=true
-                    btnClickedOnce=true
-                }
+        var dbRefArrayDislikes = post?.user?.let {
+            post.date?.let { it1 ->
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(it).child(it1).child("arrayDislikes")
             }
+        }
+        dbRefArrayDislikes?.get()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                dislikesList = it.result.value as ArrayList<String>
+            }
+        }
+
+        var dbRefLikes = post?.user?.let {
+            post.date?.let { it1 ->
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(it).child(it1).child("likes")
+            }
+        }
+
+        var dbRefDislikes = post?.user?.let {
+            post.date?.let { it1 ->
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(it).child(it1).child("dislikes")
+            }
+        }
+
+        likeBtn.setOnClickListener{
+            if (dislikesList?.contains(uId) == true) {
+                dislikesList!!.remove(uId)
+                post!!.dislikes = dislikesList!!.size
+                if (dislikesList!!.size == 0)
+                    dislikesList!!.add("ok")
+            }
+            if (likesList?.contains(uId) == false) {
+                if (likesList?.get(0) == "ok") {
+                    likesList?.removeAt(0)
+                    likesList?.add(uId)
+                } else
+                    likesList?.add(uId)
+            }
+            dbRefArrayLikes!!.setValue(likesList)
+            dbRefArrayDislikes!!.setValue(dislikesList)
+            if (likesList!!.get(0) == "ok")
+                post!!.likes = likesList!!.size - 1
+            else
+                post!!.likes = likesList!!.size
+            likes.text = (post!!.likes).toString()
+            dislikes.text = (post!!.dislikes).toString()
+            likeBtnClicked = true
+            btnClickedOnce = true
+            dbRefLikes?.setValue(post.likes)
+            dbRefDislikes?.setValue(post.dislikes)
+        }
+
+
+        dislikeBtn.setOnClickListener{
+            if (likesList?.contains(uId) == true) {
+                likesList!!.remove(uId)
+                post!!.likes = likesList!!.size
+                if (likesList!!.size == 0)
+                    likesList!!.add("ok")
+            }
+            if (dislikesList?.contains(uId) == false) {
+                if (dislikesList?.get(0) == "ok") {
+                    dislikesList?.removeAt(0)
+                    dislikesList?.add(uId)
+                } else
+                    dislikesList?.add(uId)
+            }
+            dbRefArrayDislikes!!.setValue(dislikesList)
+            dbRefArrayLikes!!.setValue(likesList)
+            if (dislikesList!!.get(0) == "ok")
+                post!!.dislikes = dislikesList!!.size - 1
+            else
+                post!!.dislikes = dislikesList!!.size
+            dislikes.text = (post.dislikes).toString()
+            likes.text = (post.likes).toString()
+            dislikeBtnClicked = true
+            btnClickedOnce = true
+            dbRefLikes?.setValue(post.likes)
+            dbRefDislikes?.setValue(post.dislikes)
         }
         return view
     }
