@@ -151,6 +151,10 @@ class PostFragment : Fragment() {
                     likesList?.add(uId)
                 } else
                     likesList?.add(uId)
+            }else if(likesList?.contains(uId) == true){
+                likesList?.remove(uId)
+                if(likesList!!.size == 0)
+                    likesList!!.add("ok")
             }
             dbRefArrayLikes!!.setValue(likesList)
             dbRefArrayDislikes!!.setValue(dislikesList)
@@ -180,6 +184,10 @@ class PostFragment : Fragment() {
                     dislikesList?.add(uId)
                 } else
                     dislikesList?.add(uId)
+            }else if(dislikesList?.contains(uId) == true){
+                dislikesList?.remove(uId)
+                if(dislikesList!!.size == 0)
+                    dislikesList!!.add("ok")
             }
             dbRefArrayDislikes!!.setValue(dislikesList)
             dbRefArrayLikes!!.setValue(likesList)
