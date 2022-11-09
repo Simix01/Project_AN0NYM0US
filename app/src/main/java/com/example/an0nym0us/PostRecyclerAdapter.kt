@@ -1,7 +1,5 @@
 package com.example.an0nym0us
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +14,12 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onImageClick: ((Post2) -> Unit)? = null
+    var onCommentClick: ((Post2) -> Unit)? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PostViewHolder(
@@ -32,17 +33,19 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
             is PostViewHolder -> {
                 val post = postList[position]
 
-
-                var btnClickedOnce: Boolean = false
-                var likeBtnClicked: Boolean = false
-                var dislikeBtnClicked: Boolean = false
                 var likesList: ArrayList<String>? = null
                 var dislikesList: ArrayList<String>? = null
 
                 holder.bind(postList[position])
+
                 holder.postImage.setOnClickListener {
                     onImageClick?.invoke(post)
                 }
+
+                holder.commentButton.setOnClickListener{
+                    onCommentClick?.invoke(post)
+                }
+
 
                 var dbRefArrayLikes = post.user?.let {
                     post.date?.let { it1 ->
@@ -86,7 +89,6 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
                     override fun onClick(p0: View?) {
 
-
                         if (dislikesList?.contains(uId) == true) {
                             dislikesList!!.remove(uId)
                             post.dislikes = dislikesList!!.size
@@ -112,8 +114,6 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                             post.likes = likesList!!.size
                         holder.postLike.setText(post.likes.toString())
                         holder.postDislike.setText(post.dislikes.toString())
-                        likeBtnClicked = true
-                        btnClickedOnce = true
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
                     }
@@ -150,8 +150,6 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                             post.dislikes = dislikesList!!.size
                         holder.postDislike.setText(post.dislikes.toString())
                         holder.postLike.setText(post.likes.toString())
-                        dislikeBtnClicked = true
-                        btnClickedOnce = true
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
 
@@ -175,6 +173,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
         var postDislike = itemView.post_dislike
         val likeButton = itemView.btnLike
         val dislikeButton = itemView.btnDislike
+        val commentButton = itemView.post_comment
         lateinit var dataPost: String
 
         fun bind(post: Post2) {

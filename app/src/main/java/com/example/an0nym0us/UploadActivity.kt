@@ -298,6 +298,7 @@ class UploadActivity : AppCompatActivity() {
                 arrayLikes.add("ok")
                 var arrayDislikes = arrayListOf<String>()
                 arrayDislikes.add("ok")
+                comments.add(Commento("ok","ok"))
                 val post = Post2(uploadOnDB,uploadRef!!,uploadDislike,uploadCategory,uploadUser,uploadLike
                     ,comments, arrayLikes, arrayDislikes)
                 database.child(uploadOnDB).setValue(post).addOnSuccessListener {

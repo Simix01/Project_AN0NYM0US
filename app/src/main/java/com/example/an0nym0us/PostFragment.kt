@@ -62,9 +62,6 @@ class PostFragment : Fragment() {
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
         nameActivity+= bundle?.getString("nameActivity").toString()
-        var likeBtnClicked:Boolean=false
-        var btnClickedOnce:Boolean=false
-        var dislikeBtnClicked:Boolean=false
         var likesList: ArrayList<String>? = null
         var dislikesList: ArrayList<String>? = null
         var uId = bundle?.getString("userid").toString()
@@ -164,8 +161,6 @@ class PostFragment : Fragment() {
                 post!!.likes = likesList!!.size
             likes.text = (post!!.likes).toString()
             dislikes.text = (post!!.dislikes).toString()
-            likeBtnClicked = true
-            btnClickedOnce = true
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
         }
@@ -197,8 +192,6 @@ class PostFragment : Fragment() {
                 post!!.dislikes = dislikesList!!.size
             dislikes.text = (post.dislikes).toString()
             likes.text = (post.likes).toString()
-            dislikeBtnClicked = true
-            btnClickedOnce = true
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
         }

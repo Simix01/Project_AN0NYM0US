@@ -73,14 +73,17 @@ class HomepageActivity : AppCompatActivity() {
                     postAdapter = PostRecyclerAdapter(list)
                     updateHome()
 
-                    val mFragmentManager = supportFragmentManager
-                    val mFragmentTransaction = mFragmentManager.beginTransaction()
-                    mFragmentTransaction.addToBackStack(null)
-                    val mFragment = PostFragment()
+
 
                     postAdapter.onImageClick={
                         recycler_view.visibility= View.INVISIBLE
                         swipe_refresh.visibility= View.INVISIBLE
+
+                        val mFragmentManager = supportFragmentManager
+                        val mFragmentTransaction = mFragmentManager.beginTransaction()
+                        mFragmentTransaction.addToBackStack(null)
+                        val mFragment = PostFragment()
+
                         val mBundle = Bundle()
 
                         val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
@@ -90,6 +93,26 @@ class HomepageActivity : AppCompatActivity() {
                         mBundle.putString("userid", uId)
                         mFragment.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+                    }
+
+
+
+                    postAdapter.onCommentClick={
+                        recycler_view.visibility= View.INVISIBLE
+                        swipe_refresh.visibility= View.INVISIBLE
+
+                        val mFragmentManager = supportFragmentManager
+                        val mFragmentTransaction = mFragmentManager.beginTransaction()
+                        mFragmentTransaction.addToBackStack(null)
+                        val mFragment = comment_fragment()
+
+                        val mBundle = Bundle()
+
+                        mBundle.putString("userPost",it.user)
+                        mBundle.putString("datePost",it.date)
+                        mFragment.arguments = mBundle
+                        mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+
                     }
 
                     postRecyclerView.adapter = postAdapter

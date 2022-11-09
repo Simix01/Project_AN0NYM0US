@@ -1,10 +1,15 @@
 package com.example.an0nym0us
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
+import org.w3c.dom.Comment
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +26,11 @@ class comment_fragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+     private lateinit var commentRecyclerView: RecyclerView
+    private lateinit var dbRef: DatabaseReference
+    private lateinit var commentAdapter: CommentRecyclerAdapter
+    private lateinit var commentList: ArrayList<Commento>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -33,9 +43,53 @@ class comment_fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comment_fragment, container, false)
+
+        val view: View = inflater.inflate(R.layout.fragment_comment, container, false)
+
+        val bundle = arguments
+        val user:String?=bundle?.getString("user")
+        val data:String?=bundle?.getString("data")
+
+        commentRecyclerView=view.findViewById<RecyclerView>(R.id.commentRecyclerView)
+        commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        commentRecyclerView.setHasFixedSize(true)
+
+        if (data != null && user != null) {
+            dbRef =
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(user).child(data).child("comments")
+        }
+
+        dbRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (commentSnapshot in snapshot.children) {
+
+                        var commentApp = commentSnapshot.getValue() as HashMap<*, *>
+                        var user = commentApp["user"].toString()
+                        var content = commentApp["content"].toString()
+
+                        commentList.add(Commento(user,content))
+                    }
+                    commentAdapter= CommentRecyclerAdapter(commentList)
+                    commentRecyclerView.adapter=commentAdapter
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+
+        return view
     }
+
+
 
     companion object {
         /**
