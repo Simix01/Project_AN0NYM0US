@@ -17,8 +17,10 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.fragment_post.*
 
 
@@ -31,14 +33,14 @@ class PostFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    var nameActivity:String = "com.example.an0nym0us."
+    var nameActivityFull:String = "com.example.an0nym0us."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
-                var javaClass=Class.forName(nameActivity)
+                var javaClass=Class.forName(nameActivityFull)
                 val intent = Intent(context, javaClass)
                 startActivity(intent)
             }
@@ -61,7 +63,8 @@ class PostFragment : Fragment() {
 
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
-        nameActivity+= bundle?.getString("nameActivity").toString()
+        var nameActivity = bundle?.getString("nameActivity").toString()
+        nameActivityFull+=nameActivity
         var likesList: ArrayList<String>? = null
         var dislikesList: ArrayList<String>? = null
         var uId = bundle?.getString("userid").toString()
@@ -74,6 +77,7 @@ class PostFragment : Fragment() {
         var likeBtn=view.findViewById<ImageButton>(R.id.likeBtnFrag)
         var dislikeBtn=view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
         var date = view.findViewById<TextView>(R.id.dataPost)
+        var commentsBtn=view.findViewById<ImageButton>(R.id.commentsBtn)
 
         val requestOptions=com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.ic_launcher_background)
@@ -195,6 +199,38 @@ class PostFragment : Fragment() {
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
         }
+
+
+        commentsBtn.setOnClickListener{
+
+            var bottom_home= activity?.findViewById<BottomNavigationView>(R.id.bottom_home)
+            if (bottom_home != null) {
+                bottom_home.visibility=View.INVISIBLE
+            }
+
+            val commentFragment=comment_fragment()
+
+            val mBundle = Bundle()
+
+            mBundle.putString("userPost",post?.user)
+            mBundle.putString("datePost",post?.date)
+            mBundle.putString("nameActivity", nameActivity)
+            commentFragment.arguments = mBundle
+
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+
+
+            when(nameActivity){
+
+                "HomepageActivity" -> transaction?.replace(R.id.fragment_container,commentFragment)?.commit()
+                "ExploreActivity" -> transaction?.replace(R.id.fragment_containerExplore,commentFragment)?.commit()
+                "ProfileActivity" -> transaction?.replace(R.id.fragment_containerProfile,commentFragment)?.commit()
+
+            }
+
+        }
+
+
         return view
     }
 

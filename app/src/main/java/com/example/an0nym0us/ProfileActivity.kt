@@ -103,7 +103,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun inizializzaBottomMenu() {
-        var bottomNavigationMenuView: BottomNavigationView = findViewById(R.id.bottom_profile)
+        var bottomNavigationMenuView: BottomNavigationView = findViewById(R.id.bottom_home)
         bottomNavigationMenuView.setSelectedItemId(R.id.profile)
 
         bottomNavigationMenuView.setOnNavigationItemSelectedListener { item ->

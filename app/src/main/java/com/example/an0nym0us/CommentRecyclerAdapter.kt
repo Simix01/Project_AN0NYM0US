@@ -39,7 +39,7 @@ class CommentRecyclerAdapter(private val commentList: ArrayList<Commento>) :
         val commentContent = itemView.commentContent
 
         fun bind(comment: Commento) {
-            commentUser.setText(comment.user)
+            commentUser.setText(comment.user+":")
             commentContent.setText(comment.content)
         }
     }

@@ -102,7 +102,7 @@ class ExploreActivity : AppCompatActivity() {
     }
 
     fun inizializzaBottomMenu(){
-        var bottomNavigationMenuView : BottomNavigationView = findViewById(R.id.bottom_explore)
+        var bottomNavigationMenuView : BottomNavigationView = findViewById(R.id.bottom_home)
         bottomNavigationMenuView.setSelectedItemId(R.id.explore)
 
         bottomNavigationMenuView.setOnNavigationItemSelectedListener { item ->

@@ -2,16 +2,16 @@ package com.example.an0nym0us
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
-import org.w3c.dom.Comment
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,7 +33,7 @@ class comment_fragment : Fragment() {
     private lateinit var commentAdapter: CommentRecyclerAdapter
     private lateinit var commentList: ArrayList<Commento>
 
-    var nameActivity:String = "com.example.an0nym0us."
+    var nameActivity:String? = "com.example.an0nym0us."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +71,8 @@ class comment_fragment : Fragment() {
         commentRecyclerView=view.findViewById<RecyclerView>(R.id.commentRecyclerView)
         commentRecyclerView.layoutManager = LinearLayoutManager(activity)
         commentRecyclerView.setHasFixedSize(true)
+        val commentButton=view.findViewById<Button>(R.id.commentButton)
+        val commentContent=view.findViewById<TextInputEditText>(R.id.commentText)
 
         if (data != null && user != null) {
             dbRef =
@@ -78,21 +80,39 @@ class comment_fragment : Fragment() {
                     .getReference("Utenti").child(user).child(data).child("comments")
         }
 
+        commentButton.setOnClickListener{
+            var commentText = commentContent.text.toString()
+            var comment = user?.let { it1 -> Commento(it1,commentText) }
+            var userIniziale = commentList.get(0).user
+            if(commentList.size!=0) {
+                if (userIniziale == "ok")
+                    commentList?.removeAt(0)
+            }
+            commentList.add(comment!!)
+            dbRef.setValue(commentList)
+            commentAdapter.notifyDataSetChanged()
+        }
+
         dbRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (commentSnapshot in snapshot.children) {
+                if(commentList.isEmpty()) {
+                    if (snapshot.exists()) {
+                        for (commentSnapshot in snapshot.children) {
 
-                        var commentApp = commentSnapshot.getValue() as HashMap<*, *>
-                        var user = commentApp["user"].toString()
-                        var content = commentApp["content"].toString()
+                            var commentApp = commentSnapshot.getValue() as HashMap<*, *>
+                            var user = commentApp["user"].toString()
+                            var content = commentApp["content"].toString()
 
-                        commentList.add(Commento(user,content))
+
+                            commentList.add(Commento(user, content))
+                        }
+                        commentAdapter = CommentRecyclerAdapter(commentList)
+                        commentRecyclerView.adapter = commentAdapter
                     }
-                    commentAdapter= CommentRecyclerAdapter(commentList)
-                    commentRecyclerView.adapter=commentAdapter
                 }
             }
+
+
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")

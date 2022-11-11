@@ -50,7 +50,6 @@
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="diocane"
                 />
         </HorizontalScrollView>
 
