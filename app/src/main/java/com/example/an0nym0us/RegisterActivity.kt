@@ -67,6 +67,26 @@ class RegisterActivity : AppCompatActivity() {
                                         ,Toast.LENGTH_SHORT).show()
                                 }
 
+                                val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+                                val valoreHash = cUser.hashCode().absoluteValue
+                                val uId = "anonym$valoreHash"
+                                var database = FirebaseDatabase
+                                    .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                                    .getReference("InfoUtenti/")
+
+                                val proPic = "ok"
+                                val nickname = uId
+                                val approvazioni = 0
+                                val canEdit = false
+                                val canBeFound = false
+
+                                val utente = Utente(proPic,nickname,approvazioni,canEdit,canBeFound)
+                                database.child(nickname).setValue(utente).addOnSuccessListener {
+                                    Toast.makeText(this,"evviva", Toast.LENGTH_SHORT)
+                                }.addOnFailureListener {
+                                    Toast.makeText(this,"evviva ma in rosso", Toast.LENGTH_SHORT)
+                                }
+
                                 val intent =
                                     Intent(this@RegisterActivity, LoginActivity::class.java)
                                 intent.flags =
@@ -87,7 +107,7 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            CreaInfoUtente()
+
         }
     }
 
@@ -96,25 +116,4 @@ class RegisterActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
     }
 
-    fun CreaInfoUtente(){
-        val cUser = FirebaseAuth.getInstance().currentUser!!.uid
-        val valoreHash = cUser.hashCode().absoluteValue
-        val uId = "anonym$valoreHash"
-        var database = FirebaseDatabase
-            .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("InfoUtenti/")
-
-        val proPic = "ok"
-        val nickname = uId
-        val approvazioni = 0
-        val canEdit = false
-        val canBeFound = false
-
-        val utente = Utente(proPic,nickname,approvazioni,canEdit,canBeFound)
-        database.child(nickname).setValue(utente).addOnSuccessListener {
-            Toast.makeText(this,"evviva", Toast.LENGTH_SHORT)
-        }.addOnFailureListener {
-            Toast.makeText(this,"evviva ma in rosso", Toast.LENGTH_SHORT)
-        }
-    }
 }
