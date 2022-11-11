@@ -100,18 +100,20 @@ class HomepageActivity : AppCompatActivity() {
                     postAdapter.onCommentClick={
                         recycler_view.visibility= View.INVISIBLE
                         swipe_refresh.visibility= View.INVISIBLE
+                        bottom_home.visibility=View.INVISIBLE
 
                         val mFragmentManager = supportFragmentManager
                         val mFragmentTransaction = mFragmentManager.beginTransaction()
                         mFragmentTransaction.addToBackStack(null)
-                        val mFragment = comment_fragment()
+                        val mFragment2 = comment_fragment()
 
                         val mBundle = Bundle()
 
                         mBundle.putString("userPost",it.user)
                         mBundle.putString("datePost",it.date)
-                        mFragment.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+                        mBundle.putString("nameActivity", "HomepageActivity")
+                        mFragment2.arguments = mBundle
+                        mFragmentTransaction.add(R.id.fragment_container, mFragment2).commit()
 
                     }
 
