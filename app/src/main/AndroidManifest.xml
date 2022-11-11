@@ -51,6 +51,7 @@
         <activity
             android:name=".HomepageActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:hardwareAccelerated="true">
             <meta-data
                 android:name="android.app.lib_name"
