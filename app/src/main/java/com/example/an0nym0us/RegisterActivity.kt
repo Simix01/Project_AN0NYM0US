@@ -14,7 +14,9 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import kotlin.math.absoluteValue
 
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,10 +86,35 @@ class RegisterActivity : AppCompatActivity() {
                     )
                 }
             }
+
+            CreaInfoUtente()
         }
     }
+
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+    }
+
+    fun CreaInfoUtente(){
+        val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+        val valoreHash = cUser.hashCode().absoluteValue
+        val uId = "anonym$valoreHash"
+        var database = FirebaseDatabase
+            .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("InfoUtenti/")
+
+        val proPic = "ok"
+        val nickname = uId
+        val approvazioni = 0
+        val canEdit = false
+        val canBeFound = false
+
+        val utente = Utente(proPic,nickname,approvazioni,canEdit,canBeFound)
+        database.child(nickname).setValue(utente).addOnSuccessListener {
+            Toast.makeText(this,"evviva", Toast.LENGTH_SHORT)
+        }.addOnFailureListener {
+            Toast.makeText(this,"evviva ma in rosso", Toast.LENGTH_SHORT)
+        }
     }
 }

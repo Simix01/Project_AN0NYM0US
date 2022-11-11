@@ -85,7 +85,7 @@ class comment_fragment : Fragment() {
             var comment = user?.let { it1 -> Commento(it1,commentText) }
             var userIniziale = commentList.get(0).user
             if(commentList.size!=0) {
-                if (userIniziale == "ok")
+                if (userIniziale == " ")
                     commentList?.removeAt(0)
             }
             commentList.add(comment!!)

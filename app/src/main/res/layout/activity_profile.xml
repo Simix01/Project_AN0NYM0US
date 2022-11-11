@@ -39,7 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/impostazioni">
+                android:src="@drawable/impostazioni"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck">
 
             </ImageButton>
 
@@ -52,6 +53,7 @@
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/proPic"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
@@ -99,6 +101,7 @@
                     android:max="10"></ProgressBar>
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/creaUser"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
