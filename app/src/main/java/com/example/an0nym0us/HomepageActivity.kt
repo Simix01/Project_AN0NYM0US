@@ -110,6 +110,7 @@ class HomepageActivity : AppCompatActivity() {
                         val mBundle = Bundle()
 
                         mBundle.putString("userPost",it.user)
+                        mBundle.putString("actualUser",uId)
                         mBundle.putString("datePost",it.date)
                         mBundle.putString("nameActivity", "HomepageActivity")
                         mFragment2.arguments = mBundle

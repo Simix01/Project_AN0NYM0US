@@ -67,6 +67,7 @@ class PostFragment : Fragment() {
         nameActivityFull+=nameActivity
         var likesList: ArrayList<String>? = null
         var dislikesList: ArrayList<String>? = null
+        var approvazioni: Long? = null
         var uId = bundle?.getString("userid").toString()
 
         var user=view.findViewById<TextView>(R.id.userCode)
@@ -139,6 +140,16 @@ class PostFragment : Fragment() {
             }
         }
 
+        var dbRefApprovazioni = post?.user?.let{ it ->
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("InfoUtenti").child(it).child("approvazioni")
+        }
+        dbRefApprovazioni?.get()?.addOnCompleteListener {
+            if(it.isSuccessful){
+                approvazioni = it.result.value as Long?
+            }
+        }
+
         likeBtn.setOnClickListener{
             if (dislikesList?.contains(uId) == true) {
                 dislikesList!!.remove(uId)
@@ -150,10 +161,23 @@ class PostFragment : Fragment() {
                 if (likesList?.get(0) == "ok") {
                     likesList?.removeAt(0)
                     likesList?.add(uId)
-                } else
+                    approvazioni = approvazioni?.plus(1)
+                    dbRefApprovazioni!!.setValue(approvazioni)
+                } else {
                     likesList?.add(uId)
+                    approvazioni = approvazioni?.plus(1)
+                    dbRefApprovazioni!!.setValue(approvazioni)
+                }
             }else if(likesList?.contains(uId) == true){
                 likesList?.remove(uId)
+
+                if(approvazioni!!.minus(1) < 0)
+                    dbRefApprovazioni!!.setValue(0)
+                else {
+                    approvazioni = approvazioni?.minus(1)
+                    dbRefApprovazioni!!.setValue(approvazioni)
+                }
+
                 if(likesList!!.size == 0)
                     likesList!!.add("ok")
             }
@@ -181,10 +205,27 @@ class PostFragment : Fragment() {
                 if (dislikesList?.get(0) == "ok") {
                     dislikesList?.removeAt(0)
                     dislikesList?.add(uId)
-                } else
+
+                    if(approvazioni?.minus(1)!! < 0)
+                        dbRefApprovazioni!!.setValue(0)
+                    else {
+                        approvazioni=approvazioni?.minus(1)
+                        dbRefApprovazioni!!.setValue(approvazioni)
+                    }
+
+                } else {
                     dislikesList?.add(uId)
+                    if(approvazioni?.minus(1)!! < 0)
+                        dbRefApprovazioni!!.setValue(0)
+                    else {
+                        approvazioni=approvazioni?.minus(1)
+                        dbRefApprovazioni!!.setValue(approvazioni)
+                    }
+                }
             }else if(dislikesList?.contains(uId) == true){
                 dislikesList?.remove(uId)
+                approvazioni = approvazioni?.plus(1)
+                dbRefApprovazioni!!.setValue(approvazioni)
                 if(dislikesList!!.size == 0)
                     dislikesList!!.add("ok")
             }
@@ -213,6 +254,7 @@ class PostFragment : Fragment() {
             val mBundle = Bundle()
 
             mBundle.putString("userPost",post?.user)
+            mBundle.putString("actualUser",uId)
             mBundle.putString("datePost",post?.date)
             mBundle.putString("nameActivity", nameActivity)
             commentFragment.arguments = mBundle

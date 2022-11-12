@@ -111,18 +111,22 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                             if (likesList?.get(0) == "ok") {
                                 likesList?.removeAt(0)
                                 likesList?.add(uId)
-                                dbRefApprovazioni!!.setValue(approvazioni?.plus(1))
+                                approvazioni = approvazioni?.plus(1)
+                                dbRefApprovazioni!!.setValue(approvazioni)
                             } else{
                                 likesList?.add(uId)
-                                dbRefApprovazioni!!.setValue(approvazioni?.plus(1))
+                                approvazioni = approvazioni?.plus(1)
+                                dbRefApprovazioni!!.setValue(approvazioni)
                             }
                         }
                         else if(likesList?.contains(uId) == true){
                             likesList?.remove(uId)
                             if(approvazioni!!.minus(1) < 0)
                                 dbRefApprovazioni!!.setValue(0)
-                            else
-                                dbRefApprovazioni!!.setValue(approvazioni!!.minus(1))
+                            else {
+                                approvazioni = approvazioni?.minus(1)
+                                dbRefApprovazioni!!.setValue(approvazioni)
+                            }
                             if(likesList!!.size == 0)
                                 likesList!!.add("ok")
                         }
@@ -158,22 +162,27 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                                 dislikesList?.add(uId)
                                 if(approvazioni?.minus(1)!! < 0)
                                     dbRefApprovazioni!!.setValue(0)
-                                else
-                                    dbRefApprovazioni!!.setValue(approvazioni?.minus(1))
+                                else {
+                                    approvazioni=approvazioni?.minus(1)
+                                    dbRefApprovazioni!!.setValue(approvazioni)
+                                }
                             }
                             else {
                                 dislikesList?.add(uId)
                                 if(approvazioni?.minus(1)!! < 0)
                                     dbRefApprovazioni!!.setValue(0)
-                                else
-                                    dbRefApprovazioni!!.setValue(approvazioni?.minus(1))
+                                else {
+                                    approvazioni=approvazioni?.minus(1)
+                                    dbRefApprovazioni!!.setValue(approvazioni)
+                                }
                             }
 
                         }
 
                         else if(dislikesList?.contains(uId) == true){
                             dislikesList?.remove(uId)
-                            dbRefApprovazioni!!.setValue(approvazioni?.plus(1))
+                            approvazioni = approvazioni?.plus(1)
+                            dbRefApprovazioni!!.setValue(approvazioni)
                             if(dislikesList!!.size == 0)
                                 dislikesList!!.add("ok")
                         }

@@ -21,6 +21,7 @@ class ExploreActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
     private lateinit var listAppend: ArrayList<Post2>
+    var listEmpty: Boolean=true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,53 +38,72 @@ class ExploreActivity : AppCompatActivity() {
         var chipGroup: ChipGroup = findViewById(R.id.chipGroup)
         chipGroup.checkedChipId
 
+
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()) {
-                    for(userSnapshot in snapshot.children) {
-                        for(postSnapshot in userSnapshot.children) {
-                            var postApp= postSnapshot.getValue() as HashMap<*,*>
-                            var user = postApp["user"].toString()
-                            var category = postApp["category"].toString()
-                            var date = postApp["date"].toString()
-                            var image = postApp["image"].toString()
-                            var likes = postApp["likes"].toString()
-                            var dislikes = postApp["dislikes"].toString()
-                            var comments = postApp["comments"] as ArrayList<Commento>?
-                            var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
-                            var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
-                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt()
-                                ,comments,arrayLikes,arrayDislikes)
-                            listFull.add(0,post)
-
+                if(listFull.isEmpty()&&listEmpty) {
+                    if (snapshot.exists()) {
+                        for (userSnapshot in snapshot.children) {
+                            for (postSnapshot in userSnapshot.children) {
+                                var postApp = postSnapshot.getValue() as HashMap<*, *>
+                                var user = postApp["user"].toString()
+                                var category = postApp["category"].toString()
+                                var date = postApp["date"].toString()
+                                var image = postApp["image"].toString()
+                                var likes = postApp["likes"].toString()
+                                var dislikes = postApp["dislikes"].toString()
+                                var comments = postApp["comments"] as ArrayList<Commento>?
+                                var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
+                                var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
+                                var post = Post2(
+                                    date,
+                                    image,
+                                    dislikes.toInt(),
+                                    category,
+                                    user,
+                                    likes.toInt(),
+                                    comments,
+                                    arrayLikes,
+                                    arrayDislikes
+                                )
+                                listFull.add(0, post)
+                            }
                         }
+
+                        listAppend.addAll(listFull)
+                        postAdapter = PostRecyclerAdapterGrid(listFull)
+                        filtraPost()
+
+                        val mFragmentManager = supportFragmentManager
+                        val mFragmentTransaction = mFragmentManager.beginTransaction()
+                        val mFragment = PostFragment()
+
+                        postAdapter!!.onImageClick = {
+                            StaggeredGrid_Explore.visibility = View.INVISIBLE
+                            searchView.visibility = View.INVISIBLE
+                            chipGroup.visibility = View.INVISIBLE
+                            val mBundle = Bundle()
+
+                            val post = Post(
+                                it.user!!,
+                                it.category!!,
+                                it.date!!,
+                                it.image!!,
+                                it.likes,
+                                it.dislikes
+                            )
+
+                            mBundle.putParcelable("post", post)
+                            mBundle.putString("nameActivity", "ExploreActivity")
+                            mBundle.putString("userid", uId)
+                            mFragment.arguments = mBundle
+                            mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment)
+                                .commit()
+                        }
+
+                        StaggeredGrid_Explore.adapter = postAdapter
+                        postAdapter!!.notifyDataSetChanged()
                     }
-
-                    listAppend.addAll(listFull)
-                    postAdapter = PostRecyclerAdapterGrid(listFull)
-                    filtraPost()
-
-                    val mFragmentManager = supportFragmentManager
-                    val mFragmentTransaction = mFragmentManager.beginTransaction()
-                    val mFragment = PostFragment()
-
-                    postAdapter!!.onImageClick={
-                        StaggeredGrid_Explore.visibility= View.INVISIBLE
-                        searchView.visibility = View.INVISIBLE
-                        chipGroup.visibility = View.INVISIBLE
-                        val mBundle = Bundle()
-
-                        val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
-
-                        mBundle.putParcelable("post",post)
-                        mBundle.putString("nameActivity", "ExploreActivity")
-                        mBundle.putString("userid", uId)
-                        mFragment.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_containerExplore, mFragment).commit()
-                    }
-
-                    StaggeredGrid_Explore.adapter = postAdapter
-                    postAdapter!!.notifyDataSetChanged()
                 }
             }
 
@@ -152,6 +172,11 @@ class ExploreActivity : AppCompatActivity() {
                 if(category == "Tutto")
                     listFiltered.add(post)
             }
+
+            if(listFiltered.size!=0)
+                listEmpty=true
+            else
+                listEmpty=false
 
             listFull.clear()
             listFull.addAll(listFiltered)

@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_profile.bottom_home
 import kotlin.math.absoluteValue
 
 class ProfileActivity : AppCompatActivity() {
@@ -44,53 +46,72 @@ class ProfileActivity : AppCompatActivity() {
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()) {
-                    for(userSnapshot in snapshot.children) {
-                        for(postSnapshot in userSnapshot.children) {
+                if(listFull.isEmpty()) {
+                    if (snapshot.exists()) {
+                        for (userSnapshot in snapshot.children) {
+                            for (postSnapshot in userSnapshot.children) {
 
-                            var postApp= postSnapshot.getValue() as HashMap<*,*>
-                            var user = postApp["user"].toString()
-                            var category = postApp["category"].toString()
-                            var date = postApp["date"].toString()
-                            var image = postApp["image"].toString()
-                            var likes = postApp["likes"].toString()
-                            var dislikes = postApp["dislikes"].toString()
-                            var comments = postApp["comments"] as ArrayList<Commento>?
-                            var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
-                            var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
-                            var post =  Post2(date,image, dislikes.toInt(),category,user,likes.toInt()
-                                ,comments,arrayLikes,arrayDislikes)
+                                var postApp = postSnapshot.getValue() as HashMap<*, *>
+                                var user = postApp["user"].toString()
+                                var category = postApp["category"].toString()
+                                var date = postApp["date"].toString()
+                                var image = postApp["image"].toString()
+                                var likes = postApp["likes"].toString()
+                                var dislikes = postApp["dislikes"].toString()
+                                var comments = postApp["comments"] as ArrayList<Commento>?
+                                var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
+                                var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
+                                var post = Post2(
+                                    date,
+                                    image,
+                                    dislikes.toInt(),
+                                    category,
+                                    user,
+                                    likes.toInt(),
+                                    comments,
+                                    arrayLikes,
+                                    arrayDislikes
+                                )
 
-                            if(user.equals(uId)) {
-                                listFull.add(0, post)
+                                if (user.equals(uId)) {
+                                    listFull.add(0, post)
+                                }
                             }
                         }
+
+
+                        postAdapter = PostRecyclerAdapterGrid(listFull)
+
+                        val mFragmentManager = supportFragmentManager
+                        val mFragmentTransaction = mFragmentManager.beginTransaction()
+                        val mFragment = PostFragment()
+
+                        postAdapter!!.onImageClick = {
+                            grid_post.visibility = View.INVISIBLE
+                            linear_layout_profile.visibility = View.INVISIBLE
+
+                            val mBundle = Bundle()
+
+                            val post = Post(
+                                it.user!!,
+                                it.category!!,
+                                it.date!!,
+                                it.image!!,
+                                it.likes,
+                                it.dislikes
+                            )
+
+                            mBundle.putParcelable("post", post)
+                            mBundle.putString("nameActivity", "ProfileActivity")
+                            mBundle.putString("userid", uId)
+                            mFragment.arguments = mBundle
+                            mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment)
+                                .commit()
+                        }
+
+                        grid_post.adapter = postAdapter
+                        postAdapter!!.notifyDataSetChanged()
                     }
-
-
-                    postAdapter = PostRecyclerAdapterGrid(listFull)
-
-                    val mFragmentManager = supportFragmentManager
-                    val mFragmentTransaction = mFragmentManager.beginTransaction()
-                    val mFragment = PostFragment()
-
-                    postAdapter!!.onImageClick={
-                        grid_post.visibility= View.INVISIBLE
-                        linear_layout_profile.visibility = View.INVISIBLE
-
-                        val mBundle = Bundle()
-
-                        val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
-
-                        mBundle.putParcelable("post",post)
-                        mBundle.putString("nameActivity", "ProfileActivity")
-                        mBundle.putString("userid", uId)
-                        mFragment.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment).commit()
-                    }
-
-                    grid_post.adapter = postAdapter
-                    postAdapter!!.notifyDataSetChanged()
                 }
             }
 

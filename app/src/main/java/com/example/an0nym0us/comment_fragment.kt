@@ -63,7 +63,8 @@ class comment_fragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_comment, container, false)
 
         val bundle = arguments
-        val user:String?=bundle?.getString("userPost")
+        val userPost:String?=bundle?.getString("userPost")
+        val actualUser:String?=bundle?.getString("actualUser")
         val data:String?=bundle?.getString("datePost")
         nameActivity+= bundle?.getString("nameActivity").toString()
         commentList= arrayListOf<Commento>()
@@ -74,15 +75,15 @@ class comment_fragment : Fragment() {
         val commentButton=view.findViewById<Button>(R.id.commentButton)
         val commentContent=view.findViewById<TextInputEditText>(R.id.commentText)
 
-        if (data != null && user != null) {
+        if (data != null && userPost != null) {
             dbRef =
                 FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("Utenti").child(user).child(data).child("comments")
+                    .getReference("Utenti").child(userPost).child(data).child("comments")
         }
 
         commentButton.setOnClickListener{
             var commentText = commentContent.text.toString()
-            var comment = user?.let { it1 -> Commento(it1,commentText) }
+            var comment = actualUser?.let { it1 -> Commento(it1,commentText) }
             var userIniziale = commentList.get(0).user
             if(commentList.size!=0) {
                 if (userIniziale == " ")

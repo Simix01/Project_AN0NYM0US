@@ -26,8 +26,6 @@ class PostRecyclerAdapterGrid(private val postList: ArrayList<Post2>) : Recycler
                 holder.postImage.setOnClickListener{
                     onImageClick?.invoke(post)
                 }
-
-
             }
         }
     }
@@ -38,6 +36,8 @@ class PostRecyclerAdapterGrid(private val postList: ArrayList<Post2>) : Recycler
 
     class PostViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val postImage=itemView.grid_image
+
+
         fun bind(post: Post2){
             val requestOptions=com.bumptech.glide.request.RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
