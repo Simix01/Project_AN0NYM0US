@@ -92,11 +92,13 @@ class comment_fragment : Fragment() {
             commentList.add(comment!!)
             dbRef.setValue(commentList)
             commentAdapter.notifyDataSetChanged()
+            commentContent.setText(" ")
         }
 
         dbRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(commentList.isEmpty()) {
+
+                commentList.clear()
                     if (snapshot.exists()) {
                         for (commentSnapshot in snapshot.children) {
 
@@ -109,8 +111,8 @@ class comment_fragment : Fragment() {
                         }
                         commentAdapter = CommentRecyclerAdapter(commentList)
                         commentRecyclerView.adapter = commentAdapter
+                        commentAdapter.notifyDataSetChanged()
                     }
-                }
             }
 
 
