@@ -40,7 +40,7 @@ class ProfileActivity : AppCompatActivity() {
             .getReference("Utenti")
 
         dbRefInfo= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("InfoUtenti")
+            .getReference("InfoUtenti").child("$uId")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -103,8 +103,7 @@ class ProfileActivity : AppCompatActivity() {
         dbRefInfo.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
-                    for(profileSnapshot in snapshot.children){
-                        var Map= profileSnapshot.getValue() as HashMap<*,*>
+                        var Map= snapshot.getValue() as HashMap<*,*>
                         var proPic = Map["proPic"].toString()
                         var nickname = Map["nickname"].toString()
                         var approvazioni = Map["approvazioni"].toString()
@@ -113,7 +112,7 @@ class ProfileActivity : AppCompatActivity() {
                         var user = Utente(proPic,nickname,approvazioni.toInt(),canEdit.toBoolean(),canBeFound.toBoolean())
 
                         progress_bar.setProgress(approvazioni.toInt())
-                    }
+
                 }
             }
 
