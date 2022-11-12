@@ -18,7 +18,9 @@ class ProfileActivity : AppCompatActivity() {
     val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     private lateinit var dbRef: DatabaseReference
+    private lateinit var dbRefInfo: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
+    //private lateinit var approvazioni: Int
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +38,9 @@ class ProfileActivity : AppCompatActivity() {
     private fun getPostData() {
         dbRef= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("Utenti")
+
+        dbRefInfo= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("InfoUtenti")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -62,6 +67,7 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     }
 
+
                     postAdapter = PostRecyclerAdapterGrid(listFull)
 
                     val mFragmentManager = supportFragmentManager
@@ -85,6 +91,29 @@ class ProfileActivity : AppCompatActivity() {
 
                     grid_post.adapter = postAdapter
                     postAdapter!!.notifyDataSetChanged()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+        dbRefInfo.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    for(profileSnapshot in snapshot.children){
+                        var Map= profileSnapshot.getValue() as HashMap<*,*>
+                        var proPic = Map["proPic"].toString()
+                        var nickname = Map["nickname"].toString()
+                        var approvazioni = Map["approvazioni"].toString()
+                        var canEdit = Map["canEdit"].toString()
+                        var canBeFound = Map["canBeFound"].toString()
+                        var user = Utente(proPic,nickname,approvazioni.toInt(),canEdit.toBoolean(),canBeFound.toBoolean())
+
+                        progress_bar.setProgress(approvazioni.toInt())
+                    }
                 }
             }
 

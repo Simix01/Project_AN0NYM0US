@@ -35,6 +35,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
                 var likesList: ArrayList<String>? = null
                 var dislikesList: ArrayList<String>? = null
+                var approvazioni: Long? = null
 
                 holder.bind(postList[position])
 
@@ -85,40 +86,59 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                     }
                 }
 
+                var dbRefApprovazioni = post.user?.let{ it ->
+                    FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                        .getReference("InfoUtenti").child(it).child("approvazioni")
+                }
+                dbRefApprovazioni?.get()?.addOnCompleteListener {
+                    if(it.isSuccessful){
+                        approvazioni = it.result.value as Long?
+                    }
+                }
                 holder.likeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
 
+                        //se premo like e ho messo un dislike allora lo toglie
                         if (dislikesList?.contains(uId) == true) {
                             dislikesList!!.remove(uId)
                             post.dislikes = dislikesList!!.size
                             if (dislikesList!!.size == 0)
                                 dislikesList!!.add("ok")
                         }
+
                         if (likesList?.contains(uId) == false) {
                             if (likesList?.get(0) == "ok") {
                                 likesList?.removeAt(0)
                                 likesList?.add(uId)
-                            } else
+                                dbRefApprovazioni!!.setValue(approvazioni?.plus(1))
+                            } else{
                                 likesList?.add(uId)
-                        }else if(likesList?.contains(uId) == true){
+                                dbRefApprovazioni!!.setValue(approvazioni?.plus(1))
+                            }
+                        }
+                        else if(likesList?.contains(uId) == true){
                             likesList?.remove(uId)
+                            if(approvazioni!!.minus(1) < 0)
+                                dbRefApprovazioni!!.setValue(0)
+                            else
+                                dbRefApprovazioni!!.setValue(approvazioni!!.minus(1))
                             if(likesList!!.size == 0)
                                 likesList!!.add("ok")
                         }
+
                         dbRefArrayLikes!!.setValue(likesList)
                         dbRefArrayDislikes!!.setValue(dislikesList)
                         if (likesList!!.get(0) == "ok")
                             post.likes = likesList!!.size - 1
                         else
                             post.likes = likesList!!.size
+
                         holder.postLike.setText(post.likes.toString())
                         holder.postDislike.setText(post.dislikes.toString())
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
                     }
-
-
                 })
                 holder.dislikeButton.setOnClickListener(object : View.OnClickListener {
 
@@ -131,17 +151,33 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                             if (likesList!!.size == 0)
                                 likesList!!.add("ok")
                         }
+
                         if (dislikesList?.contains(uId) == false) {
                             if (dislikesList?.get(0) == "ok") {
                                 dislikesList?.removeAt(0)
                                 dislikesList?.add(uId)
-                            } else
+                                if(approvazioni?.minus(1)!! < 0)
+                                    dbRefApprovazioni!!.setValue(0)
+                                else
+                                    dbRefApprovazioni!!.setValue(approvazioni?.minus(1))
+                            }
+                            else {
                                 dislikesList?.add(uId)
-                        }else if(dislikesList?.contains(uId) == true){
+                                if(approvazioni?.minus(1)!! < 0)
+                                    dbRefApprovazioni!!.setValue(0)
+                                else
+                                    dbRefApprovazioni!!.setValue(approvazioni?.minus(1))
+                            }
+
+                        }
+
+                        else if(dislikesList?.contains(uId) == true){
                             dislikesList?.remove(uId)
+                            dbRefApprovazioni!!.setValue(approvazioni?.plus(1))
                             if(dislikesList!!.size == 0)
                                 dislikesList!!.add("ok")
                         }
+
                         dbRefArrayDislikes!!.setValue(dislikesList)
                         dbRefArrayLikes!!.setValue(likesList)
                         if (dislikesList!!.get(0) == "ok")
@@ -152,7 +188,6 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         holder.postLike.setText(post.likes.toString())
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
-
                     }
 
                 })
