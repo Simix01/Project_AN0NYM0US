@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Linear layout as parent layout-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Impostazioni profilo"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:layout_marginBottom="30dp"
+        android:textStyle="bold"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/newNickname_text"
+            android:hint="Inserisci nuovo nickname..."
+            android:padding="12dp"
+            android:layout_marginRight="10dp"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:drawable/editbox_background" />
+
+        <Button
+            android:id="@+id/buttonChangeNickname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Cambia"
+            android:backgroundTint="@color/light_grey2"
+            android:layout_gravity="center">
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cambia immagine profilo: "
+            android:layout_weight="1"
+            android:textSize="16sp">
+        </TextView>
+
+        <Button
+            android:id="@+id/buttonChangePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cambia foto"
+            android:backgroundTint="@color/light_grey2">
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disattiva notifiche: "
+            android:textSize="16sp"
+            android:layout_weight="1">
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/checkboxNotifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </CheckBox>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Effettua il logout"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/light_grey2">
+        </Button>
+    </LinearLayout>
+
+</LinearLayout>

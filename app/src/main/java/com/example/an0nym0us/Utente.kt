@@ -1,9 +1,10 @@
 package com.example.an0nym0us
 
 data class Utente(
-    val proPic: String,
-    val nickname: String,
-    val approvazioni: Int,
-    val canEdit: Boolean,
-    val canBeFound: Boolean
+    var proPic: String,
+    var nickname: String,
+    var approvazioni: Int,
+    var canEdit: Boolean,
+    var canBeFound: Boolean,
+    var seguiti: ArrayList<String>
 )

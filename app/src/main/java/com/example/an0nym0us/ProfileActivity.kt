@@ -1,14 +1,19 @@
 package com.example.an0nym0us
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color.TRANSPARENT
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.collection.LLRBNode.Color
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.bottom_home
@@ -22,6 +27,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var dbRefInfo: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
+    private lateinit var canEdit: String
     //private lateinit var approvazioni: Int
 
 
@@ -30,9 +36,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         overridePendingTransition(0, 0)
         inizializzaBottomMenu()
-
-        val userId: TextView = findViewById(R.id.userCodeProfile)
-        userId.text = uId
+        inizializzaImpostazioni()
 
         initRecyclerView()
     }
@@ -128,12 +132,27 @@ class ProfileActivity : AppCompatActivity() {
                         var proPic = Map["proPic"].toString()
                         var nickname = Map["nickname"].toString()
                         var approvazioni = Map["approvazioni"].toString()
-                        var canEdit = Map["canEdit"].toString()
+                        canEdit = Map["canEdit"].toString()
                         var canBeFound = Map["canBeFound"].toString()
-                        var user = Utente(proPic,nickname,approvazioni.toInt(),canEdit.toBoolean(),canBeFound.toBoolean())
+                        var seguiti = Map["seguiti"] as ArrayList<String>
+                        var user = Utente(proPic,nickname,approvazioni.toInt(),canEdit.toBoolean(),canBeFound.toBoolean(), seguiti)
 
+                        //setto valore della progressbar
                         progress_bar.setProgress(approvazioni.toInt())
+                        var maxValue = progress_bar.max
+                        if(progress_bar.progress >= maxValue){
+                            dbRefInfo.child("canEdit").setValue(true)
+                        }
+                        else
+                            dbRefInfo.child("canEdit").setValue(false)
 
+                        //setto valore del nome del profilo (anonimo/nickname)
+                        userCodeProfile.text = nickname
+
+                        /*verifico se l'user che sta usando l'app è lo stesso della pagina
+                        * e in quel caso rendo non visibile il pulsante segui*/
+                        if(uId.equals(nickname))
+                            followButton.visibility = View.INVISIBLE
                 }
             }
 
@@ -190,4 +209,29 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    fun inizializzaImpostazioni(){
+
+        var dialog: Dialog? = null
+
+        settings.setOnClickListener {
+            dialog = Dialog(this@ProfileActivity)
+            dialog!!.setContentView(R.layout.impostazioni_profilo)
+            dialog!!.window!!.setLayout(1000,1500)
+            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+            dialog!!.show()
+
+            val buttonImage = dialog!!.findViewById<Button>(R.id.buttonChangeNickname)
+            val buttonPhoto = dialog!!.findViewById<Button>(R.id.buttonChangePhoto)
+
+            if(canEdit.equals("false")){
+                buttonImage.isClickable = false
+                buttonPhoto.isClickable = false
+            }
+            else{
+                buttonImage.isClickable = true
+                buttonPhoto.isClickable = true
+            }
+
+        }
+    }
 }
