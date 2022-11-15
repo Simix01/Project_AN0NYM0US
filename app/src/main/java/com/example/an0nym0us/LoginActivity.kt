@@ -86,8 +86,7 @@ class LoginActivity : AppCompatActivity() {
                                     FirebaseAuth.getInstance().currentUser!!.uid
                                 )
                                 intent.putExtra("email_id", emailLogin)
-                                val intentFg = Intent(this, Notification::class.java)
-                                startService(intentFg)
+
                                 startActivity(intent)
                                 finish()
 
