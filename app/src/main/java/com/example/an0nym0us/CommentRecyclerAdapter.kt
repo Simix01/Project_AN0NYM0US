@@ -11,9 +11,9 @@ import kotlin.math.absoluteValue
 class CommentRecyclerAdapter(private val commentList: ArrayList<Commento>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    /*val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
-    val uId = "anonym$valoreHash"
+    val uId = "anonym$valoreHash"*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return CommentViewHolder(
