@@ -31,32 +31,34 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     private lateinit var dbRef: DatabaseReference
     private lateinit var dbRefInfo: DatabaseReference
-    private lateinit var dbRefCorr: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
+    private var listNicknames = arrayListOf<String>()
     private var canEdit: String = "false"
     private var canBeFound: String = "false"
     private var trovato: Boolean = false
+    private var myNickname: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         overridePendingTransition(0, 0)
         inizializzaBottomMenu()
-        impostaNomeProfilePage()
         inizializzaImpostazioni()
         initRecyclerView()
     }
 
     private fun getPostData() {
-        dbRef= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("Utenti")
+        dbRef =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Utenti")
 
-        dbRefInfo= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("InfoUtenti").child("$uId")
+        dbRefInfo =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("InfoUtenti")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(listFull.isEmpty()) {
+                if (listFull.isEmpty()) {
                     if (snapshot.exists()) {
                         for (userSnapshot in snapshot.children) {
                             for (postSnapshot in userSnapshot.children) {
@@ -131,34 +133,51 @@ class ProfileActivity : AppCompatActivity() {
 
         })
 
-        dbRefInfo.addValueEventListener(object : ValueEventListener{
+        dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                        var Map= snapshot.getValue() as HashMap<*,*>
-                        var proPic = Map["proPic"].toString()
+                if (snapshot.exists()) {
+                    for (user in snapshot.children) {
+
+                        var Map = user.getValue() as HashMap<*, *>
                         var nickname = Map["nickname"].toString()
-                        var approvazioni = Map["approvazioni"].toString()
-                        canEdit = Map["canEdit"].toString()
-                        canBeFound = Map["canBeFound"].toString()
-                        var seguiti = Map["seguiti"] as ArrayList<String>
-                        var user = Utente(proPic,nickname,approvazioni.toInt(),canEdit.toBoolean(),canBeFound.toBoolean(), seguiti)
 
-                        //setto valore della progressbar
-                        progress_bar.setProgress(approvazioni.toInt())
-                        var maxValue = progress_bar.max
-                        if(progress_bar.progress >= maxValue){
-                            dbRefInfo.child("canEdit").setValue(true)
-                        }
-                        else
-                            dbRefInfo.child("canEdit").setValue(false)
+                        if (user.key == uId) {
+                            var proPic = Map["proPic"].toString()
+                            var approvazioni = Map["approvazioni"].toString()
+                            myNickname=nickname
+                            canEdit = Map["canEdit"].toString()
+                            canBeFound = Map["canBeFound"].toString()
+                            var seguiti = Map["seguiti"] as ArrayList<String>
+                            var user = Utente(
+                                proPic,
+                                nickname,
+                                approvazioni.toInt(),
+                                canEdit.toBoolean(),
+                                canBeFound.toBoolean(),
+                                seguiti
+                            )
 
-                        //setto valore del nome del profilo (anonimo/nickname)
-                        userCodeProfile.text = nickname
+                            //setto valore della progressbar
+                            progress_bar.setProgress(approvazioni.toInt())
+                            var maxValue = progress_bar.max
+                            if (progress_bar.progress >= maxValue) {
+                                dbRefInfo.child(uId).child("canEdit").setValue(true)
+                            } else
+                                dbRefInfo.child(uId).child("canEdit").setValue(false)
 
-                        /*verifico se l'user che sta usando l'app è lo stesso della pagina
+                            //setto valore del nome del profilo (anonimo/nickname)
+                            userCodeProfile.text = myNickname
+
+                            /*verifico se l'user che sta usando l'app è lo stesso della pagina
                         * e in quel caso rendo non visibile il pulsante segui*/
-                        if(uId.equals(nickname))
-                            followButton.visibility = View.INVISIBLE
+                            if (uId.equals(nickname))
+                                followButton.visibility = View.INVISIBLE
+                        }
+
+                        listNicknames.add(nickname)
+
+                    }
+
                 }
             }
 
@@ -215,84 +234,53 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun inizializzaImpostazioni(){
+    fun inizializzaImpostazioni() {
 
-        var dialog: Dialog? = null
-        var nickname : String? = null
-        var listNicknames = arrayListOf<String>()
-        dbRefCorr= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("CorrispondenzeNickUser")
-        dbRefCorr.addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    for(nicknameSnap in snapshot.children){
-                        var nicknameMap = nicknameSnap.getValue() as HashMap<*, *>
-                        nickname = nicknameMap["nickname"].toString()
-
-                        listNicknames.add(nickname!!)
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
+        var dialog: Dialog?
 
         settings.setOnClickListener {
             dialog = Dialog(this@ProfileActivity)
             dialog!!.setContentView(R.layout.impostazioni_profilo)
-            dialog!!.window!!.setLayout(1000,1500)
+            dialog!!.window!!.setLayout(1000, 1500)
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
 
-            if(this@ProfileActivity != null && !this@ProfileActivity.isFinishing)
+            if (this@ProfileActivity != null && !this@ProfileActivity.isFinishing)
                 dialog!!.show()
 
             val buttonNickname = dialog!!.findViewById<Button>(R.id.buttonChangeNickname)
             val buttonPhoto = dialog!!.findViewById<Button>(R.id.buttonChangePhoto)
 
-            if(canEdit.equals("false")){
+            if (canEdit.equals("false")) {
                 buttonNickname.isClickable = false
                 buttonPhoto.isClickable = false
-            }
-            else{
+            } else {
                 buttonNickname.isClickable = true
                 buttonPhoto.isClickable = true
             }
 
             buttonNickname.setOnClickListener {
                 val EditTextName = dialog!!.findViewById<EditText>(R.id.newNicknameText)
-                val newName: String = EditTextName.text.toString().trim{it <= ' '}
-                if(newName.equals(""))
+                val newName: String = EditTextName.text.toString().trim { it <= ' ' }
+                if (newName.equals(""))
                     Toast.makeText(this, "Devi inserire un nuovo nome", Toast.LENGTH_SHORT).show()
-                else{
-                    if(listNicknames.contains(newName))
-                        Toast.makeText(this@ProfileActivity,"Nickname già in uso",
-                            Toast.LENGTH_SHORT).show()
-                    else{
-                        dbRefCorr.child("$uId").child("nickname").setValue(newName)
-                        Toast.makeText(this@ProfileActivity,
+                else {
+                    if (listNicknames.contains(newName))
+                        Toast.makeText(
+                            this@ProfileActivity, "Nickname già in uso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    else {
+                        dbRefInfo.child("$uId").child("nickname").setValue(newName)
+                        Toast.makeText(
+                            this@ProfileActivity,
                             "Nickname cambiato con successo",
-                            Toast.LENGTH_SHORT).show()
-                        dbRefInfo.child("canBeFound").setValue(true)
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        dbRefInfo.child("$uId").child("canBeFound").setValue(true)
                         listNicknames.clear()
                     }
                 }
             }
-        }
-    }
-
-    fun impostaNomeProfilePage(){
-        var dbRefApp = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("CorrispondenzeNickUser")
-        dbRefApp.child("$uId").child("nickname").get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                val nicknameFound = it.result.value as String
-                userCodeProfile.text = nicknameFound
-            } else
-                Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT)
         }
     }
 }
