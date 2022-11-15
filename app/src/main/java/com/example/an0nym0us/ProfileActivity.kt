@@ -1,5 +1,6 @@
 package com.example.an0nym0us
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color.TRANSPARENT
@@ -7,7 +8,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -17,6 +20,7 @@ import com.google.firebase.database.collection.LLRBNode.Color
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.bottom_home
+import kotlinx.android.synthetic.main.impostazioni_profilo.*
 import kotlin.math.absoluteValue
 
 class ProfileActivity : AppCompatActivity() {
@@ -26,8 +30,11 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     private lateinit var dbRef: DatabaseReference
     private lateinit var dbRefInfo: DatabaseReference
+    private lateinit var dbRefCorr: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
     private lateinit var canEdit: String
+    private lateinit var canBeFound: String
+    private var trovato: Boolean = false
     //private lateinit var approvazioni: Int
 
 
@@ -133,7 +140,7 @@ class ProfileActivity : AppCompatActivity() {
                         var nickname = Map["nickname"].toString()
                         var approvazioni = Map["approvazioni"].toString()
                         canEdit = Map["canEdit"].toString()
-                        var canBeFound = Map["canBeFound"].toString()
+                        canBeFound = Map["canBeFound"].toString()
                         var seguiti = Map["seguiti"] as ArrayList<String>
                         var user = Utente(proPic,nickname,approvazioni.toInt(),canEdit.toBoolean(),canBeFound.toBoolean(), seguiti)
 
@@ -212,26 +219,68 @@ class ProfileActivity : AppCompatActivity() {
     fun inizializzaImpostazioni(){
 
         var dialog: Dialog? = null
+        var nickname : String? = null
+        var listNicknames = arrayListOf<String>()
+        dbRefCorr= FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("CorrispondenzeNickUser")
+        dbRefCorr.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    for(nicknameSnap in snapshot.children){
+                        var nicknameMap = nicknameSnap.getValue() as HashMap<*, *>
+                        nickname = nicknameMap["nickname"].toString()
+
+                        listNicknames.add(nickname!!)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
 
         settings.setOnClickListener {
             dialog = Dialog(this@ProfileActivity)
             dialog!!.setContentView(R.layout.impostazioni_profilo)
             dialog!!.window!!.setLayout(1000,1500)
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-            dialog!!.show()
 
-            val buttonImage = dialog!!.findViewById<Button>(R.id.buttonChangeNickname)
+            if(this@ProfileActivity != null && !this@ProfileActivity.isFinishing)
+                dialog!!.show()
+
+            val buttonNickname = dialog!!.findViewById<Button>(R.id.buttonChangeNickname)
             val buttonPhoto = dialog!!.findViewById<Button>(R.id.buttonChangePhoto)
 
             if(canEdit.equals("false")){
-                buttonImage.isClickable = false
+                buttonNickname.isClickable = false
                 buttonPhoto.isClickable = false
             }
             else{
-                buttonImage.isClickable = true
+                buttonNickname.isClickable = true
                 buttonPhoto.isClickable = true
             }
 
+            buttonNickname.setOnClickListener {
+                val EditTextName = dialog!!.findViewById<EditText>(R.id.newNicknameText)
+                val newName: String = EditTextName.text.toString().trim{it <= ' '}
+                if(newName.equals(""))
+                    Toast.makeText(this, "Devi inserire un nuovo nome", Toast.LENGTH_SHORT).show()
+                else{
+                    if(listNicknames.contains(newName))
+                        Toast.makeText(this@ProfileActivity,"Nickname già in uso",
+                            Toast.LENGTH_SHORT).show()
+                    else{
+                        dbRefCorr.child("$uId").child("nickname").setValue(newName)
+                        Toast.makeText(this@ProfileActivity,
+                            "Nickname cambiato con successo",
+                            Toast.LENGTH_SHORT).show()
+                        listNicknames.clear()
+                    }
+                }
+            }
         }
     }
 }
