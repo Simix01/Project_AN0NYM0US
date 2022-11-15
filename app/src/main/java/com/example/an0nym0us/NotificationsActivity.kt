@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.absoluteValue
 
 class NotificationsActivity : AppCompatActivity() {
@@ -17,6 +20,7 @@ class NotificationsActivity : AppCompatActivity() {
     private lateinit var notificationAdapter: NotificationRecyclerAdapter
     private lateinit var listLikes: ArrayList<String>
     private lateinit var listComments: ArrayList<String>
+    private lateinit var listNotifications: ArrayList<String>
     private lateinit var notificationRecyclerView: RecyclerView
     private lateinit var dbRef: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +36,7 @@ class NotificationsActivity : AppCompatActivity() {
         notificationRecyclerView.setHasFixedSize(true)
         listLikes = arrayListOf<String>()
         listComments = arrayListOf<String>()
+        listNotifications = arrayListOf<String>()
         getPostData()
     }
 
@@ -61,6 +66,13 @@ class NotificationsActivity : AppCompatActivity() {
                                     listLikes.add(user + " ha messo mi piace al tuo post")
                             }
                         }
+
+                        listNotifications.addAll(listComments)
+                        listNotifications.addAll(listLikes)
+                        Collections.shuffle(listNotifications, Random(System.currentTimeMillis()))
+
+                        notificationAdapter = NotificationRecyclerAdapter(listNotifications)
+                        notificationRecyclerView.adapter=notificationAdapter
                     }
 
                 }
