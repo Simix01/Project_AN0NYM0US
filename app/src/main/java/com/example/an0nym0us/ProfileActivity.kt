@@ -20,6 +20,7 @@ import com.google.firebase.database.collection.LLRBNode.Color
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.bottom_home
+import kotlinx.android.synthetic.main.fragment_post.*
 import kotlinx.android.synthetic.main.impostazioni_profilo.*
 import kotlin.math.absoluteValue
 
@@ -32,19 +33,17 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var dbRefInfo: DatabaseReference
     private lateinit var dbRefCorr: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
-    private lateinit var canEdit: String
-    private lateinit var canBeFound: String
+    private var canEdit: String = "false"
+    private var canBeFound: String = "false"
     private var trovato: Boolean = false
-    //private lateinit var approvazioni: Int
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         overridePendingTransition(0, 0)
         inizializzaBottomMenu()
+        impostaNomeProfilePage()
         inizializzaImpostazioni()
-
         initRecyclerView()
     }
 
@@ -277,10 +276,23 @@ class ProfileActivity : AppCompatActivity() {
                         Toast.makeText(this@ProfileActivity,
                             "Nickname cambiato con successo",
                             Toast.LENGTH_SHORT).show()
+                        dbRefInfo.child("canBeFound").setValue(true)
                         listNicknames.clear()
                     }
                 }
             }
+        }
+    }
+
+    fun impostaNomeProfilePage(){
+        var dbRefApp = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("CorrispondenzeNickUser")
+        dbRefApp.child("$uId").child("nickname").get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val nicknameFound = it.result.value as String
+                userCodeProfile.text = nicknameFound
+            } else
+                Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT)
         }
     }
 }
