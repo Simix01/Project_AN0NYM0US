@@ -19,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_login)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         val registrati : TextView = findViewById(R.id.loginActivity_registrati)
@@ -85,6 +86,8 @@ class LoginActivity : AppCompatActivity() {
                                     FirebaseAuth.getInstance().currentUser!!.uid
                                 )
                                 intent.putExtra("email_id", emailLogin)
+                                val intentFg = Intent(this, Notification::class.java)
+                                startService(intentFg)
                                 startActivity(intent)
                                 finish()
 

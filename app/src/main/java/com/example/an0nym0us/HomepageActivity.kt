@@ -32,6 +32,7 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
 
+
     }
 
     private fun initRecyclerView() {

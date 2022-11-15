@@ -1,8 +1,17 @@
 package com.example.an0nym0us
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_DEFAULT
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT
+import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -43,7 +52,7 @@ class NotificationsActivity : AppCompatActivity() {
     private fun getPostData() {
         dbRef =
             FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("Utenti").child("anonym1191829010")
+                .getReference("Utenti").child("$uId")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -57,20 +66,21 @@ class NotificationsActivity : AppCompatActivity() {
 
                         for(i in comments.indices) {
                             var mapApp = comments.get(i) as HashMap<*, *>
-                            listComments.add(mapApp["user"].toString() + ": ha comentato '"+ mapApp["content"].toString()+"' nel tuo post")
+                            var testo : String = mapApp["user"].toString() + ": ha comentato '"+ mapApp["content"].toString()+"' nel tuo post"
+                            listComments.add(0,testo)
+
                         }
 
                         if (arrayLikes != null) {
                             for (user in arrayLikes) {
                                 if (user != uId)
-                                    listLikes.add(user + " ha messo mi piace al tuo post")
+                                    listLikes.add(0,user + ": ha messo mi piace al tuo post")
                             }
                         }
 
                         listNotifications.addAll(listComments)
                         listNotifications.addAll(listLikes)
                         Collections.shuffle(listNotifications, Random(System.currentTimeMillis()))
-
                         notificationAdapter = NotificationRecyclerAdapter(listNotifications)
                         notificationRecyclerView.adapter=notificationAdapter
                     }
@@ -87,6 +97,26 @@ class NotificationsActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    fun Notification(tipoNotifica: String, testoNotifica: String){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel: NotificationChannel = NotificationChannel("n","n",NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = "prova"
+            }
+            val manager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+        }
+
+        val builder : NotificationCompat.Builder = NotificationCompat.Builder(this,
+            "n")
+            .setContentText(tipoNotifica)
+            .setSmallIcon(R.drawable.anonym_icon)
+            .setAutoCancel(true)
+            .setContentText(testoNotifica)
+
+        val managerCompat: NotificationManagerCompat = NotificationManagerCompat.from(this)
+        managerCompat.notify(999,builder.build())
     }
 
     fun inizializzaBottomMenu() {
