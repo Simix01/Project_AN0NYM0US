@@ -32,7 +32,8 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
 
-
+        val intentFg = Intent(this, Notification::class.java)
+        startService(intentFg)
     }
 
     private fun initRecyclerView() {

@@ -1,15 +1,19 @@
 package com.example.an0nym0us
 
 import android.app.Notification
+import android.app.Notification.InboxStyle
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,12 +25,12 @@ import kotlin.collections.HashMap
 import kotlin.math.absoluteValue
 
 class Notification: Service() {
-    private var tipoNotifica: String? = null
-    private var testoNotifica: String? = null
+    private val listNotifications= arrayListOf<String>()
     private val CHANNEL_ID="ForegroundService Kotlin"
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
+    val GROUP_NOTIFICATION="com.anonymous.NOTIFICATIONS"
     private val dbRef = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
     .getReference("Utenti").child("$uId")
 
@@ -35,6 +39,7 @@ class Notification: Service() {
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                listNotifications.clear()
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
                         var postApp = userSnapshot.getValue() as HashMap<*, *>
@@ -46,22 +51,18 @@ class Notification: Service() {
                         for(i in comments.indices) {
                             var mapApp = comments.get(i) as HashMap<*, *>
                             var testo : String = mapApp["user"].toString() + ": ha comentato '"+ mapApp["content"].toString()+"' nel tuo post"
-                            tipoNotifica = "E' stato aggiunto un commento ad un tuo post"
-                            testoNotifica= testo
-                            singleNotification()
-
+                            listNotifications.add(testo)
                         }
 
                         if (arrayLikes != null) {
                             for (user in arrayLikes) {
                                 if (user != uId) {
                                     var testo: String = user + ": ha messo mi piace al tuo post"
-                                    tipoNotifica = "E' stato messo 'mi piace' ad un tuo post"
-                                    testoNotifica = testo
-                                    singleNotification()
+                                    listNotifications.add(testo)
                                 }
                             }
                         }
+                        singleNotification()
                     }
                 }
             }
@@ -83,17 +84,25 @@ class Notification: Service() {
     }
 
     private fun singleNotification(){
-        val notificationIntent = Intent(this,LoginActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0)
-
-        val notification : Notification = NotificationCompat.Builder(this,
-            CHANNEL_ID)
-            .setContentText(tipoNotifica)
+        var inbox: NotificationCompat.InboxStyle =NotificationCompat.InboxStyle()
+        for(notification in listNotifications)
+            inbox.addLine(notification)
+        val summaryNotification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Notifications")
+            //set content text to support devices running API level < 24
+            .setContentText("Two new messages")
             .setSmallIcon(R.drawable.anonym_icon)
+            //build summary info into InboxStyle template
+            .setStyle(inbox)
+            //specify which group this notification belongs to
+            .setGroup(GROUP_NOTIFICATION)
+            //set this notification as the summary for the group
+            .setGroupSummary(true)
             .setAutoCancel(true)
-            .setContentText(testoNotifica)
             .build()
-        startForeground(1,notification)
+        NotificationManagerCompat.from(this).apply {
+            notify(0,summaryNotification)
+        }
     }
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -103,6 +112,9 @@ class Notification: Service() {
             ).apply {
                 description = "prova"
             }
+            channel.enableLights(true)
+            channel.lightColor= Color.GREEN
+            channel.enableVibration(true)
             val manager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
