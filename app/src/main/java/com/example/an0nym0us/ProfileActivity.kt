@@ -135,6 +135,7 @@ class ProfileActivity : AppCompatActivity() {
 
         dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                var currentUserId: String
                 if (snapshot.exists()) {
                     for (user in snapshot.children) {
 
@@ -142,6 +143,7 @@ class ProfileActivity : AppCompatActivity() {
                         var nickname = Map["nickname"].toString()
 
                         if (user.key == uId) {
+                            currentUserId = user.key!!
                             var proPic = Map["proPic"].toString()
                             var approvazioni = Map["approvazioni"].toString()
                             myNickname=nickname
@@ -170,7 +172,7 @@ class ProfileActivity : AppCompatActivity() {
 
                             /*verifico se l'user che sta usando l'app è lo stesso della pagina
                             e in quel caso rendo non visibile il pulsante segui*/
-                            if (uId.equals(nickname))
+                            if (uId.equals(currentUserId))
                                 followButton.visibility = View.INVISIBLE
                         }
 
