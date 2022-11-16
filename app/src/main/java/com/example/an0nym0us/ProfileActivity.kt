@@ -169,7 +169,7 @@ class ProfileActivity : AppCompatActivity() {
                             userCodeProfile.text = myNickname
 
                             /*verifico se l'user che sta usando l'app è lo stesso della pagina
-                        * e in quel caso rendo non visibile il pulsante segui*/
+                            e in quel caso rendo non visibile il pulsante segui*/
                             if (uId.equals(nickname))
                                 followButton.visibility = View.INVISIBLE
                         }
