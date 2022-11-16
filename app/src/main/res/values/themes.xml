@@ -19,6 +19,8 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.AN0NYM0US.ActionBar" parent="Theme.MaterialComponents.DayNight"></style>
+
     <style name="Theme.AN0NYM0US.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.AN0NYM0US.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
