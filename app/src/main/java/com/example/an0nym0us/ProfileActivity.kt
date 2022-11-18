@@ -1,27 +1,19 @@
 package com.example.an0nym0us
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color.TRANSPARENT
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.collection.LLRBNode.Color
-import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile.bottom_home
-import kotlinx.android.synthetic.main.fragment_post.*
-import kotlinx.android.synthetic.main.impostazioni_profilo.*
 import kotlin.math.absoluteValue
 
 class ProfileActivity : AppCompatActivity() {

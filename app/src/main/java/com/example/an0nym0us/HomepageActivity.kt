@@ -1,5 +1,7 @@
 package com.example.an0nym0us
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -22,8 +24,8 @@ class HomepageActivity : AppCompatActivity() {
     val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapter
     private lateinit var list: ArrayList<Post2>
-    private lateinit var postRecyclerView:RecyclerView
-    private lateinit var dbRef:DatabaseReference
+    private lateinit var postRecyclerView: RecyclerView
+    private lateinit var dbRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,27 +34,45 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
 
-        val intentFg = Intent(this, Notification::class.java)
-        startService(intentFg)
+
+        if (!isMyServiceRunning(Notification::class.java)) {
+            val intentFg = Intent(this, Notification::class.java)
+            startService(intentFg)
+        }
     }
 
+    private fun isMyServiceRunning(mClass: Class<Notification>): Boolean {
+
+        val manager: ActivityManager = getSystemService(
+            Context.ACTIVITY_SERVICE
+        ) as ActivityManager
+
+        for (service: ActivityManager.RunningServiceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (mClass.name.equals(service.service.className))
+                return true
+        }
+
+        return false
+    }
+
+
     private fun initRecyclerView() {
-        postRecyclerView=findViewById(R.id.recycler_view)
+        postRecyclerView = findViewById(R.id.recycler_view)
         postRecyclerView.layoutManager = LinearLayoutManager(this)
         postRecyclerView.setHasFixedSize(true)
-        list= arrayListOf<Post2>()
+        list = arrayListOf<Post2>()
         getPostData()
     }
 
     private fun getPostData() {
-        dbRef=FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("Utenti")
+        dbRef =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Utenti")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(list.isEmpty())
-                {
-                    if(snapshot.exists()) {
+                if (list.isEmpty()) {
+                    if (snapshot.exists()) {
                         for (userSnapshot in snapshot.children) {
                             for (postSnapshot in userSnapshot.children) {
                                 var postApp = postSnapshot.getValue() as HashMap<*, *>
@@ -62,24 +82,36 @@ class HomepageActivity : AppCompatActivity() {
                                 var image = postApp["image"].toString()
                                 var likes = postApp["likes"].toString()
                                 var dislikes = postApp["dislikes"].toString()
-                                var comments = postApp["comments"] as kotlin.collections.ArrayList<Commento>?
-                                var arrayLikes = postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
-                                var arrayDislikes = postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
+                                var comments =
+                                    postApp["comments"] as kotlin.collections.ArrayList<Commento>?
+                                var arrayLikes =
+                                    postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
+                                var arrayDislikes =
+                                    postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
                                 var post =
-                                    Post2(date, image, dislikes.toInt(), category, user, likes.toInt()
-                                        ,comments,arrayLikes,arrayDislikes)
+                                    Post2(
+                                        date,
+                                        image,
+                                        dislikes.toInt(),
+                                        category,
+                                        user,
+                                        likes.toInt(),
+                                        comments,
+                                        arrayLikes,
+                                        arrayDislikes
+                                    )
                                 list.add(0, post)
                             }
                         }
-                }
+                    }
                     postAdapter = PostRecyclerAdapter(list)
                     updateHome()
 
 
 
-                    postAdapter.onImageClick={
-                        recycler_view.visibility= View.INVISIBLE
-                        swipe_refresh.visibility= View.INVISIBLE
+                    postAdapter.onImageClick = {
+                        recycler_view.visibility = View.INVISIBLE
+                        swipe_refresh.visibility = View.INVISIBLE
 
                         val mFragmentManager = supportFragmentManager
                         val mFragmentTransaction = mFragmentManager.beginTransaction()
@@ -88,9 +120,16 @@ class HomepageActivity : AppCompatActivity() {
 
                         val mBundle = Bundle()
 
-                        val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
+                        val post = Post(
+                            it.user!!,
+                            it.category!!,
+                            it.date!!,
+                            it.image!!,
+                            it.likes,
+                            it.dislikes
+                        )
 
-                        mBundle.putParcelable("post",post)
+                        mBundle.putParcelable("post", post)
                         mBundle.putString("nameActivity", "HomepageActivity")
                         mBundle.putString("userid", uId)
                         mFragment.arguments = mBundle
@@ -99,10 +138,10 @@ class HomepageActivity : AppCompatActivity() {
 
 
 
-                    postAdapter.onCommentClick={
-                        recycler_view.visibility= View.INVISIBLE
-                        swipe_refresh.visibility= View.INVISIBLE
-                        bottom_home.visibility=View.INVISIBLE
+                    postAdapter.onCommentClick = {
+                        recycler_view.visibility = View.INVISIBLE
+                        swipe_refresh.visibility = View.INVISIBLE
+                        bottom_home.visibility = View.INVISIBLE
 
                         val mFragmentManager = supportFragmentManager
                         val mFragmentTransaction = mFragmentManager.beginTransaction()
@@ -111,9 +150,9 @@ class HomepageActivity : AppCompatActivity() {
 
                         val mBundle = Bundle()
 
-                        mBundle.putString("userPost",it.user)
-                        mBundle.putString("actualUser",uId)
-                        mBundle.putString("datePost",it.date)
+                        mBundle.putString("userPost", it.user)
+                        mBundle.putString("actualUser", uId)
+                        mBundle.putString("datePost", it.date)
                         mBundle.putString("nameActivity", "HomepageActivity")
                         mFragment2.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_container, mFragment2).commit()
@@ -170,7 +209,7 @@ class HomepageActivity : AppCompatActivity() {
         }
     }
 
-    fun updateHome(){
+    fun updateHome() {
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
             Collections.shuffle(list, Random(System.currentTimeMillis()))
