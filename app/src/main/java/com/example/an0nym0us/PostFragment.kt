@@ -33,14 +33,14 @@ class PostFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    var nameActivityFull:String = "com.example.an0nym0us."
+    var nameActivityFull: String = "com.example.an0nym0us."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true){
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                var javaClass=Class.forName(nameActivityFull)
+                var javaClass = Class.forName(nameActivityFull)
                 val intent = Intent(context, javaClass)
                 startActivity(intent)
             }
@@ -64,31 +64,31 @@ class PostFragment : Fragment() {
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
         var nameActivity = bundle?.getString("nameActivity").toString()
-        nameActivityFull+=nameActivity
-        var likesList: ArrayList<String>? = null
+        nameActivityFull += nameActivity
+        var likesList = arrayListOf<String>()
         var dislikesList: ArrayList<String>? = null
         var approvazioni: Long? = null
         var uId = bundle?.getString("userid").toString()
 
-        var user=view.findViewById<TextView>(R.id.userCode)
-        var category=view.findViewById<TextView>(R.id.categoriaText)
-        var likes=view.findViewById<TextView>(R.id.upvoteCounter)
-        var dislikes=view.findViewById<TextView>(R.id.downvoteCounter)
-        var image=view.findViewById<ImageView>(R.id.postImageFragment)
-        var likeBtn=view.findViewById<ImageButton>(R.id.likeBtnFrag)
-        var dislikeBtn=view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
+        var user = view.findViewById<TextView>(R.id.userCode)
+        var category = view.findViewById<TextView>(R.id.categoriaText)
+        var likes = view.findViewById<TextView>(R.id.upvoteCounter)
+        var dislikes = view.findViewById<TextView>(R.id.downvoteCounter)
+        var image = view.findViewById<ImageView>(R.id.postImageFragment)
+        var likeBtn = view.findViewById<ImageButton>(R.id.likeBtnFrag)
+        var dislikeBtn = view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
         var date = view.findViewById<TextView>(R.id.dataPost)
-        var commentsBtn=view.findViewById<ImageButton>(R.id.commentsBtn)
+        var commentsBtn = view.findViewById<ImageButton>(R.id.commentsBtn)
 
-        val requestOptions=com.bumptech.glide.request.RequestOptions()
+        val requestOptions = com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
 
-        if(post!=null) {
-            user.text=post.user
-            category.text=post.category
-            likes.text= post.likes.toString()
-            dislikes.text= post.dislikes.toString()
+        if (post != null) {
+            user.text = post.user
+            category.text = post.category
+            likes.text = post.likes.toString()
+            dislikes.text = post.dislikes.toString()
 
             var postName = post.date
             var dataPost: String? = null
@@ -98,7 +98,8 @@ class PostFragment : Fragment() {
             }
             date.text = dataPost
 
-            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image).into(image)
+            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image)
+                .into(image)
 
         }
 
@@ -111,6 +112,7 @@ class PostFragment : Fragment() {
         dbRefArrayLikes?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 likesList = it.result.value as ArrayList<String>
+
             }
         }
 
@@ -140,26 +142,27 @@ class PostFragment : Fragment() {
             }
         }
 
-        var dbRefApprovazioni = post?.user?.let{ it ->
+        var dbRefApprovazioni = post?.user?.let { it ->
             FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("InfoUtenti").child(it).child("approvazioni")
         }
         dbRefApprovazioni?.get()?.addOnCompleteListener {
-            if(it.isSuccessful){
+            if (it.isSuccessful) {
                 approvazioni = it.result.value as Long?
             }
         }
 
-        likeBtn.setOnClickListener{
+        likeBtn.setOnClickListener {
             if (dislikesList?.contains(uId) == true) {
                 dislikesList!!.remove(uId)
-                post!!.dislikes = dislikesList!!.size
+                post?.dislikes = dislikesList!!.size
                 if (dislikesList!!.size == 0)
                     dislikesList!!.add("ok")
             }
+
             if (likesList?.contains(uId) == false) {
-                if (likesList?.get(0) == "ok") {
-                    likesList?.removeAt(0)
+                if (likesList.get(0) == "ok") {
+                    likesList!!.removeAt(0)
                     likesList?.add(uId)
                     approvazioni = approvazioni?.plus(1)
                     dbRefApprovazioni!!.setValue(approvazioni)
@@ -168,25 +171,28 @@ class PostFragment : Fragment() {
                     approvazioni = approvazioni?.plus(1)
                     dbRefApprovazioni!!.setValue(approvazioni)
                 }
-            }else if(likesList?.contains(uId) == true){
-                likesList?.remove(uId)
+            } else if (likesList?.contains(uId) == true) {
 
-                if(approvazioni!!.minus(1) < 0)
+                likesList?.remove(uId)
+                if (approvazioni!!.minus(1) < 0)
                     dbRefApprovazioni!!.setValue(0)
                 else {
                     approvazioni = approvazioni?.minus(1)
                     dbRefApprovazioni!!.setValue(approvazioni)
                 }
-
-                if(likesList!!.size == 0)
+                if (likesList!!.size == 0)
                     likesList!!.add("ok")
             }
+
             dbRefArrayLikes!!.setValue(likesList)
             dbRefArrayDislikes!!.setValue(dislikesList)
-            if (likesList!!.get(0) == "ok")
-                post!!.likes = likesList!!.size - 1
+
+
+
+            if (likesList?.get(0) == "ok")
+                post?.likes = likesList!!.size - 1
             else
-                post!!.likes = likesList!!.size
+                post?.likes = likesList!!.size
             likes.text = (post!!.likes).toString()
             dislikes.text = (post!!.dislikes).toString()
             dbRefLikes?.setValue(post.likes)
@@ -194,41 +200,43 @@ class PostFragment : Fragment() {
         }
 
 
-        dislikeBtn.setOnClickListener{
+        dislikeBtn.setOnClickListener {
             if (likesList?.contains(uId) == true) {
+
                 likesList!!.remove(uId)
-                post!!.likes = likesList!!.size
+                post?.likes = likesList!!.size
                 if (likesList!!.size == 0)
                     likesList!!.add("ok")
             }
+
             if (dislikesList?.contains(uId) == false) {
                 if (dislikesList?.get(0) == "ok") {
                     dislikesList?.removeAt(0)
                     dislikesList?.add(uId)
-
-                    if(approvazioni?.minus(1)!! < 0)
+                    if (approvazioni?.minus(1)!! < 0)
                         dbRefApprovazioni!!.setValue(0)
                     else {
-                        approvazioni=approvazioni?.minus(1)
+                        approvazioni = approvazioni?.minus(1)
                         dbRefApprovazioni!!.setValue(approvazioni)
                     }
-
                 } else {
                     dislikesList?.add(uId)
-                    if(approvazioni?.minus(1)!! < 0)
+                    if (approvazioni?.minus(1)!! < 0)
                         dbRefApprovazioni!!.setValue(0)
                     else {
-                        approvazioni=approvazioni?.minus(1)
+                        approvazioni = approvazioni?.minus(1)
                         dbRefApprovazioni!!.setValue(approvazioni)
                     }
                 }
-            }else if(dislikesList?.contains(uId) == true){
+
+            } else if (dislikesList?.contains(uId) == true) {
                 dislikesList?.remove(uId)
                 approvazioni = approvazioni?.plus(1)
                 dbRefApprovazioni!!.setValue(approvazioni)
-                if(dislikesList!!.size == 0)
+                if (dislikesList!!.size == 0)
                     dislikesList!!.add("ok")
             }
+
             dbRefArrayDislikes!!.setValue(dislikesList)
             dbRefArrayLikes!!.setValue(likesList)
             if (dislikesList!!.get(0) == "ok")
@@ -242,31 +250,38 @@ class PostFragment : Fragment() {
         }
 
 
-        commentsBtn.setOnClickListener{
+        commentsBtn.setOnClickListener {
 
-            var bottom_home= activity?.findViewById<BottomNavigationView>(R.id.bottom_home)
+            var bottom_home = activity?.findViewById<BottomNavigationView>(R.id.bottom_home)
             if (bottom_home != null) {
-                bottom_home.visibility=View.INVISIBLE
+                bottom_home.visibility = View.INVISIBLE
             }
 
-            val commentFragment=comment_fragment()
+            val commentFragment = comment_fragment()
 
             val mBundle = Bundle()
 
-            mBundle.putString("userPost",post?.user)
-            mBundle.putString("actualUser",uId)
-            mBundle.putString("datePost",post?.date)
+            mBundle.putString("userPost", post?.user)
+            mBundle.putString("actualUser", uId)
+            mBundle.putString("datePost", post?.date)
             mBundle.putString("nameActivity", nameActivity)
             commentFragment.arguments = mBundle
 
             val transaction = activity?.supportFragmentManager?.beginTransaction()
 
 
-            when(nameActivity){
+            when (nameActivity) {
 
-                "HomepageActivity" -> transaction?.replace(R.id.fragment_container,commentFragment)?.commit()
-                "ExploreActivity" -> transaction?.replace(R.id.fragment_containerExplore,commentFragment)?.commit()
-                "ProfileActivity" -> transaction?.replace(R.id.fragment_containerProfile,commentFragment)?.commit()
+                "HomepageActivity" -> transaction?.replace(R.id.fragment_container, commentFragment)
+                    ?.commit()
+                "ExploreActivity" -> transaction?.replace(
+                    R.id.fragment_containerExplore,
+                    commentFragment
+                )?.commit()
+                "ProfileActivity" -> transaction?.replace(
+                    R.id.fragment_containerProfile,
+                    commentFragment
+                )?.commit()
 
             }
 

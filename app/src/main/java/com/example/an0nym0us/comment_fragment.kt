@@ -83,7 +83,7 @@ class comment_fragment : Fragment() {
 
         commentButton.setOnClickListener{
             var commentText = commentContent.text.toString()
-            var comment = actualUser?.let { it1 -> Commento(it1,commentText) }
+            var comment = actualUser?.let { it1 -> Commento(it1,commentText)}
             var userIniziale = commentList.get(0).user
             if(commentList.size!=0) {
                 if (userIniziale == " ")
@@ -105,7 +105,6 @@ class comment_fragment : Fragment() {
                             var commentApp = commentSnapshot.getValue() as HashMap<*, *>
                             var user = commentApp["user"].toString()
                             var content = commentApp["content"].toString()
-
 
                             commentList.add(Commento(user, content))
                         }

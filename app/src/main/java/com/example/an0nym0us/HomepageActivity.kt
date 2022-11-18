@@ -93,7 +93,7 @@ class HomepageActivity : AppCompatActivity() {
                                 list.add(0, post)
                             }
                         }
-                }
+                    }
                     postAdapter = PostRecyclerAdapter(list)
                     updateHome()
 

@@ -72,7 +72,8 @@ class NotificationsActivity : AppCompatActivity() {
                         }
 
                         if (arrayLikes != null) {
-                            for (user in arrayLikes) {
+                            for (i in arrayLikes.indices) {
+                                var user = arrayLikes.get(i)
                                 if (user != uId)
                                     listLikes.add(0,user + ": ha messo mi piace al tuo post")
                             }
@@ -97,26 +98,6 @@ class NotificationsActivity : AppCompatActivity() {
             }
 
         })
-    }
-
-    fun Notification(tipoNotifica: String, testoNotifica: String){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel: NotificationChannel = NotificationChannel("n","n",NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "prova"
-            }
-            val manager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
-        }
-
-        val builder : NotificationCompat.Builder = NotificationCompat.Builder(this,
-            "n")
-            .setContentText(tipoNotifica)
-            .setSmallIcon(R.drawable.anonym_icon)
-            .setAutoCancel(true)
-            .setContentText(testoNotifica)
-
-        val managerCompat: NotificationManagerCompat = NotificationManagerCompat.from(this)
-        managerCompat.notify(999,builder.build())
     }
 
     fun inizializzaBottomMenu() {

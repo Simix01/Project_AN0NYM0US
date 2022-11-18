@@ -53,7 +53,7 @@ class ExploreActivity : AppCompatActivity() {
                                 var likes = postApp["likes"].toString()
                                 var dislikes = postApp["dislikes"].toString()
                                 var comments = postApp["comments"] as ArrayList<Commento>?
-                                var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
+                                var arrayLikes = postApp["arrayLikes"] as ArrayList<Like>?
                                 var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
                                 var post = Post2(
                                     date,
