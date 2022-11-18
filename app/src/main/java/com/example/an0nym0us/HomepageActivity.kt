@@ -1,9 +1,15 @@
 package com.example.an0nym0us
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,6 +31,7 @@ class HomepageActivity : AppCompatActivity() {
     private lateinit var postRecyclerView:RecyclerView
     private lateinit var dbRef:DatabaseReference
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
@@ -32,8 +39,23 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
 
-        val intentFg = Intent(this, Notification::class.java)
-        startService(intentFg)
+        if(!isMyServiceRunning(Notification::class.java)){
+            val intent = Intent(this, Notification::class.java)
+            ContextCompat.startForegroundService(this,intent)
+        }
+    }
+
+    private fun isMyServiceRunning(mClass: Class<Notification>): Boolean{
+        val manager: ActivityManager = getSystemService(
+            Context.ACTIVITY_SERVICE
+        ) as ActivityManager
+
+        for(service: ActivityManager.RunningServiceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
+
+            if(mClass.name.equals(service.service.className))
+                return true
+        }
+        return false
     }
 
     private fun initRecyclerView() {
