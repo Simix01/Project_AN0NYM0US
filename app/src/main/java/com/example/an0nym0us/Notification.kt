@@ -1,5 +1,7 @@
 package com.example.an0nym0us
 
+import android.app.Notification
+import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -104,7 +106,7 @@ class Notification : Service() {
 
                         for (i in comments.indices) {
                             var mapApp = comments[i] as HashMap<*, *>
-                            if(mapApp["user"].toString() != uId) {
+                            if (mapApp["user"].toString() != uId) {
                                 var testo: String =
                                     mapApp["user"].toString() + ": ha comentato '" + mapApp["content"].toString() + "' nel tuo post"
                                 listaCommentsDaVisualizzare.add(0, testo)
@@ -157,7 +159,7 @@ class Notification : Service() {
                     dbRefNotificheLikes.setValue(listaLikesUpdated)
                 }
 
-                if(listaNotifications.isNotEmpty())
+                if (listaNotifications.isNotEmpty())
                     singleNotification()
 
             }
@@ -169,9 +171,6 @@ class Notification : Service() {
 
         })
 
-
-
-
         createNotificationChannel()
 
         return super.onStartCommand(intent, flags, startId)
@@ -181,33 +180,34 @@ class Notification : Service() {
         TODO("Not yet implemented")
     }
 
-    private fun singleNotification()
-    {
-
+    private fun singleNotification() {
         var inbox: NotificationCompat.InboxStyle = NotificationCompat.InboxStyle()
-        for (notification in listaNotifications)
-            inbox.addLine(notification)
-
-        var notificationNumber=listaNotifications.size
-        val summaryNotification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Notifications")
-            //set content text to support devices running API level < 24
-            .setContentText(notificationNumber.toString()+" new messages")
-            .setSmallIcon(R.drawable.anonym_icon)
-            //build summary info into InboxStyle template
-            .setStyle(inbox)
-            //specify which group this notification belongs to
-            .setGroup(GROUP_NOTIFICATION)
-            //set this notification as the summary for the group
-            .setGroupSummary(true)
-            .setAutoCancel(true)
-            .build()
-
-        NotificationManagerCompat.from(this).apply {
-            notify(0, summaryNotification)
+        if (listaNotifications.size > 1) {
+            for (notification in listaNotifications)
+                inbox.addLine(notification)
+            var notificationNumber = listaNotifications.size
+            val summaryNotification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Notifications")
+                .setContentText(notificationNumber.toString() + " new messages")
+                .setSmallIcon(R.drawable.anonym_icon)
+                .setStyle(inbox)
+                .setGroup(GROUP_NOTIFICATION)
+                .setGroupSummary(true)
+                .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+                .setAutoCancel(true)
+                .build()
+            startForeground(1, summaryNotification)
         }
-
-
+        else {
+            val oneNotification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Notification")
+                .setContentText(listaNotifications.get(0))
+                .setSmallIcon(R.drawable.anonym_icon)
+                .setAutoCancel(true)
+                .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+                .build()
+            startForeground(1, oneNotification)
+        }
     }
 
     private fun createNotificationChannel() {
