@@ -1,22 +1,58 @@
 package com.example.an0nym0us
 
+import android.Manifest
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
+import com.theartofdev.edmodo.cropper.CropImage
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.fragment_post.*
+import kotlinx.android.synthetic.main.impostazioni_profilo.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.absoluteValue
 
+private lateinit var photoFile: File
+private const val FILE_NAME = "photo.jpg"
+
 class ProfileActivity : AppCompatActivity() {
+    var optionMenu = arrayOf<String>("Fai una foto", "Scegli dalla galleria", "Annulla")
+    var globalUri: Uri? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
@@ -24,19 +60,52 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var dbRefInfo: DatabaseReference
     private lateinit var listFull: ArrayList<Post2>
+    private lateinit var mImg: ImageView
+    private lateinit var proPic: String
+    lateinit var storageRef: StorageReference
+    lateinit var fileName: String
     private var listNicknames = arrayListOf<String>()
     private var canEdit: String = "false"
     private var canBeFound: String = "false"
     private var trovato: Boolean = false
     private var myNickname: String? = null
+    var uploadRef:String? = null
+    var imageProfile: CircleImageView? = null
+    lateinit var requestOptions: RequestOptions
+
+    private val cropActivityResultContract = object :
+        ActivityResultContract<Any?, Uri?>(){
+        override fun createIntent(context: Context, input: Any?): Intent {
+            return CropImage.activity()
+                .setAspectRatio(10,10)
+                .getIntent(this@ProfileActivity)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return CropImage.getActivityResult(intent)?.uri
+        }
+
+    }
+
+    private lateinit var cropActivityResultLauncher : ActivityResultLauncher<Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         overridePendingTransition(0, 0)
+        imageProfile = findViewById(R.id.profilePic)
         inizializzaBottomMenu()
         inizializzaImpostazioni()
         initRecyclerView()
+
+
+        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract){
+            it?.let {
+                globalUri = it
+                mImg.setImageURI(globalUri)
+                uploadImage()
+            }
+        }
     }
 
     private fun getPostData() {
@@ -127,6 +196,7 @@ class ProfileActivity : AppCompatActivity() {
 
         dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                var currentUserId: String
                 if (snapshot.exists()) {
                     for (user in snapshot.children) {
 
@@ -134,7 +204,8 @@ class ProfileActivity : AppCompatActivity() {
                         var nickname = Map["nickname"].toString()
 
                         if (user.key == uId) {
-                            var proPic = Map["proPic"].toString()
+                            currentUserId = user.key!!
+                            proPic = Map["proPic"].toString()
                             var approvazioni = Map["approvazioni"].toString()
                             myNickname=nickname
                             canEdit = Map["canEdit"].toString()
@@ -149,6 +220,12 @@ class ProfileActivity : AppCompatActivity() {
                                 seguiti
                             )
 
+                            if(!proPic.equals("ok")){
+
+
+                                Glide.with(this@ProfileActivity).load(proPic).into(imageProfile!!)
+                            }
+
                             //setto valore della progressbar
                             progress_bar.setProgress(approvazioni.toInt())
                             var maxValue = progress_bar.max
@@ -161,8 +238,8 @@ class ProfileActivity : AppCompatActivity() {
                             userCodeProfile.text = myNickname
 
                             /*verifico se l'user che sta usando l'app è lo stesso della pagina
-                        * e in quel caso rendo non visibile il pulsante segui*/
-                            if (uId.equals(nickname))
+                            e in quel caso rendo non visibile il pulsante segui*/
+                            if (uId.equals(currentUserId))
                                 followButton.visibility = View.INVISIBLE
                         }
 
@@ -273,6 +350,143 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            buttonPhoto.setOnClickListener{
+                mImg = dialog!!.findViewById<ImageView>(R.id.newProfilePicture)
+
+                Gallery()
+
+            }
         }
     }
+
+    fun Gallery(){
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        photoFile = File.createTempFile(FILE_NAME, ".jpg", storageDir)
+
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != (PackageManager.PERMISSION_GRANTED)
+        ) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1
+            )
+        } else if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != (PackageManager.PERMISSION_GRANTED)
+        ) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 2
+            )
+        } else if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA
+            ) != (PackageManager.PERMISSION_GRANTED)
+        ) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.CAMERA), 3
+            )
+        } else {
+            chooseImage(this)
+        }
+    }
+
+    fun chooseImage(context: Context) {
+        val builder = AlertDialog.Builder(context)
+
+        builder.setItems(optionMenu) { dialogInterface, i ->
+            if (optionMenu[i].equals("Fai una foto")) {
+                var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                val fileProvider = FileProvider.getUriForFile(
+                    this, "com.example.an0nym0us.fileprovider", photoFile
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+                //startActivityForResult(intent, 3)
+                cropActivityResultLauncher.launch(null)
+            } else if (optionMenu[i].equals("Scegli dalla galleria")) {
+                var intent =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                val fileProvider = FileProvider.getUriForFile(
+                    this, "com.example.an0nym0us.fileprovider", photoFile
+                )
+
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+                cropActivityResultLauncher.launch(null)
+
+
+            } else if (optionMenu[i].equals("Annulla")) {
+                dialogInterface.dismiss()
+            }
+        }
+        builder.show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            requestCode -> {
+                chooseImage(this)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null) {
+                var uri: Uri = data.getData()!!
+                var inputStream = getContentResolver()?.openInputStream(uri)
+                globalUri = Uri.fromFile(photoFile)
+                var bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
+                mImg!!.setImageBitmap(bitmap)
+
+            }
+        } else if (requestCode == 3 && resultCode == RESULT_OK) {
+
+            var bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+            globalUri = Uri.fromFile(photoFile)
+
+            mImg!!.setImageBitmap(bitmap)
+        }
+    }
+
+    fun uploadImage(){
+        val uploadUser = uId
+        val formatterImg = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
+        val now = Date()
+        val uploadOnDB = formatterImg.format(now)
+
+        fileName = uId
+        storageRef = Firebase.storage.reference.child("profile_pictures/$fileName")
+
+        val bitmap = (mImg?.getDrawable() as BitmapDrawable).getBitmap()
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        val image = stream.toByteArray()
+
+        storageRef.putBytes(image).addOnSuccessListener{
+            Toast.makeText(this,"Immagine caricata", Toast.LENGTH_SHORT).show()
+
+            storageRef.downloadUrl.addOnSuccessListener {
+                Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT)
+                    .show()
+                uploadRef=it.toString()
+                var database = FirebaseDatabase
+                    .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("InfoUtenti/$uId")
+                database.child("proPic").setValue(uploadRef).addOnSuccessListener {
+                    Toast.makeText(this, "Image profilo aggiornata", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener{
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                }
+
+            }.addOnFailureListener { Toast.makeText(this, it.message, Toast.LENGTH_SHORT)
+                .show() }
+        }.addOnFailureListener{
+            Toast.makeText(this,it.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }
