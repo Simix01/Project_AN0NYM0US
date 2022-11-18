@@ -401,7 +401,8 @@ class ProfileActivity : AppCompatActivity() {
                     this, "com.example.an0nym0us.fileprovider", photoFile
                 )
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                startActivityForResult(intent, 3)
+                //startActivityForResult(intent, 3)
+                cropActivityResultLauncher.launch(null)
             } else if (optionMenu[i].equals("Scegli dalla galleria")) {
                 var intent =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
