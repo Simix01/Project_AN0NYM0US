@@ -18,9 +18,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
-    private val dbRefNotificheLikes =
-        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("Notifiche").child("$uId").child("likes")
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -98,6 +96,11 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         approvazioni = it.result.value as Long?
                     }
                 }
+                val dbRefNotificheLikes =
+                    post.user?.let {
+                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("Notifiche").child(it).child("likes")
+                    }
                 holder.likeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
@@ -122,7 +125,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                                 dbRefApprovazioni!!.setValue(approvazioni)
                             }
                         } else if (likesList?.contains(uId) == true) {
-                                likesList?.remove(uId)
+                            likesList?.remove(uId)
                             if (approvazioni!!.minus(1) < 0)
                                 dbRefApprovazioni!!.setValue(0)
                             else {
@@ -133,7 +136,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                                 likesList!!.add("ok")
                             var app = ArrayList<String>()
                             app.add("")
-                            dbRefNotificheLikes.setValue(app)
+                            dbRefNotificheLikes!!.setValue(app)
                         }
 
                         dbRefArrayLikes!!.setValue(likesList)
@@ -158,12 +161,12 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
 
                         if (likesList?.contains(uId) == true) {
-                                likesList!!.remove(uId)
+                            likesList!!.remove(uId)
                             post.likes = likesList!!.size
                             if (likesList!!.size == 0) {
                                 var app = ArrayList<String>()
                                 app.add("")
-                                dbRefNotificheLikes.setValue(app)
+                                dbRefNotificheLikes!!.setValue(app)
                                 likesList!!.add("ok")
                             }
                         }

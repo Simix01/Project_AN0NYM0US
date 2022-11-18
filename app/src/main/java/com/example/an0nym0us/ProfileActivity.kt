@@ -51,7 +51,7 @@ private lateinit var photoFile: File
 private const val FILE_NAME = "photo.jpg"
 
 class ProfileActivity : AppCompatActivity() {
-    var optionMenu = arrayOf<String>("Fai una foto", "Scegli dalla galleria", "Annulla")
+    var optionMenu = arrayOf<String>("Scegli dalla galleria", "Annulla")
     var globalUri: Uri? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
@@ -73,6 +73,7 @@ class ProfileActivity : AppCompatActivity() {
     var imageProfile: CircleImageView? = null
     lateinit var requestOptions: RequestOptions
 
+
     private val cropActivityResultContract = object :
         ActivityResultContract<Any?, Uri?>(){
         override fun createIntent(context: Context, input: Any?): Intent {
@@ -88,6 +89,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private lateinit var cropActivityResultLauncher : ActivityResultLauncher<Any?>
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -221,8 +224,6 @@ class ProfileActivity : AppCompatActivity() {
                             )
 
                             if(!proPic.equals("ok")){
-
-
                                 Glide.with(this@ProfileActivity).load(proPic).into(imageProfile!!)
                             }
 
@@ -394,7 +395,7 @@ class ProfileActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(context)
 
         builder.setItems(optionMenu) { dialogInterface, i ->
-            if (optionMenu[i].equals("Fai una foto")) {
+            /*if (optionMenu[i].equals("Fai una foto")) {
                 var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
                 val fileProvider = FileProvider.getUriForFile(
@@ -403,7 +404,7 @@ class ProfileActivity : AppCompatActivity() {
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
                 //startActivityForResult(intent, 3)
                 cropActivityResultLauncher.launch(null)
-            } else if (optionMenu[i].equals("Scegli dalla galleria")) {
+            } else */if (optionMenu[i].equals("Scegli dalla galleria")) {
                 var intent =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 val fileProvider = FileProvider.getUriForFile(
@@ -434,7 +435,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        /*if (requestCode == 1 && resultCode == RESULT_OK) {
             if (data != null) {
                 var uri: Uri = data.getData()!!
                 var inputStream = getContentResolver()?.openInputStream(uri)
@@ -449,6 +450,12 @@ class ProfileActivity : AppCompatActivity() {
             globalUri = Uri.fromFile(photoFile)
 
             mImg!!.setImageBitmap(bitmap)
+        }*/
+        if(requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE){
+            var result = CropImage.getActivityResult(data)
+            if(resultCode == RESULT_OK){
+                globalUri = result.uri
+            }
         }
     }
 
@@ -488,5 +495,6 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this,it.toString(), Toast.LENGTH_SHORT).show()
         }
     }
+
 
 }
