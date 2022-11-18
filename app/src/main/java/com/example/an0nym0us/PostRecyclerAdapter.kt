@@ -33,7 +33,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
             is PostViewHolder -> {
                 val post = postList[position]
 
-                var likesList: ArrayList<String>? = null
+                var likesList = arrayListOf<String>()
                 var dislikesList: ArrayList<String>? = null
                 var approvazioni: Long? = null
 
@@ -43,7 +43,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                     onImageClick?.invoke(post)
                 }
 
-                holder.commentButton.setOnClickListener{
+                holder.commentButton.setOnClickListener {
                     onCommentClick?.invoke(post)
                 }
 
@@ -59,6 +59,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         likesList = it.result.value as ArrayList<String>
                     }
                 }
+
 
                 var dbRefArrayDislikes = post.user?.let {
                     post.date?.let { it1 ->
@@ -86,15 +87,20 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                     }
                 }
 
-                var dbRefApprovazioni = post.user?.let{ it ->
+                var dbRefApprovazioni = post.user?.let { it ->
                     FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                         .getReference("InfoUtenti").child(it).child("approvazioni")
                 }
                 dbRefApprovazioni?.get()?.addOnCompleteListener {
-                    if(it.isSuccessful){
+                    if (it.isSuccessful) {
                         approvazioni = it.result.value as Long?
                     }
                 }
+                val dbRefNotificheLikes =
+                    post.user?.let {
+                        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("Notifiche").child(it).child("likes")
+                    }
                 holder.likeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
@@ -108,32 +114,37 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         }
 
                         if (likesList?.contains(uId) == false) {
-                            if (likesList?.get(0) == "ok") {
-                                likesList?.removeAt(0)
+                            if (likesList.get(0) == "ok") {
+                                likesList!!.removeAt(0)
                                 likesList?.add(uId)
                                 approvazioni = approvazioni?.plus(1)
                                 dbRefApprovazioni!!.setValue(approvazioni)
-                            } else{
+                            } else {
                                 likesList?.add(uId)
                                 approvazioni = approvazioni?.plus(1)
                                 dbRefApprovazioni!!.setValue(approvazioni)
                             }
-                        }
-                        else if(likesList?.contains(uId) == true){
+                        } else if (likesList?.contains(uId) == true) {
                             likesList?.remove(uId)
-                            if(approvazioni!!.minus(1) < 0)
+                            if (approvazioni!!.minus(1) < 0)
                                 dbRefApprovazioni!!.setValue(0)
                             else {
                                 approvazioni = approvazioni?.minus(1)
                                 dbRefApprovazioni!!.setValue(approvazioni)
                             }
-                            if(likesList!!.size == 0)
+                            if (likesList!!.size == 0)
                                 likesList!!.add("ok")
+                            var app = ArrayList<String>()
+                            app.add("")
+                            dbRefNotificheLikes!!.setValue(app)
                         }
 
                         dbRefArrayLikes!!.setValue(likesList)
                         dbRefArrayDislikes!!.setValue(dislikesList)
-                        if (likesList!!.get(0) == "ok")
+
+
+
+                        if (likesList?.get(0) == "ok")
                             post.likes = likesList!!.size - 1
                         else
                             post.likes = likesList!!.size
@@ -152,38 +163,39 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         if (likesList?.contains(uId) == true) {
                             likesList!!.remove(uId)
                             post.likes = likesList!!.size
-                            if (likesList!!.size == 0)
+                            if (likesList!!.size == 0) {
+                                var app = ArrayList<String>()
+                                app.add("")
+                                dbRefNotificheLikes!!.setValue(app)
                                 likesList!!.add("ok")
+                            }
                         }
 
                         if (dislikesList?.contains(uId) == false) {
                             if (dislikesList?.get(0) == "ok") {
                                 dislikesList?.removeAt(0)
                                 dislikesList?.add(uId)
-                                if(approvazioni?.minus(1)!! < 0)
+                                if (approvazioni?.minus(1)!! < 0)
                                     dbRefApprovazioni!!.setValue(0)
                                 else {
-                                    approvazioni=approvazioni?.minus(1)
+                                    approvazioni = approvazioni?.minus(1)
                                     dbRefApprovazioni!!.setValue(approvazioni)
                                 }
-                            }
-                            else {
+                            } else {
                                 dislikesList?.add(uId)
-                                if(approvazioni?.minus(1)!! < 0)
+                                if (approvazioni?.minus(1)!! < 0)
                                     dbRefApprovazioni!!.setValue(0)
                                 else {
-                                    approvazioni=approvazioni?.minus(1)
+                                    approvazioni = approvazioni?.minus(1)
                                     dbRefApprovazioni!!.setValue(approvazioni)
                                 }
                             }
 
-                        }
-
-                        else if(dislikesList?.contains(uId) == true){
+                        } else if (dislikesList?.contains(uId) == true) {
                             dislikesList?.remove(uId)
                             approvazioni = approvazioni?.plus(1)
                             dbRefApprovazioni!!.setValue(approvazioni)
-                            if(dislikesList!!.size == 0)
+                            if (dislikesList!!.size == 0)
                                 dislikesList!!.add("ok")
                         }
 

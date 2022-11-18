@@ -104,16 +104,18 @@ class Notification : Service() {
 
                         for (i in comments.indices) {
                             var mapApp = comments[i] as HashMap<*, *>
-                            var testo: String =
-                                mapApp["user"].toString() + ": ha comentato '" + mapApp["content"].toString() + "' nel tuo post"
-                            listaCommentsDaVisualizzare.add(0, testo)
+                            if(mapApp["user"].toString() != uId) {
+                                var testo: String =
+                                    mapApp["user"].toString() + ": ha comentato '" + mapApp["content"].toString() + "' nel tuo post"
+                                listaCommentsDaVisualizzare.add(0, testo)
+                            }
                         }
 
                         if (arrayLikes != null) {
                             for (i in arrayLikes.indices) {
                                 var user = arrayLikes[i]
                                 if (user != "ok") {
-                                    if (user == uId) {
+                                    if (user != uId) {
                                         var testo: String = user + ": ha messo mi piace al tuo post"
                                         listaLikesDaVisualizzare.add(testo)
                                     }
