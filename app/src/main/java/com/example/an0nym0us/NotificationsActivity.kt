@@ -27,9 +27,11 @@ class NotificationsActivity : AppCompatActivity() {
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
     private lateinit var notificationAdapter: NotificationRecyclerAdapter
-    private lateinit var listLikes: ArrayList<String>
-    private lateinit var listComments: ArrayList<String>
-    private lateinit var listNotifications: ArrayList<String>
+    private lateinit var listaCommentsUpdated: ArrayList<String>
+    private lateinit var listaCommentsDaVisualizzare: ArrayList<String>
+    private lateinit var listaNotifications: ArrayList<String>
+    private lateinit var listaLikesUpdated: ArrayList<String>
+    private lateinit var listaLikesDaVisualizzare: ArrayList<String>
     private lateinit var notificationRecyclerView: RecyclerView
     private lateinit var dbRef: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +45,13 @@ class NotificationsActivity : AppCompatActivity() {
         notificationRecyclerView = findViewById(R.id.notification_RecycleView)
         notificationRecyclerView.layoutManager = LinearLayoutManager(this)
         notificationRecyclerView.setHasFixedSize(true)
-        listLikes = arrayListOf<String>()
-        listComments = arrayListOf<String>()
-        listNotifications = arrayListOf<String>()
+
+        listaCommentsUpdated = arrayListOf<String>()
+        listaCommentsDaVisualizzare = arrayListOf<String>()
+        listaNotifications = arrayListOf<String>()
+        listaLikesUpdated = arrayListOf<String>()
+        listaLikesDaVisualizzare = arrayListOf<String>()
+
         getPostData()
     }
 
@@ -54,49 +60,118 @@ class NotificationsActivity : AppCompatActivity() {
             FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("Utenti").child("$uId")
 
-        dbRef.addValueEventListener(object : ValueEventListener {
+
+        val dbRefNotificheComments =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Notifiche").child("$uId").child("comments")
+
+        val dbRefNotificheLikes =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Notifiche").child("$uId").child("likes")
+
+
+
+        dbRefNotificheComments.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) {
-                        var postApp = userSnapshot.getValue() as HashMap<*, *>
-                        var arrayLikes =
-                            postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
-                        var comments=postApp["comments"] as ArrayList<Commento>
-
-
-                        for(i in comments.indices) {
-                            var mapApp = comments.get(i) as HashMap<*, *>
-                            var testo : String = mapApp["user"].toString() + ": ha comentato '"+ mapApp["content"].toString()+"' nel tuo post"
-                            listComments.add(0,testo)
-
-                        }
-
-                        if (arrayLikes != null) {
-                            for (i in arrayLikes.indices) {
-                                var user = arrayLikes.get(i)
-                                if (user != uId)
-                                    listLikes.add(0,user + ": ha messo mi piace al tuo post")
-                            }
-                        }
-
-                        listNotifications.addAll(listComments)
-                        listNotifications.addAll(listLikes)
-                        Collections.shuffle(listNotifications, Random(System.currentTimeMillis()))
-                        notificationAdapter = NotificationRecyclerAdapter(listNotifications)
-                        notificationRecyclerView.adapter=notificationAdapter
-                    }
-
+                    listaCommentsUpdated = snapshot.value as ArrayList<String>
+                    if (listaCommentsUpdated.get(0) == "")
+                        listaCommentsUpdated.removeAt(0)
                 }
-                var listNotification = arrayListOf<String>()
-                listNotification.addAll(listLikes)
-                listNotification.addAll(listComments)
             }
-
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
+        })
 
+        dbRefNotificheLikes.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    listaLikesUpdated = snapshot.value as ArrayList<String>
+                    if (listaLikesUpdated.get(0) == "")
+                        listaLikesUpdated.removeAt(0)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaLikesDaVisualizzare.clear()
+                listaCommentsDaVisualizzare.clear()
+                listaNotifications.clear()
+                if (snapshot.exists()) {
+
+                    for (userSnapshot in snapshot.children) {
+                        var postApp = userSnapshot.getValue() as HashMap<*, *>
+                        var arrayLikes =
+                            postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
+                        var comments = postApp["comments"] as ArrayList<Commento>
+
+
+                        for (i in comments.indices) {
+                            var mapApp = comments[i] as HashMap<*, *>
+                            if (mapApp["user"].toString() != uId) {
+                                var testo: String =
+                                    mapApp["user"].toString() + ": ha comentato '" + mapApp["content"].toString() + "' nel tuo post"
+                                listaCommentsDaVisualizzare.add(0, testo)
+                            }
+                        }
+
+                        if (arrayLikes != null) {
+                            for (i in arrayLikes.indices) {
+                                var user = arrayLikes[i]
+                                if (user != "ok") {
+                                    if (user != uId) {
+                                        var testo: String = user + ": ha messo mi piace al tuo post"
+                                        listaLikesDaVisualizzare.add(testo)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (listaCommentsDaVisualizzare.size > listaCommentsUpdated.size) {
+                    var a = listaCommentsDaVisualizzare.size
+                    var b = listaCommentsUpdated.size
+                    var sizeDiff = a - b
+
+                    for (i in 0..sizeDiff - 1)
+                        listaNotifications.add(listaCommentsDaVisualizzare.get(i))
+
+                    listaCommentsUpdated.clear()
+                    listaCommentsUpdated.addAll(listaCommentsDaVisualizzare)
+                    dbRefNotificheComments.setValue(listaCommentsUpdated)
+                }
+
+                if (listaLikesDaVisualizzare.size > listaLikesUpdated.size) {
+
+
+                    var a = listaLikesDaVisualizzare.size
+                    var b = listaLikesUpdated.size
+                    var sizeDiff = a - b
+
+                    for (i in 0..sizeDiff - 1)
+                        listaNotifications.add(listaLikesDaVisualizzare.get(i))
+
+
+                    listaLikesUpdated.addAll(listaLikesDaVisualizzare)
+                    dbRefNotificheLikes.setValue(listaLikesUpdated)
+                }
+
+                if (listaNotifications.isNotEmpty()) {
+                    notificationAdapter = NotificationRecyclerAdapter(listaNotifications)
+                    notificationRecyclerView.adapter = notificationAdapter
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
         })
     }
 
