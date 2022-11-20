@@ -1,6 +1,7 @@
 package com.example.an0nym0us
 
 import android.Manifest
+import android.app.ActionBar.LayoutParams
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -14,6 +15,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -223,9 +226,7 @@ class ProfileActivity : AppCompatActivity() {
                                 seguiti
                             )
 
-                            if(!proPic.equals("ok")){
-                                Glide.with(this@ProfileActivity).load(proPic).into(imageProfile!!)
-                            }
+                            setImage()
 
                             //setto valore della progressbar
                             progress_bar.setProgress(approvazioni.toInt())
@@ -258,6 +259,11 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
+    private fun setImage(){
+        if(!this.isFinishing && !proPic.equals("ok")){
+            Glide.with(this@ProfileActivity).load(proPic).into(imageProfile!!)
+        }
+    }
 
     private fun initRecyclerView() {
         grid_post.layoutManager = GridLayoutManager(this, 3)
@@ -306,12 +312,19 @@ class ProfileActivity : AppCompatActivity() {
 
     fun inizializzaImpostazioni() {
 
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        var width = displayMetrics.widthPixels
+        var height = displayMetrics.heightPixels
+
         var dialog: Dialog?
 
         settings.setOnClickListener {
             dialog = Dialog(this@ProfileActivity)
             dialog!!.setContentView(R.layout.impostazioni_profilo)
-            dialog!!.window!!.setLayout(1000, 1500)
+            dialog!!.window!!.setLayout(width-50, LayoutParams.WRAP_CONTENT)
+            dialog!!.window!!.setGravity(Gravity.CENTER)
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
 
             if (this@ProfileActivity != null && !this@ProfileActivity.isFinishing)
