@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -25,7 +24,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,13 +37,9 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.theartofdev.edmodo.cropper.CropImage
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.fragment_post.*
-import kotlinx.android.synthetic.main.impostazioni_profilo.*
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
@@ -332,6 +326,7 @@ class ProfileActivity : AppCompatActivity() {
 
             val buttonNickname = dialog!!.findViewById<Button>(R.id.buttonChangeNickname)
             val buttonPhoto = dialog!!.findViewById<Button>(R.id.buttonChangePhoto)
+            val buttonLogout = dialog!!.findViewById<Button>(R.id.logoutButton)
 
             if (canEdit.equals("false")) {
                 buttonNickname.isClickable = false
@@ -370,6 +365,14 @@ class ProfileActivity : AppCompatActivity() {
 
                 Gallery()
 
+            }
+
+            buttonLogout.setOnClickListener{
+                val intent = Intent(this, LoginActivity::class.java)
+                finishAffinity()
+                FirebaseAuth.getInstance().signOut()
+                intent.putExtra("logout",true)
+                startActivity(intent)
             }
         }
     }

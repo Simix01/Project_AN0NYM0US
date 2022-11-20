@@ -27,7 +27,10 @@ class LoginActivity : AppCompatActivity() {
         val email : EditText = findViewById(R.id.loginActivity_email)
         val password : EditText = findViewById(R.id.loginActivity_password)
         val token = getSharedPreferences("email", Context.MODE_PRIVATE)
+        val logout = intent.getBooleanExtra("logout",false)
 
+        if(logout)
+            token.edit().putString("email"," ").commit()
         if(token.getString("email"," ")!=" "){
             val intent = Intent(this, HomepageActivity::class.java)
             startActivity(intent)
