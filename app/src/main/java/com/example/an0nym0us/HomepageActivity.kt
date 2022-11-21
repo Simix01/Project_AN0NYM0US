@@ -28,8 +28,11 @@ class HomepageActivity : AppCompatActivity() {
     val uId = "anonym$valoreHash"
     private lateinit var postAdapter: PostRecyclerAdapter
     private lateinit var list: ArrayList<Post2>
-    private lateinit var postRecyclerView:RecyclerView
-    private lateinit var dbRef:DatabaseReference
+    private lateinit var postRecyclerView: RecyclerView
+    private lateinit var dbRef: DatabaseReference
+    private val dbRefUser =
+        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("Utenti").child("$uId")
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,42 +42,68 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
 
-        if(!isMyServiceRunning(Notification::class.java)){
-            val intent = Intent(this, Notification::class.java)
-            ContextCompat.startForegroundService(this,intent)
-        }
+        avvioService()
+
+
     }
 
-    private fun isMyServiceRunning(mClass: Class<Notification>): Boolean{
+    private fun avvioService() {
+
+        dbRefUser.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var zeroPost = !snapshot.hasChildren()
+                if(!zeroPost)
+                    ServiceStart()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+    }
+
+    private fun ServiceStart() {
+
+            if (!isMyServiceRunning(Notification::class.java)) {
+                val intent = Intent(this, Notification::class.java)
+                startService(intent)
+            }
+
+    }
+
+    private fun isMyServiceRunning(mClass: Class<Notification>): Boolean {
         val manager: ActivityManager = getSystemService(
             Context.ACTIVITY_SERVICE
         ) as ActivityManager
 
-        for(service: ActivityManager.RunningServiceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
+        for (service: ActivityManager.RunningServiceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
 
-            if(mClass.name.equals(service.service.className))
+            if (mClass.name.equals(service.service.className))
                 return true
         }
         return false
     }
 
     private fun initRecyclerView() {
-        postRecyclerView=findViewById(R.id.recycler_view)
+        postRecyclerView = findViewById(R.id.recycler_view)
         postRecyclerView.layoutManager = LinearLayoutManager(this)
         postRecyclerView.setHasFixedSize(true)
-        list= arrayListOf<Post2>()
+        list = arrayListOf<Post2>()
         getPostData()
     }
 
     private fun getPostData() {
-        dbRef=FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("Utenti")
+        dbRef =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Utenti")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(list.isEmpty())
-                {
-                    if(snapshot.exists()) {
+                if (list.isEmpty()) {
+                    if (snapshot.exists()) {
                         for (userSnapshot in snapshot.children) {
                             for (postSnapshot in userSnapshot.children) {
                                 var postApp = postSnapshot.getValue() as HashMap<*, *>
@@ -84,12 +113,24 @@ class HomepageActivity : AppCompatActivity() {
                                 var image = postApp["image"].toString()
                                 var likes = postApp["likes"].toString()
                                 var dislikes = postApp["dislikes"].toString()
-                                var comments = postApp["comments"] as kotlin.collections.ArrayList<Commento>?
-                                var arrayLikes = postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
-                                var arrayDislikes = postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
+                                var comments =
+                                    postApp["comments"] as kotlin.collections.ArrayList<Commento>?
+                                var arrayLikes =
+                                    postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
+                                var arrayDislikes =
+                                    postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
                                 var post =
-                                    Post2(date, image, dislikes.toInt(), category, user, likes.toInt()
-                                        ,comments,arrayLikes,arrayDislikes)
+                                    Post2(
+                                        date,
+                                        image,
+                                        dislikes.toInt(),
+                                        category,
+                                        user,
+                                        likes.toInt(),
+                                        comments,
+                                        arrayLikes,
+                                        arrayDislikes
+                                    )
                                 list.add(0, post)
                             }
                         }
@@ -99,9 +140,9 @@ class HomepageActivity : AppCompatActivity() {
 
 
 
-                    postAdapter.onImageClick={
-                        recycler_view.visibility= View.INVISIBLE
-                        swipe_refresh.visibility= View.INVISIBLE
+                    postAdapter.onImageClick = {
+                        recycler_view.visibility = View.INVISIBLE
+                        swipe_refresh.visibility = View.INVISIBLE
 
                         val mFragmentManager = supportFragmentManager
                         val mFragmentTransaction = mFragmentManager.beginTransaction()
@@ -110,9 +151,16 @@ class HomepageActivity : AppCompatActivity() {
 
                         val mBundle = Bundle()
 
-                        val post = Post(it.user!!,it.category!!,it.date!!,it.image!!,it.likes,it.dislikes)
+                        val post = Post(
+                            it.user!!,
+                            it.category!!,
+                            it.date!!,
+                            it.image!!,
+                            it.likes,
+                            it.dislikes
+                        )
 
-                        mBundle.putParcelable("post",post)
+                        mBundle.putParcelable("post", post)
                         mBundle.putString("nameActivity", "HomepageActivity")
                         mBundle.putString("userid", uId)
                         mFragment.arguments = mBundle
@@ -121,10 +169,10 @@ class HomepageActivity : AppCompatActivity() {
 
 
 
-                    postAdapter.onCommentClick={
-                        recycler_view.visibility= View.INVISIBLE
-                        swipe_refresh.visibility= View.INVISIBLE
-                        bottom_home.visibility=View.INVISIBLE
+                    postAdapter.onCommentClick = {
+                        recycler_view.visibility = View.INVISIBLE
+                        swipe_refresh.visibility = View.INVISIBLE
+                        bottom_home.visibility = View.INVISIBLE
 
                         val mFragmentManager = supportFragmentManager
                         val mFragmentTransaction = mFragmentManager.beginTransaction()
@@ -133,9 +181,9 @@ class HomepageActivity : AppCompatActivity() {
 
                         val mBundle = Bundle()
 
-                        mBundle.putString("userPost",it.user)
-                        mBundle.putString("actualUser",uId)
-                        mBundle.putString("datePost",it.date)
+                        mBundle.putString("userPost", it.user)
+                        mBundle.putString("actualUser", uId)
+                        mBundle.putString("datePost", it.date)
                         mBundle.putString("nameActivity", "HomepageActivity")
                         mFragment2.arguments = mBundle
                         mFragmentTransaction.add(R.id.fragment_container, mFragment2).commit()
@@ -192,7 +240,7 @@ class HomepageActivity : AppCompatActivity() {
         }
     }
 
-    fun updateHome(){
+    fun updateHome() {
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
             Collections.shuffle(list, Random(System.currentTimeMillis()))

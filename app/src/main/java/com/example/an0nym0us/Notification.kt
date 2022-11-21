@@ -1,9 +1,9 @@
 package com.example.an0nym0us
 
-import android.app.Notification
 import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -11,15 +11,11 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.math.absoluteValue
 
 class Notification : Service() {
@@ -106,7 +102,7 @@ class Notification : Service() {
 
                         for (i in comments.indices) {
                             var mapApp = comments[i] as HashMap<*, *>
-                            if (mapApp["user"].toString() != uId) {
+                            if (mapApp["user"].toString() != uId&&mapApp["user"].toString() != " ") {
                                 var testo: String =
                                     mapApp["user"].toString() + ": ha comentato '" + mapApp["content"].toString() + "' nel tuo post"
                                 listaCommentsDaVisualizzare.add(0, testo)
@@ -173,7 +169,7 @@ class Notification : Service() {
 
         createNotificationChannel()
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -182,6 +178,9 @@ class Notification : Service() {
 
     private fun singleNotification() {
         var inbox: NotificationCompat.InboxStyle = NotificationCompat.InboxStyle()
+        val intent = Intent(this, NotificationsActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this,1,intent,PendingIntent.FLAG_IMMUTABLE)
+
         if (listaNotifications.size > 1) {
             for (notification in listaNotifications)
                 inbox.addLine(notification)
@@ -195,6 +194,7 @@ class Notification : Service() {
                 .setGroupSummary(true)
                 .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
                 .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .build()
             startForeground(1, summaryNotification)
         }
@@ -204,6 +204,7 @@ class Notification : Service() {
                 .setContentText(listaNotifications.get(0))
                 .setSmallIcon(R.drawable.anonym_icon)
                 .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
                 .build()
             startForeground(1, oneNotification)

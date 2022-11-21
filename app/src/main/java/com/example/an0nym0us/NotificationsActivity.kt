@@ -115,10 +115,10 @@ class NotificationsActivity : AppCompatActivity() {
 
                         for (i in comments.indices) {
                             var mapApp = comments[i] as HashMap<*, *>
-                            if (mapApp["user"].toString() != uId) {
+                            if (mapApp["user"].toString() != uId && mapApp["user"].toString() != " ") {
                                 var testo: String =
                                     mapApp["user"].toString() + ": ha comentato '" + mapApp["content"].toString() + "' nel tuo post"
-                                listaCommentsDaVisualizzare.add(0, testo)
+                                listaNotifications.add(0,testo)
                             }
                         }
 
@@ -128,41 +128,13 @@ class NotificationsActivity : AppCompatActivity() {
                                 if (user != "ok") {
                                     if (user != uId) {
                                         var testo: String = user + ": ha messo mi piace al tuo post"
-                                        listaLikesDaVisualizzare.add(testo)
+                                        listaNotifications.add(0,testo)
                                     }
                                 }
                             }
                         }
                     }
                 }
-                if (listaCommentsDaVisualizzare.size > listaCommentsUpdated.size) {
-                    var a = listaCommentsDaVisualizzare.size
-                    var b = listaCommentsUpdated.size
-                    var sizeDiff = a - b
-
-                    for (i in 0..sizeDiff - 1)
-                        listaNotifications.add(listaCommentsDaVisualizzare.get(i))
-
-                    listaCommentsUpdated.clear()
-                    listaCommentsUpdated.addAll(listaCommentsDaVisualizzare)
-                    dbRefNotificheComments.setValue(listaCommentsUpdated)
-                }
-
-                if (listaLikesDaVisualizzare.size > listaLikesUpdated.size) {
-
-
-                    var a = listaLikesDaVisualizzare.size
-                    var b = listaLikesUpdated.size
-                    var sizeDiff = a - b
-
-                    for (i in 0..sizeDiff - 1)
-                        listaNotifications.add(listaLikesDaVisualizzare.get(i))
-
-
-                    listaLikesUpdated.addAll(listaLikesDaVisualizzare)
-                    dbRefNotificheLikes.setValue(listaLikesUpdated)
-                }
-
                 if (listaNotifications.isNotEmpty()) {
                     notificationAdapter = NotificationRecyclerAdapter(listaNotifications)
                     notificationRecyclerView.adapter = notificationAdapter
