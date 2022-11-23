@@ -26,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -42,6 +43,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
 private lateinit var photoFile: File
@@ -52,7 +54,8 @@ class ProfileActivity : AppCompatActivity() {
     var globalUri: Uri? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
-    val uId = "anonym$valoreHash"
+    val currentUid = "anonym$valoreHash"
+    private lateinit var uId: String
     private lateinit var postAdapter: PostRecyclerAdapterGrid
     private lateinit var dbRef: DatabaseReference
     private lateinit var dbRefInfo: DatabaseReference
@@ -93,10 +96,12 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         overridePendingTransition(0, 0)
+        uId = intent.getStringExtra("username").toString()
         imageProfile = findViewById(R.id.profilePic)
         inizializzaBottomMenu()
         inizializzaImpostazioni()
         initRecyclerView()
+        setEventButtonSegui()
 
 
         cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract){
@@ -234,9 +239,14 @@ class ProfileActivity : AppCompatActivity() {
                             userCodeProfile.text = myNickname
 
                             /*verifico se l'user che sta usando l'app è lo stesso della pagina
-                            e in quel caso rendo non visibile il pulsante segui*/
-                            if (uId.equals(currentUserId))
+                            e in quel caso rendo non visibile il pulsante segui
+                            altrimenti rendo invisibile il pulsante delle opzioni*/
+                            if (uId.equals(currentUid)){
                                 followButton.visibility = View.INVISIBLE
+                            }
+                            else{
+                                settings.visibility = View.INVISIBLE
+                            }
                         }
 
                         listNicknames.add(nickname)
@@ -411,16 +421,7 @@ class ProfileActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(context)
 
         builder.setItems(optionMenu) { dialogInterface, i ->
-            /*if (optionMenu[i].equals("Fai una foto")) {
-                var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-                val fileProvider = FileProvider.getUriForFile(
-                    this, "com.example.an0nym0us.fileprovider", photoFile
-                )
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                //startActivityForResult(intent, 3)
-                cropActivityResultLauncher.launch(null)
-            } else */if (optionMenu[i].equals("Scegli dalla galleria")) {
+            if (optionMenu[i].equals("Scegli dalla galleria")) {
                 var intent =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 val fileProvider = FileProvider.getUriForFile(
@@ -451,22 +452,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        /*if (requestCode == 1 && resultCode == RESULT_OK) {
-            if (data != null) {
-                var uri: Uri = data.getData()!!
-                var inputStream = getContentResolver()?.openInputStream(uri)
-                globalUri = Uri.fromFile(photoFile)
-                var bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
-                mImg!!.setImageBitmap(bitmap)
 
-            }
-        } else if (requestCode == 3 && resultCode == RESULT_OK) {
-
-            var bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
-            globalUri = Uri.fromFile(photoFile)
-
-            mImg!!.setImageBitmap(bitmap)
-        }*/
         if(requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE){
             var result = CropImage.getActivityResult(data)
             if(resultCode == RESULT_OK){
@@ -512,5 +498,58 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun setEventButtonSegui(){
+        var listaSeguiti: ArrayList<String> = arrayListOf()
+        var reference = dbRefInfo.child(currentUid).child("seguiti")
+        var hMapReference = dbRefInfo.child(currentUid)
+        /*reference.get().addOnCompleteListener {
+            listaSeguiti = it.result.value as ArrayList<String>
+        }*/
 
+        hMapReference.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    var Map = snapshot.getValue() as HashMap<*, *>
+                    var seguiti = Map["seguiti"] as ArrayList<String>
+                    listaSeguiti = seguiti
+
+                    if(listaSeguiti.contains(uId)){
+                        followButton.text = "SMETTI DI SEGUIRE"
+                    }
+                    else
+                        followButton.text = "SEGUI"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+        followButton.setOnClickListener {
+            if(followButton.text.equals("SEGUI")){
+                if(listaSeguiti.get(0).equals("ok")){
+                    listaSeguiti.removeAt(0)
+                    listaSeguiti.add(uId)
+                }
+                else
+                    listaSeguiti.add(uId)
+
+                reference.setValue(listaSeguiti)
+            }
+
+            if(followButton.text.equals("SMETTI DI SEGUIRE")){
+                if(listaSeguiti.size == 1){
+                    listaSeguiti.removeAt(0)
+                    listaSeguiti.add("ok")
+                }
+                else
+                    listaSeguiti.remove(uId)
+
+                reference.setValue(listaSeguiti)
+            }
+        }
+
+
+    }
 }

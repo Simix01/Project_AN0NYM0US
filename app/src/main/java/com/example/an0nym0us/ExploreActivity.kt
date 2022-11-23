@@ -152,6 +152,7 @@ class ExploreActivity : AppCompatActivity() {
                 R.id.profile -> {
                     val intent =
                         Intent(this@ExploreActivity, ProfileActivity::class.java)
+                    intent.putExtra("username", uId)
                     startActivity(intent)
                     overridePendingTransition(0,0)
                     finish()

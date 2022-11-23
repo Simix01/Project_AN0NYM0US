@@ -42,6 +42,9 @@ class PostFragment : Fragment() {
             override fun handleOnBackPressed() {
                 var javaClass = Class.forName(nameActivityFull)
                 val intent = Intent(context, javaClass)
+                val myBundle = arguments
+                var username = myBundle!!.getString("userid").toString()
+                intent.putExtra("username", username)
                 startActivity(intent)
             }
 
