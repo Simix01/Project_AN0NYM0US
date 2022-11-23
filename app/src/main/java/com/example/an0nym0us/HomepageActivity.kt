@@ -100,98 +100,133 @@ class HomepageActivity : AppCompatActivity() {
             FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("Utenti")
 
-        dbRef.addValueEventListener(object : ValueEventListener {
+        var dbRefInfo =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("InfoUtenti")
+
+        dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (list.isEmpty()) {
-                    if (snapshot.exists()) {
-                        for (userSnapshot in snapshot.children) {
-                            for (postSnapshot in userSnapshot.children) {
-                                var postApp = postSnapshot.getValue() as HashMap<*, *>
-                                var user = postApp["user"].toString()
-                                var category = postApp["category"].toString()
-                                var date = postApp["date"].toString()
-                                var image = postApp["image"].toString()
-                                var likes = postApp["likes"].toString()
-                                var dislikes = postApp["dislikes"].toString()
-                                var comments =
-                                    postApp["comments"] as kotlin.collections.ArrayList<Commento>?
-                                var arrayLikes =
-                                    postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
-                                var arrayDislikes =
-                                    postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
-                                var post =
-                                    Post2(
-                                        date,
-                                        image,
-                                        dislikes.toInt(),
-                                        category,
-                                        user,
-                                        likes.toInt(),
-                                        comments,
-                                        arrayLikes,
-                                        arrayDislikes
-                                    )
-                                list.add(0, post)
+                var mapUserInfo=snapshot.value as Map<*, *>
+                dbRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (list.isEmpty()) {
+                            if (snapshot.exists()) {
+                                for (userSnapshot in snapshot.children) {
+                                    for (postSnapshot in userSnapshot.children) {
+                                        var postApp = postSnapshot.getValue() as HashMap<*, *>
+                                        var user = postApp["user"].toString()
+                                        var category = postApp["category"].toString()
+                                        var date = postApp["date"].toString()
+                                        var image = postApp["image"].toString()
+                                        var likes = postApp["likes"].toString()
+                                        var dislikes = postApp["dislikes"].toString()
+                                        var comments =
+                                            postApp["comments"] as kotlin.collections.ArrayList<Commento>?
+                                        var arrayLikes =
+                                            postApp["arrayLikes"] as kotlin.collections.ArrayList<String>?
+                                        var arrayDislikes =
+                                            postApp["arrayDislikes"] as kotlin.collections.ArrayList<String>?
+
+                                        for(userInfo in mapUserInfo){
+                                            if(user==userInfo.key) {
+                                                var userApp= userInfo.value as kotlin.collections.HashMap<*,*>
+                                                var nickname=userApp["nickname"].toString()
+                                                var proPic=userApp["proPic"].toString()
+                                                var post =
+                                                    Post2(
+                                                        date,
+                                                        image,
+                                                        proPic,
+                                                        dislikes.toInt(),
+                                                        category,
+                                                        user,
+                                                        nickname,
+                                                        likes.toInt(),
+                                                        comments,
+                                                        arrayLikes,
+                                                        arrayDislikes
+                                                    )
+                                                list.add(0, post)
+                                            }
+                                        }
+
+
+                                    }
+                                }
                             }
+                            postAdapter = PostRecyclerAdapter(list)
+                            updateHome()
+
+
+
+                            postAdapter.onImageClick = {
+                                recycler_view.visibility = View.INVISIBLE
+                                swipe_refresh.visibility = View.INVISIBLE
+
+                                val mFragmentManager = supportFragmentManager
+                                val mFragmentTransaction = mFragmentManager.beginTransaction()
+                                mFragmentTransaction.addToBackStack(null)
+                                val mFragment = PostFragment()
+
+                                val mBundle = Bundle()
+
+                                val post = Post(
+                                    it.user!!,
+                                    it.nickname!!,
+                                    it.category!!,
+                                    it.date!!,
+                                    it.image!!,
+                                    it.proPic!!,
+                                    it.likes,
+                                    it.dislikes
+                                )
+
+                                mBundle.putParcelable("post", post)
+                                mBundle.putString("nameActivity", "HomepageActivity")
+                                mBundle.putString("userid", uId)
+                                mFragment.arguments = mBundle
+                                mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+                            }
+
+
+
+                            postAdapter.onCommentClick = {
+                                recycler_view.visibility = View.INVISIBLE
+                                swipe_refresh.visibility = View.INVISIBLE
+                                bottom_home.visibility = View.INVISIBLE
+
+                                val mFragmentManager = supportFragmentManager
+                                val mFragmentTransaction = mFragmentManager.beginTransaction()
+                                mFragmentTransaction.addToBackStack(null)
+                                val mFragment2 = comment_fragment()
+
+                                val mBundle = Bundle()
+
+                                mBundle.putString("userPost", it.user)
+                                mBundle.putString("actualUser", uId)
+                                mBundle.putString("datePost", it.date)
+                                mBundle.putString("nameActivity", "HomepageActivity")
+                                mFragment2.arguments = mBundle
+                                mFragmentTransaction.add(R.id.fragment_container, mFragment2).commit()
+
+                            }
+
+                            postAdapter.onUserClick={
+                                val intent =
+                                    Intent(this@HomepageActivity, ProfileActivity::class.java)
+                                intent.putExtra("username", it)
+                                startActivity(intent)
+                            }
+
+                            postRecyclerView.adapter = postAdapter
                         }
                     }
-                    postAdapter = PostRecyclerAdapter(list)
-                    updateHome()
 
-
-
-                    postAdapter.onImageClick = {
-                        recycler_view.visibility = View.INVISIBLE
-                        swipe_refresh.visibility = View.INVISIBLE
-
-                        val mFragmentManager = supportFragmentManager
-                        val mFragmentTransaction = mFragmentManager.beginTransaction()
-                        mFragmentTransaction.addToBackStack(null)
-                        val mFragment = PostFragment()
-
-                        val mBundle = Bundle()
-
-                        val post = Post(
-                            it.user!!,
-                            it.category!!,
-                            it.date!!,
-                            it.image!!,
-                            it.likes,
-                            it.dislikes
-                        )
-
-                        mBundle.putParcelable("post", post)
-                        mBundle.putString("nameActivity", "HomepageActivity")
-                        mBundle.putString("userid", uId)
-                        mFragment.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
                     }
 
-
-
-                    postAdapter.onCommentClick = {
-                        recycler_view.visibility = View.INVISIBLE
-                        swipe_refresh.visibility = View.INVISIBLE
-                        bottom_home.visibility = View.INVISIBLE
-
-                        val mFragmentManager = supportFragmentManager
-                        val mFragmentTransaction = mFragmentManager.beginTransaction()
-                        mFragmentTransaction.addToBackStack(null)
-                        val mFragment2 = comment_fragment()
-
-                        val mBundle = Bundle()
-
-                        mBundle.putString("userPost", it.user)
-                        mBundle.putString("actualUser", uId)
-                        mBundle.putString("datePost", it.date)
-                        mBundle.putString("nameActivity", "HomepageActivity")
-                        mFragment2.arguments = mBundle
-                        mFragmentTransaction.add(R.id.fragment_container, mFragment2).commit()
-
-                    }
-
-                    postRecyclerView.adapter = postAdapter
-                }
+                })
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -199,6 +234,8 @@ class HomepageActivity : AppCompatActivity() {
             }
 
         })
+
+
     }
 
     private fun inizializzaBottomMenu() {

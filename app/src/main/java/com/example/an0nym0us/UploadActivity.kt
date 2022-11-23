@@ -300,7 +300,7 @@ class UploadActivity : AppCompatActivity() {
                 var arrayDislikes = arrayListOf<String>()
                 arrayDislikes.add("ok")
                 comments.add(Commento(" "," "))
-                val post = Post2(uploadOnDB,uploadRef!!,uploadDislike,uploadCategory,uploadUser,uploadLike
+                val post = Post2(uploadOnDB,uploadRef!!,null,uploadDislike,uploadCategory,uploadUser,null,uploadLike
                     ,comments, arrayLikes, arrayDislikes)
                 database.child(uploadOnDB).setValue(post).addOnSuccessListener {
                     Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()

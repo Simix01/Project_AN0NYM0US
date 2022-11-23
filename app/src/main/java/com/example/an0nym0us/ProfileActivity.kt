@@ -122,86 +122,103 @@ class ProfileActivity : AppCompatActivity() {
             FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("InfoUtenti")
 
-        dbRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (listFull.isEmpty()) {
-                    if (snapshot.exists()) {
-                        for (userSnapshot in snapshot.children) {
-                            for (postSnapshot in userSnapshot.children) {
-
-                                var postApp = postSnapshot.getValue() as HashMap<*, *>
-                                var user = postApp["user"].toString()
-                                var category = postApp["category"].toString()
-                                var date = postApp["date"].toString()
-                                var image = postApp["image"].toString()
-                                var likes = postApp["likes"].toString()
-                                var dislikes = postApp["dislikes"].toString()
-                                var comments = postApp["comments"] as ArrayList<Commento>?
-                                var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
-                                var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
-                                var post = Post2(
-                                    date,
-                                    image,
-                                    dislikes.toInt(),
-                                    category,
-                                    user,
-                                    likes.toInt(),
-                                    comments,
-                                    arrayLikes,
-                                    arrayDislikes
-                                )
-
-                                if (user.equals(uId)) {
-                                    listFull.add(0, post)
-                                }
-                            }
-                        }
 
 
-                        postAdapter = PostRecyclerAdapterGrid(listFull)
-
-                        val mFragmentManager = supportFragmentManager
-                        val mFragmentTransaction = mFragmentManager.beginTransaction()
-                        val mFragment = PostFragment()
-
-                        postAdapter!!.onImageClick = {
-                            grid_post.visibility = View.INVISIBLE
-                            linear_layout_profile.visibility = View.INVISIBLE
-
-                            val mBundle = Bundle()
-
-                            val post = Post(
-                                it.user!!,
-                                it.category!!,
-                                it.date!!,
-                                it.image!!,
-                                it.likes,
-                                it.dislikes
-                            )
-
-                            mBundle.putParcelable("post", post)
-                            mBundle.putString("nameActivity", "ProfileActivity")
-                            mBundle.putString("userid", uId)
-                            mFragment.arguments = mBundle
-                            mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment)
-                                .commit()
-                        }
-
-                        grid_post.adapter = postAdapter
-                        postAdapter!!.notifyDataSetChanged()
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
 
         dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var currentUserId: String
+                var mapUserInfo=snapshot.value as Map<*, *>
+
+                dbRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (listFull.isEmpty()) {
+                            if (snapshot.exists()) {
+                                for (userSnapshot in snapshot.children) {
+                                    for (postSnapshot in userSnapshot.children) {
+
+                                        var postApp = postSnapshot.getValue() as HashMap<*, *>
+                                        var user = postApp["user"].toString()
+                                        var category = postApp["category"].toString()
+                                        var date = postApp["date"].toString()
+                                        var image = postApp["image"].toString()
+                                        var likes = postApp["likes"].toString()
+                                        var dislikes = postApp["dislikes"].toString()
+                                        var comments = postApp["comments"] as ArrayList<Commento>?
+                                        var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
+                                        var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
+
+                                        for(userInfo in mapUserInfo){
+                                            if(user==userInfo.key) {
+                                                var userApp= userInfo.value as kotlin.collections.HashMap<*,*>
+                                                var nickname=userApp["nickname"].toString()
+                                                var proPic=userApp["proPic"].toString()
+                                                var post =
+                                                    Post2(
+                                                        date,
+                                                        image,
+                                                        proPic,
+                                                        dislikes.toInt(),
+                                                        category,
+                                                        user,
+                                                        nickname,
+                                                        likes.toInt(),
+                                                        comments,
+                                                        arrayLikes,
+                                                        arrayDislikes
+                                                    )
+                                                if (user.equals(uId)) {
+                                                    listFull.add(0, post)
+                                                }
+                                            }
+                                        }
+
+
+                                    }
+                                }
+                                postAdapter = PostRecyclerAdapterGrid(listFull)
+
+                                val mFragmentManager = supportFragmentManager
+                                val mFragmentTransaction = mFragmentManager.beginTransaction()
+                                val mFragment = PostFragment()
+
+                                postAdapter!!.onImageClick = {
+                                    grid_post.visibility = View.INVISIBLE
+                                    linear_layout_profile.visibility = View.INVISIBLE
+
+                                    val mBundle = Bundle()
+
+                                    val post = Post(
+                                        it.user!!,
+                                        it.nickname!!,
+                                        it.category!!,
+                                        it.date!!,
+                                        it.image!!,
+                                        it.proPic!!,
+                                        it.likes,
+                                        it.dislikes
+                                    )
+
+                                    mBundle.putParcelable("post", post)
+                                    mBundle.putString("nameActivity", "ProfileActivity")
+                                    mBundle.putString("userid", uId)
+                                    mFragment.arguments = mBundle
+                                    mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment)
+                                        .commit()
+                                }
+
+                                grid_post.adapter = postAdapter
+                                postAdapter!!.notifyDataSetChanged()
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+
                 if (snapshot.exists()) {
                     for (user in snapshot.children) {
 

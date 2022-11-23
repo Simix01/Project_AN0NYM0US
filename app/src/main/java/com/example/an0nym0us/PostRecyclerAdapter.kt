@@ -15,6 +15,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
     var onImageClick: ((Post2) -> Unit)? = null
     var onCommentClick: ((Post2) -> Unit)? = null
+    var onUserClick: ((String) -> Unit)? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
@@ -43,6 +44,10 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
                 holder.commentButton.setOnClickListener {
                     onCommentClick?.invoke(post)
+                }
+
+                holder.postUser.setOnClickListener{
+                    post.user?.let { it1 -> onUserClick?.invoke(it1) }
                 }
 
 
@@ -220,6 +225,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val postImage = itemView.post_image
+        val proPic=itemView.userImg
         val postUser = itemView.post_user
         val postCategory = itemView.post_category
         val postDate = itemView.post_data
@@ -238,7 +244,14 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
             Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image)
                 .into(postImage)
 
-            postUser.setText(post.user)
+            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.proPic)
+                .into(proPic)
+
+
+            if(post.nickname==null)
+                postUser.setText(post.user)
+            else
+                postUser.setText(post.nickname)
             postCategory.setText(post.category)
 
             var postName = post.date

@@ -78,6 +78,7 @@ class PostFragment : Fragment() {
         var likes = view.findViewById<TextView>(R.id.upvoteCounter)
         var dislikes = view.findViewById<TextView>(R.id.downvoteCounter)
         var image = view.findViewById<ImageView>(R.id.postImageFragment)
+        var proPic=view.findViewById<ImageView>(R.id.userImg)
         var likeBtn = view.findViewById<ImageButton>(R.id.likeBtnFrag)
         var dislikeBtn = view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
         var date = view.findViewById<TextView>(R.id.dataPost)
@@ -88,7 +89,11 @@ class PostFragment : Fragment() {
             .error(R.drawable.ic_launcher_background)
 
         if (post != null) {
-            user.text = post.user
+            if(post.nickname==null)
+                user.text = post.user
+            else
+                user.text = post.nickname
+
             category.text = post.category
             likes.text = post.likes.toString()
             dislikes.text = post.dislikes.toString()
@@ -103,6 +108,9 @@ class PostFragment : Fragment() {
 
             Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image)
                 .into(image)
+
+            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.proPic)
+                .into(proPic)
 
         }
 
@@ -250,6 +258,13 @@ class PostFragment : Fragment() {
             likes.text = (post.likes).toString()
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
+        }
+
+        user.setOnClickListener{
+            val intent =
+                Intent(activity, ProfileActivity::class.java)
+            intent.putExtra("username", post?.user)
+            startActivity(intent)
         }
 
 

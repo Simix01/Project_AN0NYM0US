@@ -6,12 +6,16 @@ import com.google.android.gms.tasks.Task
 
 data class Post(
     val user:String,
+    val nickname:String,
     val category:String,
     val date:String,
     val image: String,
+    val proPic: String,
     var likes:Int,
     var dislikes:Int ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -26,6 +30,7 @@ data class Post(
         parcel.writeString(category)
         parcel.writeString(date)
         parcel.writeString(image)
+        parcel.writeString(proPic)
         parcel.writeInt(likes)
         parcel.writeInt(dislikes)
     }
@@ -35,7 +40,7 @@ data class Post(
     }
 
     override fun toString(): String {
-        return "Post(user='$user',category='$category',date='$date',image='$image',likes='$likes',dislikes='$dislikes')"
+        return "Post(user='$user',category='$category',date='$date',image='$image',proPic='$proPic',likes='$likes',dislikes='$dislikes')"
     }
 
     companion object CREATOR : Parcelable.Creator<Post> {
