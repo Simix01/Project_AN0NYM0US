@@ -28,6 +28,7 @@ class ExploreActivity : AppCompatActivity() {
         setContentView(R.layout.activity_explore)
         overridePendingTransition(0, 0)
         inizializzaBottomMenu()
+        inizializzaSearchBar()
         initRecyclerView()
     }
 
@@ -80,7 +81,7 @@ class ExploreActivity : AppCompatActivity() {
 
                         postAdapter!!.onImageClick = {
                             StaggeredGrid_Explore.visibility = View.INVISIBLE
-                            searchView.visibility = View.INVISIBLE
+                            search_bar.visibility = View.INVISIBLE
                             chipGroup.visibility = View.INVISIBLE
                             val mBundle = Bundle()
 
@@ -181,6 +182,13 @@ class ExploreActivity : AppCompatActivity() {
             listFull.clear()
             listFull.addAll(listFiltered)
             postAdapter?.notifyDataSetChanged()
+        }
+    }
+
+    fun inizializzaSearchBar(){
+        search_field.setOnClickListener{
+            var intent = Intent(this@ExploreActivity,SearchActivity::class.java)
+            startActivity(intent)
         }
     }
 }
