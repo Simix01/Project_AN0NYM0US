@@ -49,10 +49,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
+                android:clickable="true"
                 android:drawableLeft="@drawable/ic_baseline_search_24"
                 android:editable="false"
-                android:clickable="true"
-                android:focusable="false">
+                android:focusable="false"
+                tools:ignore="SpeakableTextPresentCheck">
 
             </com.google.android.material.textfield.TextInputEditText>
 

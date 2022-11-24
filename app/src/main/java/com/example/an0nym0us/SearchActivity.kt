@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.SearchView
 import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,7 +21,6 @@ class SearchActivity : AppCompatActivity() {
         FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("InfoUtenti")
     private lateinit var adapter : ArrayAdapter<*>
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +59,23 @@ class SearchActivity : AppCompatActivity() {
     private fun dynamicListView(){
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listaUsers)
         listViewUtenti.adapter = adapter
+        search_field.setOnQueryTextListener(object:
+                SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(listaUsers.contains(query)){
+                    adapter.filter.filter(query)
+                }else{
+                    Toast.makeText(this@SearchActivity,"Utente non trovato",Toast.LENGTH_SHORT).show()
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return false
+            }
+
+        })
         listViewUtenti.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val intent = Intent(this@SearchActivity, ProfileActivity::class.java)
             intent.putExtra("username", listaIDs[i])
