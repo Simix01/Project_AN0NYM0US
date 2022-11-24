@@ -107,6 +107,8 @@ class HomepageActivity : AppCompatActivity() {
         dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var mapUserInfo=snapshot.value as Map<*, *>
+                var myInfo = snapshot.child("$uId").value as HashMap<*,*>
+                var seguiti = myInfo["seguiti"] as kotlin.collections.ArrayList<String>
                 dbRef.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (list.isEmpty()) {
@@ -146,7 +148,8 @@ class HomepageActivity : AppCompatActivity() {
                                                         arrayLikes,
                                                         arrayDislikes
                                                     )
-                                                list.add(0, post)
+                                                if(seguiti.contains(user))
+                                                    list.add(0, post)
                                             }
                                         }
 
