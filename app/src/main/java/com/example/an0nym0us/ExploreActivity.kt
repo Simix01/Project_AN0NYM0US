@@ -84,7 +84,8 @@ class ExploreActivity : AppCompatActivity() {
                                                         arrayLikes,
                                                         arrayDislikes
                                                     )
-                                                listFull.add(0, post)
+                                                if(dislikes.toInt() < 100)
+                                                    listFull.add(0, post)
                                             }
                                         }
                                     }

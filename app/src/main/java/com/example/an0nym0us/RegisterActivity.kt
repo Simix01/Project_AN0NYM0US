@@ -81,8 +81,10 @@ class RegisterActivity : AppCompatActivity() {
                                 val canBeFound = false
                                 var seguiti = arrayListOf<String>()
                                 seguiti.add("ok")
+                                val notifications = true
 
-                                val utente = Utente(proPic,nickname,approvazioni,canEdit,canBeFound, seguiti)
+                                val utente = Utente(proPic,nickname,approvazioni,canEdit,canBeFound,
+                                    seguiti,notifications)
                                 database.child(nickname).setValue(utente).addOnSuccessListener {
                                     Toast.makeText(this,"evviva", Toast.LENGTH_SHORT)
                                 }.addOnFailureListener {

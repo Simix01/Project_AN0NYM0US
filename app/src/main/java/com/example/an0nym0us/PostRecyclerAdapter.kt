@@ -15,6 +15,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
     var onImageClick: ((Post2) -> Unit)? = null
     var onCommentClick: ((Post2) -> Unit)? = null
+    var onShareClick: ((String) -> Unit)? = null
     var onUserClick: ((String) -> Unit)? = null
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
@@ -48,6 +49,9 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
                 holder.postUser.setOnClickListener{
                     post.user?.let { it1 -> onUserClick?.invoke(it1) }
+                }
+                holder.shareButton.setOnClickListener {
+                    onShareClick?.invoke(post.image!!)
                 }
 
 
@@ -234,6 +238,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
         val likeButton = itemView.btnLike
         val dislikeButton = itemView.btnDislike
         val commentButton = itemView.post_comment
+        val shareButton = itemView.buttonShare
         lateinit var dataPost: String
 
         fun bind(post: Post2) {

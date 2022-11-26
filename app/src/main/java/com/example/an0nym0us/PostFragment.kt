@@ -83,6 +83,7 @@ class PostFragment : Fragment() {
         var dislikeBtn = view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
         var date = view.findViewById<TextView>(R.id.dataPost)
         var commentsBtn = view.findViewById<ImageButton>(R.id.commentsBtn)
+        var shareBtn = view.findViewById<ImageButton>(R.id.shareBtn)
 
         val requestOptions = com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.ic_launcher_background)
@@ -303,6 +304,18 @@ class PostFragment : Fragment() {
 
             }
 
+        }
+
+        shareBtn.setOnClickListener {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Immagine condivisa da AN0NYM0US," +
+                        "scarica l'app anche tu!  ${post!!.image}")
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
         }
 
 

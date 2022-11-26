@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginTop="10dp"
     tools:context=".PostFragment">
 
     <LinearLayout
@@ -36,10 +37,10 @@
             android:layout_marginVertical="15dp" />
 
         <HorizontalScrollView
-            android:layout_width="150dp"
+            android:layout_width="120dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="7dp"
             android:background="@drawable/textview_border">
 
             <com.google.android.material.textview.MaterialTextView
@@ -167,7 +168,7 @@
             android:gravity="center_horizontal">
             <ImageButton
                 android:id="@+id/shareBtn"
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/share"
                 android:layout_marginTop="10dp">

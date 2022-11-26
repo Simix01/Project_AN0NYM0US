@@ -2,6 +2,7 @@ package com.example.an0nym0us
 
 import android.Manifest
 import android.app.ActionBar.LayoutParams
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -24,9 +25,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -43,8 +44,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
+
 
 private lateinit var photoFile: File
 private const val FILE_NAME = "photo.jpg"
@@ -69,16 +70,16 @@ class ProfileActivity : AppCompatActivity() {
     private var canBeFound: String = "false"
     private var trovato: Boolean = false
     private var myNickname: String? = null
-    var uploadRef:String? = null
+    var uploadRef: String? = null
     var imageProfile: CircleImageView? = null
-    lateinit var requestOptions: RequestOptions
+    lateinit var dbRefUser: DatabaseReference
 
 
     private val cropActivityResultContract = object :
-        ActivityResultContract<Any?, Uri?>(){
+        ActivityResultContract<Any?, Uri?>() {
         override fun createIntent(context: Context, input: Any?): Intent {
             return CropImage.activity()
-                .setAspectRatio(10,10)
+                .setAspectRatio(10, 10)
                 .getIntent(this@ProfileActivity)
         }
 
@@ -88,8 +89,7 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private lateinit var cropActivityResultLauncher : ActivityResultLauncher<Any?>
-
+    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +97,9 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         overridePendingTransition(0, 0)
         uId = intent.getStringExtra("username").toString()
+        dbRefUser =
+            FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Utenti").child("$uId")
         imageProfile = findViewById(R.id.profilePic)
         inizializzaBottomMenu()
         inizializzaImpostazioni()
@@ -104,7 +107,7 @@ class ProfileActivity : AppCompatActivity() {
         setEventButtonSegui()
 
 
-        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract){
+        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
             it?.let {
                 globalUri = it
                 mImg.setImageURI(globalUri)
@@ -128,7 +131,7 @@ class ProfileActivity : AppCompatActivity() {
         dbRefInfo.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var currentUserId: String
-                var mapUserInfo=snapshot.value as Map<*, *>
+                var mapUserInfo = snapshot.value as Map<*, *>
 
                 dbRef.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -146,13 +149,15 @@ class ProfileActivity : AppCompatActivity() {
                                         var dislikes = postApp["dislikes"].toString()
                                         var comments = postApp["comments"] as ArrayList<Commento>?
                                         var arrayLikes = postApp["arrayLikes"] as ArrayList<String>?
-                                        var arrayDislikes = postApp["arrayDislikes"] as ArrayList<String>?
+                                        var arrayDislikes =
+                                            postApp["arrayDislikes"] as ArrayList<String>?
 
-                                        for(userInfo in mapUserInfo){
-                                            if(user==userInfo.key) {
-                                                var userApp= userInfo.value as kotlin.collections.HashMap<*,*>
-                                                var nickname=userApp["nickname"].toString()
-                                                var proPic=userApp["proPic"].toString()
+                                        for (userInfo in mapUserInfo) {
+                                            if (user == userInfo.key) {
+                                                var userApp =
+                                                    userInfo.value as kotlin.collections.HashMap<*, *>
+                                                var nickname = userApp["nickname"].toString()
+                                                var proPic = userApp["proPic"].toString()
                                                 var post =
                                                     Post2(
                                                         date,
@@ -203,7 +208,10 @@ class ProfileActivity : AppCompatActivity() {
                                     mBundle.putString("nameActivity", "ProfileActivity")
                                     mBundle.putString("userid", uId)
                                     mFragment.arguments = mBundle
-                                    mFragmentTransaction.add(R.id.fragment_containerProfile, mFragment)
+                                    mFragmentTransaction.add(
+                                        R.id.fragment_containerProfile,
+                                        mFragment
+                                    )
                                         .commit()
                                 }
 
@@ -229,17 +237,19 @@ class ProfileActivity : AppCompatActivity() {
                             currentUserId = user.key!!
                             proPic = Map["proPic"].toString()
                             var approvazioni = Map["approvazioni"].toString()
-                            myNickname=nickname
+                            myNickname = nickname
                             canEdit = Map["canEdit"].toString()
                             canBeFound = Map["canBeFound"].toString()
                             var seguiti = Map["seguiti"] as ArrayList<String>
+                            var notifiche = Map["notifications"].toString()
                             var user = Utente(
                                 proPic,
                                 nickname,
                                 approvazioni.toInt(),
                                 canEdit.toBoolean(),
                                 canBeFound.toBoolean(),
-                                seguiti
+                                seguiti,
+                                notifiche.toBoolean()
                             )
 
                             setImage()
@@ -258,10 +268,9 @@ class ProfileActivity : AppCompatActivity() {
                             /*verifico se l'user che sta usando l'app è lo stesso della pagina
                             e in quel caso rendo non visibile il pulsante segui
                             altrimenti rendo invisibile il pulsante delle opzioni*/
-                            if (uId.equals(currentUid)){
+                            if (uId.equals(currentUid)) {
                                 followButton.visibility = View.INVISIBLE
-                            }
-                            else{
+                            } else {
                                 settings.visibility = View.INVISIBLE
                             }
                         }
@@ -280,8 +289,8 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
-    private fun setImage(){
-        if(!this.isFinishing && !proPic.equals("ok")){
+    private fun setImage() {
+        if (!this.isFinishing && !proPic.equals("ok")) {
             Glide.with(this@ProfileActivity).load(proPic).into(imageProfile!!)
         }
     }
@@ -344,7 +353,7 @@ class ProfileActivity : AppCompatActivity() {
         settings.setOnClickListener {
             dialog = Dialog(this@ProfileActivity)
             dialog!!.setContentView(R.layout.impostazioni_profilo)
-            dialog!!.window!!.setLayout(width-50, LayoutParams.WRAP_CONTENT)
+            dialog!!.window!!.setLayout(width - 50, LayoutParams.WRAP_CONTENT)
             dialog!!.window!!.setGravity(Gravity.CENTER)
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
 
@@ -354,6 +363,7 @@ class ProfileActivity : AppCompatActivity() {
             val buttonNickname = dialog!!.findViewById<Button>(R.id.buttonChangeNickname)
             val buttonPhoto = dialog!!.findViewById<Button>(R.id.buttonChangePhoto)
             val buttonLogout = dialog!!.findViewById<Button>(R.id.logoutButton)
+            val switchNotify = dialog!!.findViewById<SwitchCompat>(R.id.switchNotifications)
 
             if (canEdit.equals("false")) {
                 buttonNickname.isClickable = false
@@ -387,24 +397,101 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-            buttonPhoto.setOnClickListener{
+            buttonPhoto.setOnClickListener {
                 mImg = dialog!!.findViewById<ImageView>(R.id.newProfilePicture)
 
                 Gallery()
 
             }
 
-            buttonLogout.setOnClickListener{
+            val ref = dbRefInfo.child(uId).child("notifications")
+            ref.get().addOnCompleteListener {
+                if(it.isSuccessful){
+                    if(it.result.value as Boolean == true){
+                        avvioService()
+                        switchNotify.setChecked(true)
+                    }
+                    else
+                        switchNotify.setChecked(false)
+                }
+            }
+
+
+            switchNotify.setOnClickListener {
+
+                if (switchNotify.isChecked()) {
+                    switchNotify.setChecked(true)
+                    ref.setValue(true)
+                    avvioService()
+                }
+                else
+                {
+                    switchNotify.setChecked(false)
+                    ref.setValue(false)
+                    if (isMyServiceRunning(Notification::class.java)) {
+                        val intent = Intent(this, Notification::class.java)
+                        stopService(intent)
+                    }
+
+                }
+            }
+
+            buttonLogout.setOnClickListener {
+
+                if (isMyServiceRunning(Notification::class.java)) {
+                    val intent = Intent(this, Notification::class.java)
+                    stopService(intent)
+                }
                 val intent = Intent(this, LoginActivity::class.java)
                 finishAffinity()
                 FirebaseAuth.getInstance().signOut()
-                intent.putExtra("logout",true)
+                intent.putExtra("logout", true)
                 startActivity(intent)
             }
         }
     }
 
-    fun Gallery(){
+    private fun avvioService() {
+
+        dbRefUser.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var zeroPost = !snapshot.hasChildren()
+                if (!zeroPost)
+                    ServiceStart()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+    }
+
+    private fun ServiceStart() {
+
+        if (!isMyServiceRunning(Notification::class.java)) {
+            val intent = Intent(this, Notification::class.java)
+            startService(intent)
+        }
+
+    }
+
+    private fun isMyServiceRunning(mClass: Class<Notification>): Boolean {
+        val manager: ActivityManager = getSystemService(
+            Context.ACTIVITY_SERVICE
+        ) as ActivityManager
+
+        for (service: ActivityManager.RunningServiceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
+
+            if (mClass.name.equals(service.service.className))
+                return true
+        }
+        return false
+    }
+
+    fun Gallery() {
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         photoFile = File.createTempFile(FILE_NAME, ".jpg", storageDir)
 
@@ -470,15 +557,15 @@ class ProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE){
+        if (requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE) {
             var result = CropImage.getActivityResult(data)
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 globalUri = result.uri
             }
         }
     }
 
-    fun uploadImage(){
+    fun uploadImage() {
         val uploadUser = uId
         val formatterImg = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
         val now = Date()
@@ -492,30 +579,32 @@ class ProfileActivity : AppCompatActivity() {
         bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
         val image = stream.toByteArray()
 
-        storageRef.putBytes(image).addOnSuccessListener{
-            Toast.makeText(this,"Immagine caricata", Toast.LENGTH_SHORT).show()
+        storageRef.putBytes(image).addOnSuccessListener {
+            Toast.makeText(this, "Immagine caricata", Toast.LENGTH_SHORT).show()
 
             storageRef.downloadUrl.addOnSuccessListener {
                 Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT)
                     .show()
-                uploadRef=it.toString()
+                uploadRef = it.toString()
                 var database = FirebaseDatabase
                     .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                     .getReference("InfoUtenti/$uId")
                 database.child("proPic").setValue(uploadRef).addOnSuccessListener {
                     Toast.makeText(this, "Image profilo aggiornata", Toast.LENGTH_SHORT).show()
-                }.addOnFailureListener{
+                }.addOnFailureListener {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
 
-            }.addOnFailureListener { Toast.makeText(this, it.message, Toast.LENGTH_SHORT)
-                .show() }
-        }.addOnFailureListener{
-            Toast.makeText(this,it.toString(), Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setEventButtonSegui(){
+    private fun setEventButtonSegui() {
         var listaSeguiti: ArrayList<String> = arrayListOf()
         var reference = dbRefInfo.child(currentUid).child("seguiti")
         var hMapReference = dbRefInfo.child(currentUid)
@@ -523,17 +612,16 @@ class ProfileActivity : AppCompatActivity() {
             listaSeguiti = it.result.value as ArrayList<String>
         }*/
 
-        hMapReference.addValueEventListener(object : ValueEventListener{
+        hMapReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     var Map = snapshot.getValue() as HashMap<*, *>
                     var seguiti = Map["seguiti"] as ArrayList<String>
                     listaSeguiti = seguiti
 
-                    if(listaSeguiti.contains(uId)){
+                    if (listaSeguiti.contains(uId)) {
                         followButton.text = "SMETTI DI SEGUIRE"
-                    }
-                    else
+                    } else
                         followButton.text = "SEGUI"
                 }
             }
@@ -544,23 +632,21 @@ class ProfileActivity : AppCompatActivity() {
         })
 
         followButton.setOnClickListener {
-            if(followButton.text.equals("SEGUI")){
-                if(listaSeguiti.get(0).equals("ok")){
+            if (followButton.text.equals("SEGUI")) {
+                if (listaSeguiti.get(0).equals("ok")) {
                     listaSeguiti.removeAt(0)
                     listaSeguiti.add(uId)
-                }
-                else
+                } else
                     listaSeguiti.add(uId)
 
                 reference.setValue(listaSeguiti)
             }
 
-            if(followButton.text.equals("SMETTI DI SEGUIRE")){
-                if(listaSeguiti.size == 1){
+            if (followButton.text.equals("SMETTI DI SEGUIRE")) {
+                if (listaSeguiti.size == 1) {
                     listaSeguiti.removeAt(0)
                     listaSeguiti.add("ok")
-                }
-                else
+                } else
                     listaSeguiti.remove(uId)
 
                 reference.setValue(listaSeguiti)

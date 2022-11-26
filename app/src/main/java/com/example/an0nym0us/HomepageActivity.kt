@@ -3,6 +3,7 @@ package com.example.an0nym0us
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -33,6 +34,9 @@ class HomepageActivity : AppCompatActivity() {
     private val dbRefUser =
         FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("Utenti").child("$uId")
+    private val dbRefInfoUtenti =
+        FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("InfoUtenti")
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +46,12 @@ class HomepageActivity : AppCompatActivity() {
         inizializzaBottomMenu()
         initRecyclerView()
 
-        avvioService()
+        dbRefInfoUtenti.child(uId).child("notifications").get().addOnCompleteListener {
+            if(it.isSuccessful){
+                if(it.result.value as Boolean == true)
+                    avvioService()
+            }
+        }
 
 
     }
@@ -148,7 +157,7 @@ class HomepageActivity : AppCompatActivity() {
                                                         arrayLikes,
                                                         arrayDislikes
                                                     )
-                                                if(seguiti.contains(user))
+                                                if(seguiti.contains(user) && dislikes.toInt() < 100)
                                                     list.add(0, post)
                                             }
                                         }
@@ -212,6 +221,18 @@ class HomepageActivity : AppCompatActivity() {
                                 mFragment2.arguments = mBundle
                                 mFragmentTransaction.add(R.id.fragment_container, mFragment2).commit()
 
+                            }
+
+                            postAdapter.onShareClick = {
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, "Immagine condivisa da AN0NYM0US," +
+                                            "scarica l'app anche tu!  $it")
+                                    type = "text/plain"
+                                }
+
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                startActivity(shareIntent)
                             }
 
                             postAdapter.onUserClick={

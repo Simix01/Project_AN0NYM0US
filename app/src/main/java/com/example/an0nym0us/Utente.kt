@@ -6,5 +6,6 @@ data class Utente(
     var approvazioni: Int,
     var canEdit: Boolean,
     var canBeFound: Boolean,
-    var seguiti: ArrayList<String>
+    var seguiti: ArrayList<String>,
+    var notifications: Boolean
 )
