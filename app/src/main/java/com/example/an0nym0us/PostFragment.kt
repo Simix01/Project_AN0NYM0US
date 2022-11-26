@@ -85,7 +85,11 @@ class PostFragment : Fragment() {
         var commentsBtn = view.findViewById<ImageButton>(R.id.commentsBtn)
         var shareBtn = view.findViewById<ImageButton>(R.id.shareBtn)
 
-        val requestOptions = com.bumptech.glide.request.RequestOptions()
+        val requestOptionsForProfilePicture = com.bumptech.glide.request.RequestOptions()
+            .placeholder(R.drawable.anonym_icon)
+            .error(R.drawable.anonym_icon)
+
+        val requestOptionsForPosts = com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
 
@@ -107,10 +111,12 @@ class PostFragment : Fragment() {
             }
             date.text = dataPost
 
-            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.image)
+            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptionsForPosts)
+                .load(post.image)
                 .into(image)
 
-            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptions).load(post.proPic)
+            Glide.with(requireContext()).applyDefaultRequestOptions(requestOptionsForProfilePicture)
+                .load(post.proPic)
                 .into(proPic)
 
         }

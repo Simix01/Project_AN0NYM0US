@@ -12,86 +12,117 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="10dp"
+        android:layout_marginBottom="57dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_upload"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Anteprima della tua immagine/video"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
-            />
+            android:gravity="center"
+            android:layout_weight="2"
+            android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="175dp"
-            android:layout_height="175dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="50dp"
-            >
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anteprima della tua immagine"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                />
 
-            <ImageView
-                android:id="@+id/imageUpload"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:background="@color/light_grey"
-                android:scaleType="fitCenter"
-                tools:src="@tools:sample/avatars" />
-        </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:layout_gravity="center"
+                >
 
-        <ImageButton
-            android:id="@+id/buttonUpload"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/file_explorer"
-            android:padding="10dp"
-             />
+                <ImageView
+                    android:id="@+id/imageUpload"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:background="@color/light_grey"
+                    android:scaleType="fitCenter"
+                    tools:src="@tools:sample/avatars" />
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="50dp"
-            android:text="Scegli l'immagine/Fai una foto"
-            />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/categoriaText"
-            android:layout_width="300dp"
+            <ImageButton
+                android:id="@+id/buttonUpload"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/file_explorer"
+                />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Scegli l'immagine/Fai una foto"
+                />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/textview_border"
-            android:hint="Seleziona categoria"
-            android:padding="8dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:layout_marginTop="15dp"
-           />
+            android:gravity="center"
+            android:layout_weight="1"
+            android:paddingVertical="5dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/categoriaText"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/textview_border"
+                android:hint="Seleziona categoria"
+                android:padding="5dp"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                />
+
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageButton
+                android:id="@+id/buttonCaricaPost"
+                android:layout_width="74dp"
+                android:layout_height="71dp"
+                android:layout_gravity="center"
+                android:background="@drawable/upload"
+                />
 
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/buttonCaricaPost"
-            android:layout_width="74dp"
-            android:layout_height="71dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="70dp"
-            android:layout_marginBottom="120dp"
-            android:background="@drawable/upload"
-            />
 
 
 

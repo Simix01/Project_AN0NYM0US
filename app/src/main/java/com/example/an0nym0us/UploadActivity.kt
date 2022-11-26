@@ -1,6 +1,7 @@
 package com.example.an0nym0us
 
 import android.Manifest
+import android.app.ActionBar
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -17,6 +18,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -229,10 +231,16 @@ class UploadActivity : AppCompatActivity() {
         arrayList!!.add("Hobby")
         arrayList!!.add("Personale")
 
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        var width = displayMetrics.widthPixels
+        var height = displayMetrics.heightPixels
+
         textview.setOnClickListener(View.OnClickListener {
             dialog = Dialog(this@UploadActivity)
             dialog!!.setContentView(R.layout.dialog_searchable_spinner)
-            dialog!!.window!!.setLayout(650, 800)
+            dialog!!.window!!.setLayout(width-(width*20)/100, height-(height*60)/100)
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog!!.show()
 

@@ -11,6 +11,7 @@
         android:id="@+id/fragment_containerProfile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="57dp"
         app:layout_constraintBottom_toBottomOf="@+id/bottom_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -242,14 +242,18 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
         lateinit var dataPost: String
 
         fun bind(post: Post2) {
-            val requestOptions = com.bumptech.glide.request.RequestOptions()
+            val requestOptionsForPosts = com.bumptech.glide.request.RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
 
-            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image)
+            val requestOptionsForProfilePicture = com.bumptech.glide.request.RequestOptions()
+                .placeholder(R.drawable.anonym_icon)
+                .error(R.drawable.anonym_icon)
+
+            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptionsForPosts).load(post.image)
                 .into(postImage)
 
-            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.proPic)
+            Glide.with(itemView.context).applyDefaultRequestOptions(requestOptionsForProfilePicture).load(post.proPic)
                 .into(proPic)
 
 

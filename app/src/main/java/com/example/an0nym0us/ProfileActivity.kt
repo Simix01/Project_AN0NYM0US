@@ -346,7 +346,6 @@ class ProfileActivity : AppCompatActivity() {
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         var width = displayMetrics.widthPixels
-        var height = displayMetrics.heightPixels
 
         var dialog: Dialog?
 
