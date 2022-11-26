@@ -37,6 +37,7 @@ class HomepageActivity : AppCompatActivity() {
     private val dbRefInfoUtenti =
         FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("InfoUtenti")
+    private var seguiti = arrayListOf<String>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,7 +118,7 @@ class HomepageActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var mapUserInfo=snapshot.value as Map<*, *>
                 var myInfo = snapshot.child("$uId").value as HashMap<*,*>
-                var seguiti = myInfo["seguiti"] as kotlin.collections.ArrayList<String>
+                seguiti = myInfo["seguiti"] as kotlin.collections.ArrayList<String>
                 dbRef.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (list.isEmpty()) {
@@ -157,7 +158,7 @@ class HomepageActivity : AppCompatActivity() {
                                                         arrayLikes,
                                                         arrayDislikes
                                                     )
-                                                if(seguiti.contains(user) && dislikes.toInt() < 100)
+                                                if(seguiti.contains(user) && dislikes.toInt() < 100 )
                                                     list.add(0, post)
                                             }
                                         }
@@ -243,6 +244,11 @@ class HomepageActivity : AppCompatActivity() {
                             }
 
                             postRecyclerView.adapter = postAdapter
+
+                            if(seguiti[0].equals("ok")){
+                                //settare immagine per utenti che non seguono nessuno con consigli di utilizzo
+                                //relativeLayout.setBackgroundResource(R.drawable.ic_launcher_background)
+                            }
                         }
                     }
 
@@ -258,8 +264,6 @@ class HomepageActivity : AppCompatActivity() {
             }
 
         })
-
-
     }
 
     private fun inizializzaBottomMenu() {
