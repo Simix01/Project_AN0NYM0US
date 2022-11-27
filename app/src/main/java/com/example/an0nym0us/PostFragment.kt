@@ -2,23 +2,18 @@ package com.example.an0nym0us
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.fragment_post.*
@@ -40,10 +35,10 @@ class PostFragment : Fragment() {
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                var javaClass = Class.forName(nameActivityFull)
+                val javaClass = Class.forName(nameActivityFull)
                 val intent = Intent(context, javaClass)
                 val myBundle = arguments
-                var username = myBundle!!.getString("userid").toString()
+                val username = myBundle!!.getString("userid").toString()
                 intent.putExtra("username", username)
                 startActivity(intent)
             }
@@ -60,30 +55,31 @@ class PostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_post, container, false)
 
         val bundle = arguments
         val post: Post? = bundle?.getParcelable("post")
-        var nameActivity = bundle?.getString("nameActivity").toString()
+        val nameActivity = bundle?.getString("nameActivity").toString()
         nameActivityFull += nameActivity
         var likesList = arrayListOf<String>()
         var dislikesList: ArrayList<String>? = null
         var approvazioni: Long? = null
-        var uId = bundle?.getString("userid").toString()
+        val uId = bundle?.getString("userid").toString()
 
-        var user = view.findViewById<TextView>(R.id.userCode)
-        var category = view.findViewById<TextView>(R.id.categoriaText)
-        var likes = view.findViewById<TextView>(R.id.upvoteCounter)
-        var dislikes = view.findViewById<TextView>(R.id.downvoteCounter)
-        var image = view.findViewById<ImageView>(R.id.postImageFragment)
-        var proPic=view.findViewById<ImageView>(R.id.userImg)
-        var likeBtn = view.findViewById<ImageButton>(R.id.likeBtnFrag)
-        var dislikeBtn = view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
-        var date = view.findViewById<TextView>(R.id.dataPost)
-        var commentsBtn = view.findViewById<ImageButton>(R.id.commentsBtn)
-        var shareBtn = view.findViewById<ImageButton>(R.id.shareBtn)
+        val user = view.findViewById<TextView>(R.id.userCode)
+        val userImage=view.findViewById<ImageView>(R.id.userImg)
+        val category = view.findViewById<TextView>(R.id.categoriaText)
+        val likes = view.findViewById<TextView>(R.id.upvoteCounter)
+        val dislikes = view.findViewById<TextView>(R.id.downvoteCounter)
+        val image = view.findViewById<ImageView>(R.id.postImageFragment)
+        val proPic=view.findViewById<ImageView>(R.id.userImg)
+        val likeBtn = view.findViewById<ImageButton>(R.id.likeBtnFrag)
+        val dislikeBtn = view.findViewById<ImageButton>(R.id.dislikeBtnFrag)
+        val date = view.findViewById<TextView>(R.id.dataPost)
+        val commentsBtn = view.findViewById<ImageButton>(R.id.commentsBtn)
+        val shareBtn = view.findViewById<ImageButton>(R.id.shareBtn)
 
         val requestOptionsForProfilePicture = com.bumptech.glide.request.RequestOptions()
             .placeholder(R.drawable.anonym_icon)
@@ -268,6 +264,13 @@ class PostFragment : Fragment() {
         }
 
         user.setOnClickListener{
+            val intent =
+                Intent(activity, ProfileActivity::class.java)
+            intent.putExtra("username", post?.user)
+            startActivity(intent)
+        }
+
+        userImage.setOnClickListener{
             val intent =
                 Intent(activity, ProfileActivity::class.java)
             intent.putExtra("username", post?.user)

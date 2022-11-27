@@ -50,6 +50,11 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                 holder.postUser.setOnClickListener{
                     post.user?.let { it1 -> onUserClick?.invoke(it1) }
                 }
+
+                holder.proPic.setOnClickListener{
+                    post.user?.let { it1 -> onUserClick?.invoke(it1) }
+                }
+
                 holder.shareButton.setOnClickListener {
                     onShareClick?.invoke(post.image!!)
                 }
