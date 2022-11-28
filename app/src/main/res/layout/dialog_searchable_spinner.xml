@@ -17,6 +17,8 @@
         android:text="Seleziona categoria"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:fontFamily="@font/oswald_medium"
+        android:textColor="@color/black"
         />
 
     <EditText

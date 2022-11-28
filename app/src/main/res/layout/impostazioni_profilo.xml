@@ -18,6 +18,8 @@
         android:textSize="20sp"
         android:layout_marginBottom="30dp"
         android:textStyle="bold"
+        android:fontFamily="@font/oswald_semibold"
+        android:textColor="@color/black"
         />
 
     <LinearLayout
@@ -37,7 +39,8 @@
             android:layout_weight="1"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:drawable/editbox_background" />
+            android:background="@android:drawable/editbox_background"
+            android:fontFamily="@font/oswald_regular"/>
 
         <Button
             android:id="@+id/buttonChangeNickname"
@@ -45,7 +48,9 @@
             android:layout_height="match_parent"
             android:text="Cambia"
             android:backgroundTint="@color/light_grey2"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:fontFamily="@font/oswald_regular"
+            android:textColor="@color/black">
         </Button>
     </LinearLayout>
 
@@ -60,7 +65,9 @@
             android:layout_height="wrap_content"
             android:text="Cambia immagine profilo: "
             android:layout_weight="1"
-            android:textSize="16sp">
+            android:textSize="18sp"
+            android:fontFamily="@font/oswald_regular"
+            android:textColor="@color/black">
         </TextView>
 
         <Button
@@ -68,7 +75,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cambia foto"
-            android:backgroundTint="@color/light_grey2">
+            android:backgroundTint="@color/light_grey2"
+            android:fontFamily="@font/oswald_regular"
+            android:textColor="@color/black">
         </Button>
     </LinearLayout>
 
@@ -96,9 +105,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="anteprima dell'immagine selezionata"
+            android:text="Anteprima dell'immagine selezionata"
             android:layout_marginTop="5dp"
-            android:textAlignment="center">
+            android:textAlignment="center"
+            android:fontFamily="@font/oswald_light"
+            android:textSize="16dp"
+            android:textColor="@color/black">
         </TextView>
     </LinearLayout>
     <LinearLayout
@@ -111,8 +123,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attiva le notifiche: "
-            android:textSize="16sp"
-            android:layout_weight="1">
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:fontFamily="@font/oswald_regular"
+            android:textColor="@color/black">
         </TextView>
 
         <androidx.appcompat.widget.SwitchCompat
@@ -135,7 +149,9 @@
             android:layout_height="wrap_content"
             android:text="Effettua il logout"
             android:layout_gravity="center"
-            android:backgroundTint="@color/light_grey2">
+            android:backgroundTint="@color/light_grey2"
+            android:fontFamily="@font/oswald_regular"
+            android:textColor="@color/black">
         </Button>
     </LinearLayout>
 

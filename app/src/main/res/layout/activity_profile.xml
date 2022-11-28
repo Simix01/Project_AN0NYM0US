@@ -69,8 +69,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:fontFamily="@font/oswald_semibold"
                 android:gravity="center"
-                android:textSize="20sp">
+                android:textSize="20sp"
+                android:textColor="@color/black">
 
             </TextView>
 
@@ -118,7 +120,8 @@
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/light_grey2"
                 android:drawableLeft="@drawable/follow"
-                android:text="SEGUI"></Button>
+                android:text="SEGUI"
+                android:fontFamily="@font/oswald_medium"></Button>
 
         </LinearLayout>
 

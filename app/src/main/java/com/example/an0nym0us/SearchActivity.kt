@@ -57,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun dynamicListView(){
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listaUsers)
+        adapter = ArrayAdapter(this, R.layout.items_style, listaUsers)
         listViewUtenti.adapter = adapter
         search_field.setOnQueryTextListener(object:
                 SearchView.OnQueryTextListener{
