@@ -17,7 +17,7 @@
                 <ImageView
                     android:id="@+id/grid_image"
                     android:layout_width="150dp"
-                    android:background="#353535"
+                    android:background="#484848"
                     android:layout_height="150dp"
                     android:scaleType="fitCenter"
                     android:layout_gravity="center">

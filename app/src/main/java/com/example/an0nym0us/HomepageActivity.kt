@@ -247,7 +247,7 @@ class HomepageActivity : AppCompatActivity() {
 
                             if(seguiti[0].equals("ok")){
                                 //settare immagine per utenti che non seguono nessuno con consigli di utilizzo
-                                //relativeLayout.setBackgroundResource(R.drawable.ic_launcher_background)
+                                relativeLayout.setBackgroundResource(R.drawable.app_background_variant)
                             }
                         }
                     }
