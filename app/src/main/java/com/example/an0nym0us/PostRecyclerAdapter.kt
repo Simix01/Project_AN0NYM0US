@@ -20,6 +20,8 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
     val cUser = FirebaseAuth.getInstance().currentUser!!.uid
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
+    var likesList = arrayListOf<String>()
+    var dislikesList: ArrayList<String>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PostViewHolder(
@@ -33,8 +35,6 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
             is PostViewHolder -> {
                 val post = postList[position]
 
-                var likesList = arrayListOf<String>()
-                var dislikesList: ArrayList<String>? = null
                 var approvazioni: Long? = null
 
                 holder.bind(postList[position])
@@ -154,8 +154,6 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         dbRefArrayLikes!!.setValue(likesList)
                         dbRefArrayDislikes!!.setValue(dislikesList)
 
-
-
                         if (likesList?.get(0) == "ok")
                             post.likes = likesList!!.size - 1
                         else
@@ -165,12 +163,21 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         holder.postDislike.setText(post.dislikes.toString())
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
+
+                        if(likesList.contains(uId))
+                            holder.likeButton.setBackgroundResource(R.drawable.like_button_pressed)
+                        else
+                            holder.likeButton.setBackgroundResource(R.drawable.like_button_base)
+
+                        if(dislikesList!!.contains(uId))
+                            holder.dislikeButton.setBackgroundResource(R.drawable.dislike_button_pressed)
+                        else
+                            holder.dislikeButton.setBackgroundResource(R.drawable.dislike_button_base)
                     }
                 })
                 holder.dislikeButton.setOnClickListener(object : View.OnClickListener {
 
                     override fun onClick(p0: View?) {
-
 
                         if (likesList?.contains(uId) == true) {
                             likesList!!.remove(uId)
@@ -221,6 +228,16 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         holder.postLike.setText(post.likes.toString())
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
+
+                        if(likesList.contains(uId))
+                            holder.likeButton.setBackgroundResource(R.drawable.like_button_pressed)
+                        else
+                            holder.likeButton.setBackgroundResource(R.drawable.like_button_base)
+
+                        if(dislikesList!!.contains(uId))
+                            holder.dislikeButton.setBackgroundResource(R.drawable.dislike_button_pressed)
+                        else
+                            holder.dislikeButton.setBackgroundResource(R.drawable.dislike_button_base)
                     }
 
                 })
@@ -245,6 +262,11 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
         val commentButton = itemView.post_comment
         val shareButton = itemView.buttonShare
         lateinit var dataPost: String
+        val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+        val valoreHash = cUser.hashCode().absoluteValue
+        val uId = "anonym$valoreHash"
+        var likesList: ArrayList<String> = arrayListOf()
+        var dislikesList: ArrayList<String> = arrayListOf()
 
         fun bind(post: Post2) {
             val requestOptionsForPosts = com.bumptech.glide.request.RequestOptions()
@@ -277,6 +299,28 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
             postLike.setText(post.likes.toString())
             postDislike.setText(post.dislikes.toString())
+
+            val likeReference =
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Utenti").child(post.user!!).child(post.date!!).child("arrayLikes")
+            likeReference.get().addOnCompleteListener {
+                likesList = it.result.value as ArrayList<String>
+                if(likesList.contains(uId))
+                    likeButton.setBackgroundResource(R.drawable.like_button_pressed)
+                else
+                    likeButton.setBackgroundResource(R.drawable.like_button_base)
+            }
+
+            val dislikeReference =
+                FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("Utenti").child(post.user!!).child(post.date!!).child("arrayDislikes")
+            dislikeReference.get().addOnCompleteListener {
+                dislikesList = it.result.value as ArrayList<String>
+                if(dislikesList.contains(uId))
+                    dislikeButton.setBackgroundResource(R.drawable.dislike_button_pressed)
+                else
+                    dislikeButton.setBackgroundResource(R.drawable.dislike_button_base)
+            }
         }
     }
 }

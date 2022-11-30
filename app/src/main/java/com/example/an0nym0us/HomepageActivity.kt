@@ -162,8 +162,6 @@ class HomepageActivity : AppCompatActivity() {
                                                     list.add(0, post)
                                             }
                                         }
-
-
                                     }
                                 }
                             }

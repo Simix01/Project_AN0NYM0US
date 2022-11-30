@@ -64,7 +64,7 @@ class PostFragment : Fragment() {
         val nameActivity = bundle?.getString("nameActivity").toString()
         nameActivityFull += nameActivity
         var likesList = arrayListOf<String>()
-        var dislikesList: ArrayList<String>? = null
+        var dislikesList = arrayListOf<String>()
         var approvazioni: Long? = null
         val uId = bundle?.getString("userid").toString()
 
@@ -126,7 +126,10 @@ class PostFragment : Fragment() {
         dbRefArrayLikes?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 likesList = it.result.value as ArrayList<String>
-
+                if(likesList.contains(uId))
+                    likeBtn.setBackgroundResource(R.drawable.like_button_pressed)
+                else
+                    likeBtn.setBackgroundResource(R.drawable.like_button_base)
             }
         }
 
@@ -139,6 +142,10 @@ class PostFragment : Fragment() {
         dbRefArrayDislikes?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 dislikesList = it.result.value as ArrayList<String>
+                if(dislikesList!!.contains(uId))
+                    dislikeBtn.setBackgroundResource(R.drawable.dislike_button_pressed)
+                else
+                    dislikeBtn.setBackgroundResource(R.drawable.dislike_button_base)
             }
         }
 
@@ -211,6 +218,16 @@ class PostFragment : Fragment() {
             dislikes.text = (post!!.dislikes).toString()
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
+
+            if(likesList.contains(uId))
+                likeBtn.setBackgroundResource(R.drawable.like_button_pressed)
+            else
+                likeBtn.setBackgroundResource(R.drawable.like_button_base)
+
+            if(dislikesList!!.contains(uId))
+                dislikeBtn.setBackgroundResource(R.drawable.dislike_button_pressed)
+            else
+                dislikeBtn.setBackgroundResource(R.drawable.dislike_button_base)
         }
 
 
@@ -261,6 +278,16 @@ class PostFragment : Fragment() {
             likes.text = (post.likes).toString()
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
+
+            if(likesList.contains(uId))
+                likeBtn.setBackgroundResource(R.drawable.like_button_pressed)
+            else
+                likeBtn.setBackgroundResource(R.drawable.like_button_base)
+
+            if(dislikesList!!.contains(uId))
+                dislikeBtn.setBackgroundResource(R.drawable.dislike_button_pressed)
+            else
+                dislikeBtn.setBackgroundResource(R.drawable.dislike_button_base)
         }
 
         user.setOnClickListener{
@@ -326,7 +353,6 @@ class PostFragment : Fragment() {
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
         }
-
 
         return view
     }
