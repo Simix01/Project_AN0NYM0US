@@ -377,6 +377,12 @@ class ProfileActivity : AppCompatActivity() {
                 val newName: String = EditTextName.text.toString().trim { it <= ' ' }
                 if (newName.equals(""))
                     Toast.makeText(this, "Devi inserire un nuovo nome", Toast.LENGTH_SHORT).show()
+                else if (newName.length > 12)
+                    Toast.makeText(
+                        this,
+                        "Il nuovo nome non può superare 12 caratteri di lunghezza",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 else {
                     if (listNicknames.contains(newName))
                         Toast.makeText(
@@ -405,12 +411,11 @@ class ProfileActivity : AppCompatActivity() {
 
             val ref = dbRefInfo.child(uId).child("notifications")
             ref.get().addOnCompleteListener {
-                if(it.isSuccessful){
-                    if(it.result.value as Boolean == true){
+                if (it.isSuccessful) {
+                    if (it.result.value as Boolean == true) {
                         avvioService()
                         switchNotify.setChecked(true)
-                    }
-                    else
+                    } else
                         switchNotify.setChecked(false)
                 }
             }
@@ -422,9 +427,7 @@ class ProfileActivity : AppCompatActivity() {
                     switchNotify.setChecked(true)
                     ref.setValue(true)
                     avvioService()
-                }
-                else
-                {
+                } else {
                     switchNotify.setChecked(false)
                     ref.setValue(false)
                     if (isMyServiceRunning(Notification::class.java)) {
