@@ -377,7 +377,7 @@ class ProfileActivity : AppCompatActivity() {
                 val newName: String = EditTextName.text.toString().trim { it <= ' ' }
                 if (newName.equals(""))
                     Toast.makeText(this, "Devi inserire un nuovo nome", Toast.LENGTH_SHORT).show()
-                else if (newName.length > 12)
+                else if (newName.length > 15)
                     Toast.makeText(
                         this,
                         "Il nuovo nome non può superare 12 caratteri di lunghezza",
