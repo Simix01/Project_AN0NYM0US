@@ -40,8 +40,8 @@ class PostRecyclerAdapterGrid(private val postList: ArrayList<Post2>) : Recycler
 
         fun bind(post: Post2){
             val requestOptions=com.bumptech.glide.request.RequestOptions()
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.blackbg_global)
+                .error(R.drawable.blackbg_global)
 
             Glide.with(itemView.context).applyDefaultRequestOptions(requestOptions).load(post.image).into(postImage)
         }

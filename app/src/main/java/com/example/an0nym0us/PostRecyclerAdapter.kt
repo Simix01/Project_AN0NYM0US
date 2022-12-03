@@ -270,8 +270,8 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
 
         fun bind(post: Post2) {
             val requestOptionsForPosts = com.bumptech.glide.request.RequestOptions()
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.black_screen)
+                .error(R.drawable.black_screen)
 
             val requestOptionsForProfilePicture = com.bumptech.glide.request.RequestOptions()
                 .placeholder(R.drawable.anonym_icon)
