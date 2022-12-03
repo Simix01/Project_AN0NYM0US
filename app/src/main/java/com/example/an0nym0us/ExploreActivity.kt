@@ -1,9 +1,12 @@
 package com.example.an0nym0us
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -11,6 +14,8 @@ import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_explore.*
+import java.time.LocalDate
+import java.util.Date
 import kotlin.math.absoluteValue
 
 class ExploreActivity : AppCompatActivity() {
@@ -49,6 +54,7 @@ class ExploreActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var mapUserInfo = snapshot.value as Map<*, *>
                 dbRef.addValueEventListener(object : ValueEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (listFull.isEmpty() && listEmpty) {
                             if (snapshot.exists()) {
@@ -92,6 +98,9 @@ class ExploreActivity : AppCompatActivity() {
                                 }
 
                                 listAppend.addAll(listFull)
+                                listFull.sortBy {
+                                    it.date
+                                }
                                 postAdapter = PostRecyclerAdapterGrid(listFull)
                                 filtraPost()
 
@@ -195,6 +204,7 @@ class ExploreActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     fun filtraPost() {
         chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             var listFiltered = arrayListOf<Post2>()

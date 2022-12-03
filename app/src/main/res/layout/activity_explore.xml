@@ -44,19 +44,22 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_marginHorizontal="10dp"
+            app:boxStrokeColor="@color/glow_yellow"
+            android:layout_marginTop="5dp"
+            android:layout_height="45dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
+                android:background="@drawable/input_text_layout"
                 android:clickable="true"
                 android:drawableLeft="@drawable/ic_baseline_search_24"
+                android:drawableTint="#8A8A8A"
                 android:editable="false"
                 android:focusable="false"
-                tools:ignore="SpeakableTextPresentCheck"
-                android:textStyle="">
+                tools:ignore="SpeakableTextPresentCheck">
 
             </com.google.android.material.textfield.TextInputEditText>
 
@@ -85,7 +88,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Tutto"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipMeme"
@@ -93,7 +97,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Meme"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipGaming"
@@ -101,7 +106,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Gaming"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipTech"
@@ -109,7 +115,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Tech"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipScienza"
@@ -117,7 +124,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Scienza"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipSport"
@@ -125,7 +133,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Sport"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipAttualita"
@@ -133,7 +142,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Attualità"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPolitica"
@@ -141,7 +151,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Politica"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCucina"
@@ -149,7 +160,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Cucina"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCinema"
@@ -157,7 +169,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Cinema"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipHobby"
@@ -165,7 +178,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Hobby"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPersonale"
@@ -173,7 +187,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:text="Personale"
-                    android:textAppearance="@style/AppTheme.GenderChip"></com.google.android.material.chip.Chip>
+                    android:textAppearance="@style/AppTheme.GenderChip"
+                    app:chipBackgroundColor="@color/dark_grey"></com.google.android.material.chip.Chip>
 
             </com.google.android.material.chip.ChipGroup>
 

@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_background_normal"
+    android:background="@color/background_gray"
     tools:context=".SearchActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,6 +21,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
+            android:background="@drawable/input_text_layout"
             android:layout_height="wrap_content">
 
             <SearchView
@@ -35,7 +38,6 @@
             android:id="@+id/listViewUtenti"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </ListView>
 
     </LinearLayout>

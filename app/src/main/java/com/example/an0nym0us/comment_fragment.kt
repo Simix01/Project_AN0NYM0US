@@ -11,7 +11,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlin.math.absoluteValue
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,8 +29,11 @@ class comment_fragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
 
-     private lateinit var commentRecyclerView: RecyclerView
+    private lateinit var commentRecyclerView: RecyclerView
     private lateinit var dbRef: DatabaseReference
     private lateinit var commentAdapter: CommentRecyclerAdapter
     private lateinit var commentList: ArrayList<Commento>
@@ -41,10 +46,12 @@ class comment_fragment : Fragment() {
             override fun handleOnBackPressed() {
                 var javaClass=Class.forName(nameActivity)
                 val intent = Intent(context, javaClass)
+                intent.putExtra("username", uId)
                 startActivity(intent)
             }
 
         })
+
         arguments?.let {
 
             param1 = it.getString(ARG_PARAM1)

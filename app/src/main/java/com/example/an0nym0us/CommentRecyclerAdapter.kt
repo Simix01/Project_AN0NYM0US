@@ -11,10 +11,6 @@ import kotlin.math.absoluteValue
 class CommentRecyclerAdapter(private val commentList: ArrayList<Commento>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    /*val cUser = FirebaseAuth.getInstance().currentUser!!.uid
-    val valoreHash = cUser.hashCode().absoluteValue
-    val uId = "anonym$valoreHash"*/
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return CommentViewHolder(
             LayoutInflater.from(parent.context)
@@ -37,11 +33,17 @@ class CommentRecyclerAdapter(private val commentList: ArrayList<Commento>) :
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val commentUser = itemView.commentUser
         val commentContent = itemView.commentContent
+        val layoutCommenti = itemView.linearCommenti
 
         fun bind(comment: Commento) {
-            commentUser.setText(comment.user)
-            commentContent.setText(comment.content)
+            if(!comment.user.equals(" ") && !comment.content.equals(" ")){
+                layoutCommenti.visibility = View.VISIBLE
+                commentUser.setText(comment.user)
+                commentContent.setText(comment.content)
+            }
+            else
+                layoutCommenti.visibility = View.INVISIBLE
         }
     }
-
+    
 }
