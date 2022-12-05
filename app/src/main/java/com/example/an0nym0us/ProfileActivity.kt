@@ -618,6 +618,7 @@ class ProfileActivity : AppCompatActivity() {
         var hMapReference = dbRefInfo.child(currentUid)
 
         hMapReference.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SuspiciousIndentation")
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     var Map = snapshot.getValue() as HashMap<*, *>
