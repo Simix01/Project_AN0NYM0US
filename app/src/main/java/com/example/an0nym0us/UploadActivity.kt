@@ -247,7 +247,7 @@ class UploadActivity : AppCompatActivity() {
             val editText = dialog!!.findViewById<EditText>(R.id.edit_text)
             val listView = dialog!!.findViewById<ListView>(R.id.list_view)
             val adapter =
-                ArrayAdapter(this@UploadActivity, android.R.layout.simple_list_item_1, arrayList!!)
+                ArrayAdapter(this@UploadActivity, R.layout.layout_categorie, arrayList!!)
 
             listView.adapter = adapter
             editText.addTextChangedListener(object : TextWatcher {

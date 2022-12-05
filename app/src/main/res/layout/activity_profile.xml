@@ -39,9 +39,11 @@
 
             <ImageButton
                 android:id="@+id/settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="35dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/button_bg"
                 android:src="@drawable/impostazioni"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck">
 
@@ -131,10 +133,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/light_grey2"
+                android:backgroundTint="@color/black"
                 android:drawableLeft="@drawable/follow"
                 android:text="SEGUI"
-                android:fontFamily="@font/oswald_medium"></Button>
+                android:textColor="@color/glow_yellow"
+                android:fontFamily="@font/oswald_medium">
+
+            </Button>
 
         </LinearLayout>
 

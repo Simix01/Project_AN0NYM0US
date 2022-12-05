@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Linear layout as parent layout-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white"
+    android:background="@drawable/dialog_background"
     >
 
 
@@ -18,7 +17,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:fontFamily="@font/oswald_medium"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         />
 
     <EditText
@@ -30,7 +29,7 @@
         android:singleLine="true"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:drawable/editbox_background"
+        android:background="@drawable/input_text_layout"
         />
 
     <ListView

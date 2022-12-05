@@ -6,6 +6,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_gray"
     tools:context=".comment_fragment">
 
     <LinearLayout
@@ -38,6 +39,7 @@
             android:layout_height="match_parent"
             android:layout_weight="8"
             android:orientation="horizontal">
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"

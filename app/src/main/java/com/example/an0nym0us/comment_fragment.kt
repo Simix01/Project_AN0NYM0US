@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -90,16 +91,21 @@ class comment_fragment : Fragment() {
 
         commentButton.setOnClickListener{
             var commentText = commentContent.text.toString()
-            var comment = actualUser?.let { it1 -> Commento(it1,commentText)}
-            var userIniziale = commentList.get(0).user
-            if(commentList.size!=0) {
-                if (userIniziale == " ")
-                    commentList?.removeAt(0)
+            if(!commentText.isEmpty()){
+                var comment = actualUser?.let { it1 -> Commento(it1,commentText)}
+                var userIniziale = commentList.get(0).user
+                if(commentList.size!=0) {
+                    if (userIniziale == " ")
+                        commentList?.removeAt(0)
+                }
+                commentList.add(comment!!)
+                dbRef.setValue(commentList)
+                commentAdapter.notifyDataSetChanged()
+                commentContent.setText(" ")
             }
-            commentList.add(comment!!)
-            dbRef.setValue(commentList)
-            commentAdapter.notifyDataSetChanged()
-            commentContent.setText(" ")
+            else
+                Toast.makeText(activity, "Non puoi scrivere un commento senza testo"
+                    , Toast.LENGTH_SHORT).show()
         }
 
         dbRef.addValueEventListener(object : ValueEventListener{

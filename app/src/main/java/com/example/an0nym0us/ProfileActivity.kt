@@ -234,7 +234,6 @@ class ProfileActivity : AppCompatActivity() {
                         var nickname = Map["nickname"].toString()
 
                         if (user.key == uId) {
-                            currentUserId = user.key!!
                             proPic = Map["proPic"].toString()
                             var approvazioni = Map["approvazioni"].toString()
                             myNickname = nickname
@@ -610,9 +609,6 @@ class ProfileActivity : AppCompatActivity() {
         var listaSeguiti: ArrayList<String> = arrayListOf()
         var reference = dbRefInfo.child(currentUid).child("seguiti")
         var hMapReference = dbRefInfo.child(currentUid)
-        /*reference.get().addOnCompleteListener {
-            listaSeguiti = it.result.value as ArrayList<String>
-        }*/
 
         hMapReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -623,8 +619,13 @@ class ProfileActivity : AppCompatActivity() {
 
                     if (listaSeguiti.contains(uId)) {
                         followButton.text = "SMETTI DI SEGUIRE"
+                        followButton.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.unfollow,0,0,0)
                     } else
                         followButton.text = "SEGUI"
+                        if(followButton.text.equals("SEGUI"))
+                        followButton.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.follow,0,0,0)
                 }
             }
 
