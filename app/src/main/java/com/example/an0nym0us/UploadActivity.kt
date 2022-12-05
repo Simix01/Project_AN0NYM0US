@@ -296,8 +296,6 @@ class UploadActivity : AppCompatActivity() {
                 .show()
 
             storageRef.downloadUrl.addOnSuccessListener {
-                Toast.makeText(this@UploadActivity, it.toString(), Toast.LENGTH_SHORT)
-                    .show()
                 uploadRef=it.toString()
                 var database = FirebaseDatabase
                     .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -311,7 +309,7 @@ class UploadActivity : AppCompatActivity() {
                 val post = Post2(uploadOnDB,uploadRef!!,null,uploadDislike,uploadCategory,uploadUser,null,uploadLike
                     ,comments, arrayLikes, arrayDislikes)
                 database.child(uploadOnDB).setValue(post).addOnSuccessListener {
-                    Toast.makeText(this@UploadActivity, "post caricato", Toast.LENGTH_SHORT).show()
+
                 }.addOnFailureListener{
                     Toast.makeText(this@UploadActivity, it.message, Toast.LENGTH_SHORT).show()
                 }

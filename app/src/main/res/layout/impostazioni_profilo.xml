@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Linear layout as parent layout-->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white"
-    >
+    android:background="@drawable/dialog_background">
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +17,7 @@
         android:layout_marginBottom="30dp"
         android:textStyle="bold"
         android:fontFamily="@font/oswald_semibold"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         />
 
     <LinearLayout
@@ -49,7 +47,7 @@
             android:text="Cambia"
             android:backgroundTint="@color/light_grey2"
             android:layout_gravity="center"
-            android:fontFamily="@font/oswald_regular"
+            android:fontFamily="@font/oswald_semibold"
             android:textColor="@color/black">
         </Button>
     </LinearLayout>
@@ -67,7 +65,7 @@
             android:layout_weight="1"
             android:textSize="18sp"
             android:fontFamily="@font/oswald_regular"
-            android:textColor="@color/black">
+            android:textColor="@color/white">
         </TextView>
 
         <Button
@@ -76,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="Cambia foto"
             android:backgroundTint="@color/light_grey2"
-            android:fontFamily="@font/oswald_regular"
+            android:fontFamily="@font/oswald_semibold"
             android:textColor="@color/black">
         </Button>
     </LinearLayout>
@@ -91,14 +89,15 @@
             android:id="@+id/cardView"
             android:layout_width="75dp"
             android:layout_height="75dp"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            app:cardCornerRadius="18dp">
 
             <ImageView
                 android:id="@+id/newProfilePicture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:background="@color/light_grey"
+                android:background="@drawable/post_background"
                 android:scaleType="fitCenter" />
         </androidx.cardview.widget.CardView>
 
@@ -110,7 +109,7 @@
             android:textAlignment="center"
             android:fontFamily="@font/oswald_light"
             android:textSize="16dp"
-            android:textColor="@color/black">
+            android:textColor="@color/white">
         </TextView>
     </LinearLayout>
     <LinearLayout
@@ -126,13 +125,15 @@
             android:textSize="18sp"
             android:layout_weight="1"
             android:fontFamily="@font/oswald_regular"
-            android:textColor="@color/black">
+            android:textColor="@color/white">
         </TextView>
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchNotifications"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="5dp"
+            android:background="@drawable/switchcompact_bg">
 
         </androidx.appcompat.widget.SwitchCompat>
     </LinearLayout>
@@ -149,9 +150,9 @@
             android:layout_height="wrap_content"
             android:text="Effettua il logout"
             android:layout_gravity="center"
-            android:backgroundTint="@color/light_grey2"
+            android:backgroundTint="#252525"
             android:fontFamily="@font/oswald_regular"
-            android:textColor="@color/black">
+            android:textColor="@color/glow_yellow">
         </Button>
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.example.an0nym0us
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.ActionBar.LayoutParams
 import android.app.ActivityManager
 import android.app.AlertDialog
@@ -9,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -364,48 +366,56 @@ class ProfileActivity : AppCompatActivity() {
             val switchNotify = dialog!!.findViewById<SwitchCompat>(R.id.switchNotifications)
 
             if (canEdit.equals("false")) {
-                buttonNickname.isClickable = false
-                buttonPhoto.isClickable = false
+                buttonNickname.setBackgroundColor(Color.RED)
+                buttonPhoto.setBackgroundColor(Color.RED)
             } else {
-                buttonNickname.isClickable = true
-                buttonPhoto.isClickable = true
+                buttonNickname.setBackgroundColor(Color.GREEN)
+                buttonPhoto.setBackgroundColor(Color.GREEN)
             }
 
             buttonNickname.setOnClickListener {
-                val EditTextName = dialog!!.findViewById<EditText>(R.id.newNicknameText)
-                val newName: String = EditTextName.text.toString().trim { it <= ' ' }
-                if (newName.equals(""))
-                    Toast.makeText(this, "Devi inserire un nuovo nome", Toast.LENGTH_SHORT).show()
-                else if (newName.length > 15)
-                    Toast.makeText(
-                        this,
-                        "Il nuovo nome non può superare 12 caratteri di lunghezza",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                else {
-                    if (listNicknames.contains(newName))
+                if(canEdit.equals("true")){
+                    val EditTextName = dialog!!.findViewById<EditText>(R.id.newNicknameText)
+                    val newName: String = EditTextName.text.toString().trim { it <= ' ' }
+                    if (newName.equals(""))
+                        Toast.makeText(this, "Devi inserire un nuovo nome", Toast.LENGTH_SHORT).show()
+                    else if (newName.length > 15)
                         Toast.makeText(
-                            this@ProfileActivity, "Nickname già in uso",
+                            this,
+                            "Il nuovo nome non può superare 12 caratteri di lunghezza",
                             Toast.LENGTH_SHORT
                         ).show()
                     else {
-                        dbRefInfo.child("$uId").child("nickname").setValue(newName)
-                        Toast.makeText(
-                            this@ProfileActivity,
-                            "Nickname cambiato con successo",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        dbRefInfo.child("$uId").child("canBeFound").setValue(true)
-                        listNicknames.clear()
+                        if (listNicknames.contains(newName))
+                            Toast.makeText(
+                                this@ProfileActivity, "Nickname già in uso",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        else {
+                            dbRefInfo.child("$uId").child("nickname").setValue(newName)
+                            Toast.makeText(
+                                this@ProfileActivity,
+                                "Nickname cambiato con successo",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            dbRefInfo.child("$uId").child("canBeFound").setValue(true)
+                            listNicknames.clear()
+                        }
                     }
                 }
+                else
+                    Toast.makeText(this@ProfileActivity, "Raggiungi il traguardo di approvazioni per" +
+                            " sbloccare questa funzione", Toast.LENGTH_SHORT).show()
             }
 
             buttonPhoto.setOnClickListener {
-                mImg = dialog!!.findViewById<ImageView>(R.id.newProfilePicture)
-
-                Gallery()
-
+                if(canEdit.equals("true")) {
+                    mImg = dialog!!.findViewById<ImageView>(R.id.newProfilePicture)
+                    Gallery()
+                }
+                else
+                    Toast.makeText(this@ProfileActivity, "Raggiungi il traguardo di approvazioni per" +
+                            " sbloccare questa funzione", Toast.LENGTH_SHORT).show()
             }
 
             val ref = dbRefInfo.child(uId).child("notifications")
@@ -581,17 +591,14 @@ class ProfileActivity : AppCompatActivity() {
         val image = stream.toByteArray()
 
         storageRef.putBytes(image).addOnSuccessListener {
-            Toast.makeText(this, "Immagine caricata", Toast.LENGTH_SHORT).show()
 
             storageRef.downloadUrl.addOnSuccessListener {
-                Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT)
-                    .show()
                 uploadRef = it.toString()
                 var database = FirebaseDatabase
                     .getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                     .getReference("InfoUtenti/$uId")
                 database.child("proPic").setValue(uploadRef).addOnSuccessListener {
-                    Toast.makeText(this, "Image profilo aggiornata", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Immagine profilo aggiornata", Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
@@ -624,8 +631,8 @@ class ProfileActivity : AppCompatActivity() {
                     } else
                         followButton.text = "SEGUI"
                         if(followButton.text.equals("SEGUI"))
-                        followButton.setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.follow,0,0,0)
+                            followButton.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.follow,0,0,0)
                 }
             }
 
