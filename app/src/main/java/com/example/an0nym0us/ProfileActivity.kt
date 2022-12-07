@@ -14,6 +14,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -26,6 +27,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -45,6 +47,9 @@ import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.absoluteValue
 
@@ -136,6 +141,7 @@ class ProfileActivity : AppCompatActivity() {
                 var mapUserInfo = snapshot.value as Map<*, *>
 
                 dbRef.addValueEventListener(object : ValueEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (listFull.isEmpty()) {
                             if (snapshot.exists()) {
@@ -183,6 +189,10 @@ class ProfileActivity : AppCompatActivity() {
 
                                     }
                                 }
+                                val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss")
+
+                                listFull.sortWith (compareBy{ LocalDateTime.parse(it.date, dateTimeFormatter)})
+                                listFull.reverse()
                                 postAdapter = PostRecyclerAdapterGrid(listFull)
 
                                 val mFragmentManager = supportFragmentManager

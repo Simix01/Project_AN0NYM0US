@@ -129,7 +129,8 @@
             android:gravity="center"
             android:background="@drawable/blackbg_global"
             android:layout_marginHorizontal="125dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
 
             <ImageButton
                 android:id="@+id/buttonCaricaPost"

@@ -17,6 +17,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_homepage.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -120,6 +123,7 @@ class HomepageActivity : AppCompatActivity() {
                 var myInfo = snapshot.child("$uId").value as HashMap<*,*>
                 seguiti = myInfo["seguiti"] as kotlin.collections.ArrayList<String>
                 dbRef.addValueEventListener(object : ValueEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (list.isEmpty()) {
                             if (snapshot.exists()) {
@@ -165,9 +169,12 @@ class HomepageActivity : AppCompatActivity() {
                                     }
                                 }
                             }
+                            val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss")
+
+                            list.sortWith (compareBy{ LocalDateTime.parse(it.date, dateTimeFormatter)})
+                            list.reverse()
                             postAdapter = PostRecyclerAdapter(list)
                             updateHome()
-
 
 
                             postAdapter.onImageClick = {
@@ -304,11 +311,12 @@ class HomepageActivity : AppCompatActivity() {
         }
     }
 
-    fun updateHome() {
+    fun updateHome(){
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
-            Collections.shuffle(list, Random(System.currentTimeMillis()))
-            postAdapter.notifyDataSetChanged()
+            finish()
+            overridePendingTransition(0,0)
+            startActivity(Intent(this,HomepageActivity::class.java))
         }
     }
 

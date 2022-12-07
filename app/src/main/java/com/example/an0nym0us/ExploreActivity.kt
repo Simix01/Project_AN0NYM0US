@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_explore.*
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import kotlin.math.absoluteValue
 
@@ -98,9 +100,10 @@ class ExploreActivity : AppCompatActivity() {
                                 }
 
                                 listAppend.addAll(listFull)
-                                listFull.sortBy {
-                                    it.date
-                                }
+                                val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_H_m_s")
+
+                                listFull.sortWith (compareBy{ LocalDateTime.parse(it.date, dateTimeFormatter)})
+                                listFull.reverse()
                                 postAdapter = PostRecyclerAdapterGrid(listFull)
                                 filtraPost()
 
