@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            app:boxStrokeColor="@color/glow_yellow"
+            app:boxStrokeColor="@color/app_yellow"
             app:hintTextColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginHorizontal="25dp">
@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            app:boxStrokeColor="@color/glow_yellow"
+            app:boxStrokeColor="@color/app_yellow"
             app:hintTextColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginHorizontal="25dp">
@@ -89,8 +89,9 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:backgroundTint="@color/glow_yellow"
+            android:backgroundTint="@color/app_yellow"
             android:layout_marginBottom="50dp"
+            android:fontFamily="@font/oswald_semibold"
             android:layout_weight="1"
             android:text="ACCEDI" />
 
@@ -117,7 +118,8 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text="Non sei ancora registrato? "
-            android:textColor="@color/glow_yellow"
+            android:textColor="@color/app_yellow"
+            android:fontFamily="@font/oswald_regular"
             android:layout_gravity="right"/>
 
         <TextView
@@ -126,7 +128,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text="Registrati"
-            android:textStyle="bold"
+            android:fontFamily="@font/oswald_semibold"
             android:textColor="@color/light_blue"
             android:layout_gravity="right"/>
     </LinearLayout>

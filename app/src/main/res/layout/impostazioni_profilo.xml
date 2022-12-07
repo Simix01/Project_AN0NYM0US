@@ -150,9 +150,9 @@
             android:layout_height="wrap_content"
             android:text="Effettua il logout"
             android:layout_gravity="center"
-            android:backgroundTint="#252525"
+            android:backgroundTint="@color/app_blue"
             android:fontFamily="@font/oswald_regular"
-            android:textColor="@color/glow_yellow">
+            android:textColor="@color/app_yellow">
         </Button>
     </LinearLayout>
 

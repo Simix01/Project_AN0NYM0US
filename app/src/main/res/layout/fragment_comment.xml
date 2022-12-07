@@ -6,7 +6,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gray"
+    android:background="@color/black"
     tools:context=".comment_fragment">
 
     <LinearLayout
@@ -80,7 +80,7 @@
                 android:text="PUBBLICA"
                 android:fontFamily="@font/oswald_medium"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:backgroundTint="@color/glow_yellow"
+                android:backgroundTint="@color/app_yellow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout"></Button>
         </LinearLayout>

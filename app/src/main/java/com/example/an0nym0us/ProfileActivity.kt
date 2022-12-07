@@ -382,7 +382,7 @@ class ProfileActivity : AppCompatActivity() {
                     else if (newName.length > 15)
                         Toast.makeText(
                             this,
-                            "Il nuovo nome non può superare 12 caratteri di lunghezza",
+                            "Il nuovo nome non può superare 15 caratteri di lunghezza",
                             Toast.LENGTH_SHORT
                         ).show()
                     else {

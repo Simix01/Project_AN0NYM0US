@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            app:boxStrokeColor="@color/glow_yellow"
+            app:boxStrokeColor="@color/app_yellow"
             app:hintTextColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginHorizontal="25dp">
@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            app:boxStrokeColor="@color/glow_yellow"
+            app:boxStrokeColor="@color/app_yellow"
             app:hintTextColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginHorizontal="25dp">
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            app:boxStrokeColor="@color/glow_yellow"
+            app:boxStrokeColor="@color/app_yellow"
             app:hintTextColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginHorizontal="25dp">
@@ -106,7 +106,8 @@
             android:layout_width="226dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:backgroundTint="@color/glow_yellow"
+            android:backgroundTint="@color/app_yellow"
+            android:fontFamily="@font/oswald_semibold"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:text="REGISTRATI" />

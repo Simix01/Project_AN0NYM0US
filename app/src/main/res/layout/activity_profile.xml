@@ -61,7 +61,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profilePic"
                 android:layout_width="150dp"
-                app:civ_border_color="@color/glow_yellow"
+                app:civ_border_color="@color/app_yellow"
                 android:layout_marginTop="10dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
@@ -98,7 +98,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    app:civ_border_color="@color/glow_yellow"
+                    app:civ_border_color="@color/app_yellow"
                     android:src="@drawable/anonym_icon"
 
                     app:civ_border_width="2dp">
@@ -122,7 +122,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:src="@drawable/user_128"
-                    app:civ_border_color="@color/glow_yellow"
+                    app:civ_border_color="@color/app_yellow"
                     app:civ_border_width="2dp"></de.hdodenhof.circleimageview.CircleImageView>
 
             </LinearLayout>
@@ -133,10 +133,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@color/app_blue"
                 android:drawableLeft="@drawable/follow"
                 android:text="SEGUI"
-                android:textColor="@color/glow_yellow"
+                android:textColor="@color/app_yellow"
                 android:fontFamily="@font/oswald_medium">
 
             </Button>
@@ -166,7 +166,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/black"
+        android:background="@drawable/bottomnav_bg"
         app:itemIconTint="@drawable/selector"
         app:itemTextColor="@drawable/selector"
         app:layout_constraintBottom_toBottomOf="parent"
