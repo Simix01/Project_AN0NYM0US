@@ -86,8 +86,8 @@ class PostFragment : Fragment() {
             .error(R.drawable.anonym_icon)
 
         val requestOptionsForPosts = com.bumptech.glide.request.RequestOptions()
-            .placeholder(R.drawable.black_screen)
-            .error(R.drawable.black_screen)
+            .placeholder(R.drawable.loading_placeholder)
+            .error(R.drawable.loading_placeholder)
 
         if (post != null) {
             if(post.nickname==null)

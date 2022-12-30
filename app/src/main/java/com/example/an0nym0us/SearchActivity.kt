@@ -7,16 +7,21 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_search.*
+import kotlin.math.absoluteValue
 
 class SearchActivity : AppCompatActivity() {
 
     private var listaUsers: ArrayList<String> = arrayListOf()
     private var listaIDs: ArrayList<String> = arrayListOf()
+    val cUser = FirebaseAuth.getInstance().currentUser!!.uid
+    val valoreHash = cUser.hashCode().absoluteValue
+    val uId = "anonym$valoreHash"
     private val dbRefUsers =
         FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("InfoUtenti")
@@ -42,9 +47,11 @@ class SearchActivity : AppCompatActivity() {
                         var nickname = Map["nickname"] as String
                         var canBeFound = Map["canBeFound"] as Boolean
 
-                        if(canBeFound){
-                            listaUsers.add(nickname)
-                            listaIDs.add(userSnapshot.key.toString())
+                        if(userSnapshot.key != uId){
+                            if(canBeFound){
+                                listaUsers.add(nickname)
+                                listaIDs.add(userSnapshot.key.toString())
+                            }
                         }
                     }
                 }

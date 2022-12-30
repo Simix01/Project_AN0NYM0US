@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="18dp"
+    app:cardCornerRadius="19dp"
     app:cardElevation="10dp"
     app:cardUseCompatPadding="true">
 
@@ -87,7 +87,7 @@
                 android:id="@+id/post_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/black"
+                android:background="#0F212F"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 tools:src="@tools:sample/avatars" />
