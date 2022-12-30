@@ -306,9 +306,9 @@ class UploadActivity : AppCompatActivity() {
                 var arrayDislikes = arrayListOf<String>()
                 arrayDislikes.add("ok")
                 comments.add(Commento(" "," "))
-                val post = Post2("01_01_2023_15_11_54",uploadRef!!,null,uploadDislike,uploadCategory,uploadUser,null,uploadLike
+                val post = Post2(uploadOnDB,uploadRef!!,null,uploadDislike,uploadCategory,uploadUser,null,uploadLike
                     ,comments, arrayLikes, arrayDislikes)
-                database.child("01_01_2023_15_11_54").setValue(post).addOnSuccessListener {
+                database.child(uploadOnDB).setValue(post).addOnSuccessListener {
 
                 }.addOnFailureListener{
                     Toast.makeText(this@UploadActivity, it.message, Toast.LENGTH_SHORT).show()

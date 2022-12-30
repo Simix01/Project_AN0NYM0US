@@ -100,9 +100,8 @@ class ExploreActivity : AppCompatActivity() {
                                 }
 
                                 listAppend.addAll(listFull)
-                                val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_H_m_s")
 
-                                listFull.sortWith (compareBy{ LocalDateTime.parse(it.date, dateTimeFormatter)})
+                                listFull.sortWith (compareBy{ it.likes - it.dislikes })
                                 listFull.reverse()
                                 postAdapter = PostRecyclerAdapterGrid(listFull)
                                 filtraPost()
@@ -228,6 +227,8 @@ class ExploreActivity : AppCompatActivity() {
 
             listFull.clear()
             listFull.addAll(listFiltered)
+            listFull.sortWith(compareBy{ it.likes - it.dislikes })
+            listFull.reverse()
             postAdapter?.notifyDataSetChanged()
         }
     }

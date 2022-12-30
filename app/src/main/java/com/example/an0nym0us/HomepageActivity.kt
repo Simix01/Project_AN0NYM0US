@@ -40,6 +40,7 @@ class HomepageActivity : AppCompatActivity() {
     private val dbRefInfoUtenti =
         FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("InfoUtenti")
+    private lateinit var myNickname: String
     private var seguiti = arrayListOf<String>()
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -47,6 +48,13 @@ class HomepageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
         overridePendingTransition(0, 0)
+
+        dbRefInfoUtenti.child(uId).child("nickname").get().addOnCompleteListener {
+            if(it.isSuccessful){
+                myNickname = it.result.value as String
+            }
+        }
+
         inizializzaBottomMenu()
         initRecyclerView()
 
@@ -221,7 +229,7 @@ class HomepageActivity : AppCompatActivity() {
                                 val mBundle = Bundle()
 
                                 mBundle.putString("userPost", it.user)
-                                mBundle.putString("actualUser", uId)
+                                mBundle.putString("actualUser", myNickname)
                                 mBundle.putString("datePost", it.date)
                                 mBundle.putString("nameActivity", "HomepageActivity")
                                 mFragment2.arguments = mBundle
@@ -251,7 +259,7 @@ class HomepageActivity : AppCompatActivity() {
                             postRecyclerView.adapter = postAdapter
 
                             if(seguiti[0].equals("ok")){
-                                //settare immagine per utenti che non seguono nessuno con consigli di utilizzo
+
                                 relativeLayout.setBackgroundResource(R.drawable.app_background_variant)
                             }
                         }

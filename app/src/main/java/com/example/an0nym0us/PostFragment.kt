@@ -66,6 +66,7 @@ class PostFragment : Fragment() {
         var likesList = arrayListOf<String>()
         var dislikesList = arrayListOf<String>()
         var approvazioni: Long? = null
+        var myNickname: String? = null
         val uId = bundle?.getString("userid").toString()
 
         val user = view.findViewById<TextView>(R.id.userCode)
@@ -170,6 +171,14 @@ class PostFragment : Fragment() {
         dbRefApprovazioni?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 approvazioni = it.result.value as Long?
+            }
+        }
+
+        var dbRefNickname = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                            .getReference("InfoUtenti").child(uId).child("nickname")
+        dbRefNickname.get().addOnCompleteListener {
+            if(it.isSuccessful){
+                myNickname = it.result.value as String
             }
         }
 
@@ -317,7 +326,7 @@ class PostFragment : Fragment() {
             val mBundle = Bundle()
 
             mBundle.putString("userPost", post?.user)
-            mBundle.putString("actualUser", uId)
+            mBundle.putString("actualUser", myNickname)
             mBundle.putString("datePost", post?.date)
             mBundle.putString("nameActivity", nameActivity)
             commentFragment.arguments = mBundle
