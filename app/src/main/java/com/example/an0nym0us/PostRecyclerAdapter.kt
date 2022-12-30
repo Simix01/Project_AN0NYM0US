@@ -21,7 +21,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
     val valoreHash = cUser.hashCode().absoluteValue
     val uId = "anonym$valoreHash"
     var myNickname: String? = null
-    var likesList = arrayListOf<String>()
+    var likesList: ArrayList<String>? = null
     var dislikesList: ArrayList<String>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -136,7 +136,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         }
 
                         if (likesList?.contains(myNickname) == false) {
-                            if (likesList.get(0) == "ok") {
+                            if (likesList!!.get(0) == "ok") {
                                 likesList!!.removeAt(0)
                                 likesList?.add(myNickname!!)
                                 approvazioni = approvazioni?.plus(1)
@@ -174,7 +174,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
 
-                        if(likesList.contains(myNickname))
+                        if(likesList!!.contains(myNickname))
                             holder.likeButton.setBackgroundResource(R.drawable.like_button_pressed)
                         else
                             holder.likeButton.setBackgroundResource(R.drawable.like_button_base)
@@ -239,7 +239,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                         dbRefLikes?.setValue(post.likes)
                         dbRefDislikes?.setValue(post.dislikes)
 
-                        if(likesList.contains(myNickname))
+                        if(likesList!!.contains(myNickname))
                             holder.likeButton.setBackgroundResource(R.drawable.like_button_pressed)
                         else
                             holder.likeButton.setBackgroundResource(R.drawable.like_button_base)
