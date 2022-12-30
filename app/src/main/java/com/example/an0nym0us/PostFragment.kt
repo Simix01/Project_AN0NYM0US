@@ -118,6 +118,14 @@ class PostFragment : Fragment() {
 
         }
 
+        var dbRefNickname = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("InfoUtenti").child(uId).child("nickname")
+        dbRefNickname.get().addOnCompleteListener {
+            if(it.isSuccessful){
+                myNickname = it.result.value as String
+            }
+        }
+
         var dbRefArrayLikes = post?.user?.let {
             post.date?.let { it1 ->
                 FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -127,7 +135,7 @@ class PostFragment : Fragment() {
         dbRefArrayLikes?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 likesList = it.result.value as ArrayList<String>
-                if(likesList.contains(uId))
+                if(likesList.contains(myNickname))
                     likeBtn.setBackgroundResource(R.drawable.like_button_pressed)
                 else
                     likeBtn.setBackgroundResource(R.drawable.like_button_base)
@@ -143,7 +151,7 @@ class PostFragment : Fragment() {
         dbRefArrayDislikes?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 dislikesList = it.result.value as ArrayList<String>
-                if(dislikesList!!.contains(uId))
+                if(dislikesList!!.contains(myNickname))
                     dislikeBtn.setBackgroundResource(R.drawable.dislike_button_pressed)
                 else
                     dislikeBtn.setBackgroundResource(R.drawable.dislike_button_base)
@@ -174,36 +182,28 @@ class PostFragment : Fragment() {
             }
         }
 
-        var dbRefNickname = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                            .getReference("InfoUtenti").child(uId).child("nickname")
-        dbRefNickname.get().addOnCompleteListener {
-            if(it.isSuccessful){
-                myNickname = it.result.value as String
-            }
-        }
-
         likeBtn.setOnClickListener {
-            if (dislikesList?.contains(uId) == true) {
-                dislikesList!!.remove(uId)
+            if (dislikesList?.contains(myNickname) == true) {
+                dislikesList!!.remove(myNickname)
                 post?.dislikes = dislikesList!!.size
                 if (dislikesList!!.size == 0)
                     dislikesList!!.add("ok")
             }
 
-            if (likesList?.contains(uId) == false) {
+            if (likesList?.contains(myNickname) == false) {
                 if (likesList.get(0) == "ok") {
                     likesList!!.removeAt(0)
-                    likesList?.add(uId)
+                    likesList?.add(myNickname!!)
                     approvazioni = approvazioni?.plus(1)
                     dbRefApprovazioni!!.setValue(approvazioni)
                 } else {
-                    likesList?.add(uId)
+                    likesList?.add(myNickname!!)
                     approvazioni = approvazioni?.plus(1)
                     dbRefApprovazioni!!.setValue(approvazioni)
                 }
-            } else if (likesList?.contains(uId) == true) {
+            } else if (likesList?.contains(myNickname) == true) {
 
-                likesList?.remove(uId)
+                likesList?.remove(myNickname)
                 if (approvazioni!!.minus(1) < 0)
                     dbRefApprovazioni!!.setValue(0)
                 else {
@@ -228,12 +228,12 @@ class PostFragment : Fragment() {
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
 
-            if(likesList.contains(uId))
+            if(likesList.contains(myNickname))
                 likeBtn.setBackgroundResource(R.drawable.like_button_pressed)
             else
                 likeBtn.setBackgroundResource(R.drawable.like_button_base)
 
-            if(dislikesList!!.contains(uId))
+            if(dislikesList!!.contains(myNickname))
                 dislikeBtn.setBackgroundResource(R.drawable.dislike_button_pressed)
             else
                 dislikeBtn.setBackgroundResource(R.drawable.dislike_button_base)
@@ -241,18 +241,18 @@ class PostFragment : Fragment() {
 
 
         dislikeBtn.setOnClickListener {
-            if (likesList?.contains(uId) == true) {
+            if (likesList?.contains(myNickname) == true) {
 
-                likesList!!.remove(uId)
+                likesList!!.remove(myNickname)
                 post?.likes = likesList!!.size
                 if (likesList!!.size == 0)
                     likesList!!.add("ok")
             }
 
-            if (dislikesList?.contains(uId) == false) {
+            if (dislikesList?.contains(myNickname) == false) {
                 if (dislikesList?.get(0) == "ok") {
                     dislikesList?.removeAt(0)
-                    dislikesList?.add(uId)
+                    dislikesList?.add(myNickname!!)
                     if (approvazioni?.minus(1)!! < 0)
                         dbRefApprovazioni!!.setValue(0)
                     else {
@@ -260,7 +260,7 @@ class PostFragment : Fragment() {
                         dbRefApprovazioni!!.setValue(approvazioni)
                     }
                 } else {
-                    dislikesList?.add(uId)
+                    dislikesList?.add(myNickname!!)
                     if (approvazioni?.minus(1)!! < 0)
                         dbRefApprovazioni!!.setValue(0)
                     else {
@@ -269,8 +269,8 @@ class PostFragment : Fragment() {
                     }
                 }
 
-            } else if (dislikesList?.contains(uId) == true) {
-                dislikesList?.remove(uId)
+            } else if (dislikesList?.contains(myNickname) == true) {
+                dislikesList?.remove(myNickname)
                 approvazioni = approvazioni?.plus(1)
                 dbRefApprovazioni!!.setValue(approvazioni)
                 if (dislikesList!!.size == 0)
@@ -288,12 +288,12 @@ class PostFragment : Fragment() {
             dbRefLikes?.setValue(post.likes)
             dbRefDislikes?.setValue(post.dislikes)
 
-            if(likesList.contains(uId))
+            if(likesList.contains(myNickname))
                 likeBtn.setBackgroundResource(R.drawable.like_button_pressed)
             else
                 likeBtn.setBackgroundResource(R.drawable.like_button_base)
 
-            if(dislikesList!!.contains(uId))
+            if(dislikesList!!.contains(myNickname))
                 dislikeBtn.setBackgroundResource(R.drawable.dislike_button_pressed)
             else
                 dislikeBtn.setBackgroundResource(R.drawable.dislike_button_base)

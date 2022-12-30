@@ -277,6 +277,9 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
         val uId = "anonym$valoreHash"
         var likesList: ArrayList<String> = arrayListOf()
         var dislikesList: ArrayList<String> = arrayListOf()
+        var dbRefNickname = FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("InfoUtenti").child("$uId").child("nickname")
+        lateinit var myNickname: String
 
         fun bind(post: Post2) {
             val requestOptionsForPosts = com.bumptech.glide.request.RequestOptions()
@@ -310,12 +313,17 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
             postLike.setText(post.likes.toString())
             postDislike.setText(post.dislikes.toString())
 
+            dbRefNickname.get().addOnCompleteListener {
+                if(it.isSuccessful){
+                    myNickname = it.result.value as String
+                }
+            }
             val likeReference =
                 FirebaseDatabase.getInstance("https://an0nym0usapp-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("Utenti").child(post.user!!).child(post.date!!).child("arrayLikes")
             likeReference.get().addOnCompleteListener {
                 likesList = it.result.value as ArrayList<String>
-                if(likesList.contains(uId))
+                if(likesList.contains(myNickname))
                     likeButton.setBackgroundResource(R.drawable.like_button_pressed)
                 else
                     likeButton.setBackgroundResource(R.drawable.like_button_base)
@@ -326,7 +334,7 @@ class PostRecyclerAdapter(private val postList: ArrayList<Post2>) :
                     .getReference("Utenti").child(post.user!!).child(post.date!!).child("arrayDislikes")
             dislikeReference.get().addOnCompleteListener {
                 dislikesList = it.result.value as ArrayList<String>
-                if(dislikesList.contains(uId))
+                if(dislikesList.contains(myNickname))
                     dislikeButton.setBackgroundResource(R.drawable.dislike_button_pressed)
                 else
                     dislikeButton.setBackgroundResource(R.drawable.dislike_button_base)
