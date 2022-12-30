@@ -38,8 +38,10 @@ class PostFragment : Fragment() {
                 val javaClass = Class.forName(nameActivityFull)
                 val intent = Intent(context, javaClass)
                 val myBundle = arguments
-                val username = myBundle!!.getString("userid").toString()
+                val username = myBundle!!.getString("otherUid").toString()
                 intent.putExtra("username", username)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }
 

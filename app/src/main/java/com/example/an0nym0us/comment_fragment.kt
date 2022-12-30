@@ -38,6 +38,7 @@ class comment_fragment : Fragment() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var commentAdapter: CommentRecyclerAdapter
     private lateinit var commentList: ArrayList<Commento>
+    private lateinit var nicknameUser: String
 
     var nameActivity:String? = "com.example.an0nym0us."
 
@@ -47,7 +48,9 @@ class comment_fragment : Fragment() {
             override fun handleOnBackPressed() {
                 var javaClass=Class.forName(nameActivity)
                 val intent = Intent(context, javaClass)
-                intent.putExtra("username", uId)
+                intent.putExtra("username", nicknameUser)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }
 
@@ -72,6 +75,7 @@ class comment_fragment : Fragment() {
 
         val bundle = arguments
         val userPost:String?=bundle?.getString("userPost")
+        nicknameUser = userPost!!
         val actualUser:String?=bundle?.getString("actualUser")
         val data:String?=bundle?.getString("datePost")
         nameActivity+= bundle?.getString("nameActivity").toString()

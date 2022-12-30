@@ -218,7 +218,8 @@ class ProfileActivity : AppCompatActivity() {
 
                                     mBundle.putParcelable("post", post)
                                     mBundle.putString("nameActivity", "ProfileActivity")
-                                    mBundle.putString("userid", uId)
+                                    mBundle.putString("userid", currentUid)
+                                    mBundle.putString("otherUid", uId)
                                     mFragment.arguments = mBundle
                                     mFragmentTransaction.add(
                                         R.id.fragment_containerProfile,

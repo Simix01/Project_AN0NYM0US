@@ -65,8 +65,8 @@ class HomepageActivity : AppCompatActivity() {
             }
         }
 
-
     }
+
 
     private fun avvioService() {
 
@@ -211,6 +211,8 @@ class HomepageActivity : AppCompatActivity() {
                                 mBundle.putString("nameActivity", "HomepageActivity")
                                 mBundle.putString("userid", uId)
                                 mFragment.arguments = mBundle
+                                mFragmentTransaction.remove(mFragment)
+                                mFragmentManager.popBackStack()
                                 mFragmentTransaction.add(R.id.fragment_container, mFragment).commit()
                             }
 
